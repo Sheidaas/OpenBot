@@ -18,7 +18,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.speedHack = True
 		self.minMana = 95
 		self.minHealth = 80
-		self.speedMultiplier = 0.9
+		self.speedMultiplier = 0.5
 
 		self.pickUp = False
 		self.pickUpRange = 290
@@ -248,8 +248,7 @@ class SettingsDialog(ui.ScriptWindow):
 	def OnBlueOnOff(self,val):
 		self.bluePotions = bool(val)
 
-	def OnSpeedHackOnOff(self,val):
-		chat.AppendChat(3,str(val))
+	def OnSpeedHackOnOff(self, val):
 		if val :
 			eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
 		else:
@@ -402,7 +401,7 @@ class ItemListDialog(ui.Window):
 		try:
 			lines = open(app.GetLocalePath()+"/item_list.txt", "r").readlines()
 		except IOError:
-			OpenLog.DebugPrint("Load Itemlist Error, you have so set the IDs manually")
+			OpenLog.DebugPrint("Load Itemlist Error, you have to set the IDs manually")
 			self.Close()
 		for line in lines:
 			tokens = str(line).split("\t")

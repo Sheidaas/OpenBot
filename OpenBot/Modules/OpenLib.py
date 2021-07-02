@@ -45,7 +45,21 @@ MOVING_TO_TARGET = 1
 ATTACKING_TARGET = 0
 TARGET_IS_DEAD = -1
 
-			
+ORES_IDS = {
+    20047:'diamond',
+    20048:'amber',
+    20049:'fossil_wood',
+    20050:'cooper',
+    20051:'silver',
+    20052:'gold',
+    20054:'ebony',
+    20055:'shell',
+    20056:'white_gold',
+    20057:'crystal',
+    20058:'quartz',
+    20059:'heavens_tear'
+}
+
 def isBoss(vnum):
 	"""
 	Check if instance is boss.
@@ -140,7 +154,25 @@ def OnSelectItem(self, index, name):
 def GetSelectedIndex(self):
 	return self.listBox.GetSelectedItem()
 
+def IsThisPlayer(vid):
+	if chr.GetInstanceType(vid) == PLAYER_TYPE:
+		return True
+	return False
 
+def IsThisMetin(vid):
+	if chr.GetInstanceType(vid) == METIN_TYPE:
+		return True
+	return False
+
+def IsThisBoss(vid):
+	if chr.GetInstanceType(vid) == BOSS_TYPE:
+		return True
+	return False
+
+def IsThisOre(vid):
+	if chr.GetInstanceType(vid) == 1:
+		return True
+	return False
 
 #Checks if inventory is full by checking empty spaces
 def isInventoryFull():
@@ -293,8 +325,13 @@ def RotateMainCharacter(x,y):
 	chr.SelectInstance(player.GetMainCharacterIndex())
 	rot = GetRotation(my_x,my_y,x,y)
 	chr.SetRotation(rot)
-	
-	
+
+def RotateMainCharacterByVid(vid):
+	chr.SelectInstance(vid)
+	x, y, z = chr.GetPixelPosition()
+	RotateMainCharacter(x, y)
+
+
 def GetCurrentPhase():
 	"""
 	Returns the current phase of the game.
@@ -313,6 +350,44 @@ def IsInGamePhase():
 		[bool]: Returns True if is in game phase or False otherwise.
 	"""
 	return GetCurrentPhase() == PHASE_GAME
+
+
+def getAllStatusOfMainActor():
+	"""
+	Returns the currents stats of main character.
+
+	Returns:
+		dict
+
+	"""
+	character_status = {
+		'NAME': player.GetName(),
+		'MONEY': player.GetMoney(),
+		'MOVING_SPEED': player.MOVING_SPEED,
+		'RACE': player.GetRace(),
+		'LEVEL': player.LEVEL,
+		'EXP': player.GetEXP(),
+		'NEXT_EXP': player.NEXT_EXP,
+		'GUILD_ID': player.GetGuildID(),
+		'GUILD_NAME': player.GetGuildName(),
+		'DEF_BONUS': player.DEF_BONUS,
+		'ATT_BONUS': player.ATT_BONUS,
+		'ATT_POWER': player.ATT_POWER,
+		'ATT_SPEED': player.ATT_SPEED,
+		'STATUS': player.GetStatus(),
+		'MAX_HP': player.MAX_HP,
+		'HP': player.HP,
+		'HP_RECOVERY':  player.HP_RECOVERY,
+		'MAX_SP': player.MAX_SP,
+		'SP': player.SP,
+		'SP_RECOVERY': player.SP_RECOVERY,
+		'STAMINA': player.STAMINA,
+		'STAT': player.STAT
+
+	}
+
+	return character_status
+
 
 def isPlayerCloseToInstance(vid_target):
 	"""
