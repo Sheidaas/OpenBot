@@ -1,5 +1,5 @@
 from BotBase import BotBase
-from DmgHacks import Dmg
+import DmgHacks
 import Movement
 import OpenLib
 import UIComponents
@@ -7,7 +7,6 @@ import player, ui, chat, chr, net
 import eXLib
 
 # STATES
-NOTHING_STATE = 0
 WALKING_STATE = 1
 MINING_STATE = 2
 FARMING_STATE = 3
@@ -17,12 +16,11 @@ class FarmingBot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self, 0.5)
-        self.CURRENT_STATE = NOTHING_STATE
+        self.CURRENT_STATE = WALKING_STATE
         self.is_walking = True  # if False character is using teleport, otherwise character is walking
         self.current_point = 0  # Current position index
         self.path = []  # Dict of tuples with coordinates [(0, 0), (2, 2)] etc
 
-        self.dmgHack = Dmg
         self.lastTime = 0
 
         self.farm_metins = True
@@ -118,9 +116,17 @@ class FarmingBot(BotBase):
     def go_to_next_position(self):
         self.Move(self.path[self.current_point][0], self.path[self.current_point][1], callback=self.onWaypointReach)
 
+    def select_metin(self):
+        if(len(self.metins_vid_list) > 0):
+            self.selectedMetin = self.metins_vid_list.pop()
+            chat.AppendChat(3,str(self.selectedMetin))
+    def select_ore(self):
+        if(len(self.ores_vid_list) > 0):
+            self.selectedOre = self.ores_vid_list.pop()
+
     def onWaypointReach(self):
         self.next_point()
-        self.CURRENT_STATE = NOTHING_STATE
+        self.CURRENT_STATE = WALKING_STATE
 
     def _start(self, val):
         if not val:
@@ -136,7 +142,7 @@ class FarmingBot(BotBase):
     def StopBot(self):
         self.current_point = 0
         Movement.StopMovement()
-        self.CURRENT_STATE = NOTHING_STATE
+        self.CURRENT_STATE = WALKING_STATE
 
     def Move(self, x, y, callback=None):
         if self.is_walking:
@@ -155,67 +161,26 @@ class FarmingBot(BotBase):
         self.Move(x, y, callback)
 
     def Frame(self):
-        self.ores_vid_list = []
-        self.metins_vid_list = []
-        self.checkForMetinsAndOres()
+        if self.CURRENT_STATE == WALKING_STATE:
+            self.ores_vid_list = []
+            self.metins_vid_list = []
+            self.checkForMetinsAndOres()
 
-        if self.CURRENT_STATE == NOTHING_STATE:
-            if self.farm_ores:
-                if self.ores_vid_list:
-                    if self.selectedOre:
-                        if self.selectedOre in self.ores_vid_list:
-                            self.CURRENT_STATE = MINING_STATE
-                            return
-                        else:
-                            self.selectedOre = self.ores_vid_list[0]
-                            self.CURRENT_STATE = MINING_STATE
-                            return
-                    else:
-                        self.selectedOre = self.ores_vid_list[0]
-                        self.CURRENT_STATE = MINING_STATE
-                        return
-                else:
-                    self.selectedOre = 0
-
-            if self.farm_metins:
-                if self.metins_vid_list:
-                    if self.selectedMetin:
-                        if self.selectedMetin in self.metins_vid_list:
-                            self.CURRENT_STATE = FARMING_STATE
-                            return
-                        else:
-                            self.selectedMetin = self.metins_vid_list[0]
-                            self.CURRENT_STATE = FARMING_STATE
-                            return
-                    else:
-                        self.selectedMetin = self.metins_vid_list[0]
-                        self.CURRENT_STATE = FARMING_STATE
-                        return
-                else:
-                    self.selectedMetin = 0
-
-
-            self.CURRENT_STATE = WALKING_STATE
+            if self.farm_metins and len(self.metins_vid_list)>0:
+                self.select_metin()
+                self.CURRENT_STATE = FARMING_STATE
+            
+            elif self.farm_ores and len(self.metins_vid_list)>0:
+                self.select_ore()
+                self.CURRENT_STATE = MINING_STATE
+            else:
+                self.go_to_next_position()
+                
             return
-
-        elif self.CURRENT_STATE == WALKING_STATE:
-            self.go_to_next_position()
-            return
-
         elif self.CURRENT_STATE == MINING_STATE:
             pass
-
         elif self.CURRENT_STATE == FARMING_STATE:
-            if self.selectedMetin in self.metins_vid_list:
-                self.farmMetin()
-                return
-            else:
-                self.CURRENT_STATE = NOTHING_STATE
-                self.selectedMetin = 0
-                player.SetAttackKeyState(False)
-                self.dmgHack.enableButton.SetOff()
-                self.dmgHack.Pause()
-                return
+            self.farmMetin()
 
     def mineOre(self):
         self.is_mining = True
@@ -232,26 +197,26 @@ class FarmingBot(BotBase):
 
     def farmMetin(self):
 
-        vid_life_status = OpenLib.AttackTarget(self.current_farming_metin)
+        vid_life_status = OpenLib.AttackTarget(self.selectedMetin)
 
         if vid_life_status == -1:
             player.SetAttackKeyState(False)
-            self.dmgHack.enableButton.SetOff()
-            self.dmgHack.Pause()
+            DmgHacks.Pause()
+            self.selectedMetin = 0
+            self.CURRENT_STATE = WALKING_STATE
 
         elif vid_life_status == 0:
-            self.dmgHack.enableButton.SetOn()
-            self.dmgHack.Resume()
+            DmgHacks.Resume()
 
         elif vid_life_status == 1:
-            self.dmgHack.enableButton.SetOn()
-            self.dmgHack.Resume()
+            DmgHacks.Resume()
+            
 
     def checkForMetinsAndOres(self):
         for vid in eXLib.InstancesList:
             if OpenLib.IsThisOre(vid):
                 self.ores_vid_list.append(vid)
-            elif OpenLib.IsThisMetin(vid):
+            elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
                 self.metins_vid_list.append(vid)
 
     def switch_state(self):

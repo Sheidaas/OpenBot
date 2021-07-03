@@ -161,12 +161,14 @@ def Pause():
 	"""
 	Pauses the damage hack.
 	"""
+	Dmg.enableButton.SetOff()
 	Dmg.pause = True
 
 def Resume():
 	"""
 	Resumes damage hack.
 	"""
+	Dmg.enableButton.SetOn()
 	Dmg.pause = False
 
 def switch_state():
