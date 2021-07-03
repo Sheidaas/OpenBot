@@ -4,6 +4,7 @@ import DmgHacks as Dmg
 from FileManager import boolean
 import UIComponents
 
+
 class SettingsDialog(ui.ScriptWindow):
 	TIME_DEAD = 5
 	TIME_POTS = 0.2
@@ -16,6 +17,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.bluePotions = True
 		self.redPotions = True
 		self.speedHack = True
+		self.antiExp = False
 		self.minMana = 95
 		self.minHealth = 80
 		self.speedMultiplier = 0.5
@@ -75,6 +77,14 @@ class SettingsDialog(ui.ScriptWindow):
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
 		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart Here', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
 		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 200, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
+		self.antiExpBtn = comp.OnOffButton(self.generalTab, '', '', 15, 50,
+											 OffUpVisual='OpenBot/Images/start_0.tga',
+											 OffOverVisual='OpenBot/Images/start_1.tga',
+											 OffDownVisual='OpenBot/Images/start_2.tga',
+											 OnUpVisual='OpenBot/Images/stop_0.tga',
+											 OnOverVisual='OpenBot/Images/stop_1.tga',
+											 OnDownVisual='OpenBot/Images/stop_2.tga',
+											 funcState=self.startAntiExp, defaultValue=False)
 
 		self.redPotButton,self.SlideRedPot,self.redPotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideRedMove, '', 'Use Red Potions', 28, 18,image="icon/item/27002.tga",funcState=self.OnRedOnOff,defaultValue=int(self.redPotions),defaultSlider=float(self.minHealth/100.0))
 		self.bluePotButton,self.SlideBluePot,self.bluePotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideBlueMove, '', 'Use Blue Potions', 28, 50,image="icon/item/27005.tga",funcState=self.OnBlueOnOff,defaultValue=int(self.bluePotions),defaultSlider=float(self.minMana/100.0))
@@ -339,11 +349,25 @@ class SettingsDialog(ui.ScriptWindow):
 		self.Board.Hide()
 		self.SaveSettings()
 
+	def startAntiExp(self, val):
+		self.antiExp = val
+
+	def antiExpFunc(self):
+		if self.antiExp:
+			status = OpenLib.getAllStatusOfMainActor()
+			exp = status['EXP']
+			if exp > 0:
+				if exp < 1000000:
+					net.SendGuildOfferPacket(exp)
+				else:
+					net.SendGuildOfferPacket(1000000)
 
 	def OnUpdate(self):
+		self.antiExp()
 		self.CheckUsePotions()
 		self.checkReviveAndLogin()
 		self.PickUp()
+
 
 	def switch_state(self):
 		if self.Board.IsShow():
