@@ -170,7 +170,8 @@ def IsThisBoss(vid):
 	return False
 
 def IsThisOre(vid):
-	if chr.GetInstanceType(vid) == 1:
+	chr.SelectInstance(vid)
+	if chr.GetRace() in ORES_IDS:
 		return True
 	return False
 
