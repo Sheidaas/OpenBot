@@ -256,3 +256,8 @@ class Radar(BotBase):
             self.Board.Hide()
         else:
             self.Board.Show()
+
+def switch_state():
+    radar.switch_state()
+
+radar = Radar()

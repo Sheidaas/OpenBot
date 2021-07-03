@@ -264,6 +264,7 @@ def StopMovement():
 
 
 def TeleportToPosition(dst_x,dst_y,max_packets=MAX_TELEPORT_PACKETS):
+    import time
     """
     Teleport to a position by using pathfinding and telporting in multiple small steps.
     max_packets allows to avoid spamming the server and crash by putting a limit on maximum number of packets sent. 
@@ -293,7 +294,7 @@ def TeleportToPosition(dst_x,dst_y,max_packets=MAX_TELEPORT_PACKETS):
         if counter >= max_packets:
             chr.SetPixelPosition(pos[0],pos[1])
             #chat.AppendChat(3,str(counter) + " packets sent.")
-            app.sleep(TELEPORT_WAIT_TIME)
+            time.sleep(TELEPORT_WAIT_TIME)
             return max_packets + TeleportToPosition(dst_x,dst_y,max_packets)
         curr_x,curr_y = (dest_last_x, dest_last_y)
         dest_last_x, dest_last_y = point
