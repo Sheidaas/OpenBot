@@ -27,7 +27,7 @@ class Radar(BotBase):
 
     def BuildWindow(self):
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(230, 290)
+        self.Board.SetSize(235, 255)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('Radar')
@@ -36,7 +36,7 @@ class Radar(BotBase):
 
         comp = Component()
 
-        self.TabWidget = TabWindow(10, 30, 220, 260, self.Board,
+        self.TabWidget = TabWindow(10, 30, 220, 220, self.Board,
                                                 ['Setings', 'Ores', 'Metins', 'Players'])
 
         self.settings_tab = self.TabWidget.GetTab(0)
@@ -68,10 +68,7 @@ class Radar(BotBase):
                                               '\t\t\t\t\t\tShow players',
                                               '', 80, 70, funcState=self.switch_player_button, defaultValue=self.showPlayers)
 
-        self.showGameMastersButton = comp.OnOffButton(self.settings_tab,
-                                              '\t\t\t\t\t\tShow game masters',
-                                              '', 80, 85, funcState=self.switch_game_masters_button,
-                                                 defaultValue=self.showGameMasters)
+        #self.showGameMastersButton = comp.OnOffButton(self.settings_tab,'\t\t\t\t\t\tShow game masters', '', 80, 85, funcState=self.switch_game_masters_button, defaultValue=self.showGameMasters)
 
 
         # Ores Tab

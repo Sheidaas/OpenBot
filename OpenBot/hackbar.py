@@ -1,8 +1,14 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
+<<<<<<< Updated upstream
 from OpenBot.Modules import FarmingBot
 from OpenBot.Modules import Radar
 from OpenBot.Modules.AntiExp import AntiExp
+=======
+from OpenBot.Modules.FarmingBot import FarmingBot
+from OpenBot.Modules.Skillbot import Skillbot
+from OpenBot.Modules.Radar import Radar
+>>>>>>> Stashed changes
 DEBUG = eXLib.IS_DEBUG
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
@@ -17,7 +23,13 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
 
+<<<<<<< Updated upstream
     antiExp = AntiExp()
+=======
+    farmingbot = FarmingBot()
+    skillbot = Skillbot()
+    radar = Radar()
+>>>>>>> Stashed changes
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
 
@@ -27,7 +39,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         if DEBUG:
             self.OpenBotBoard.SetSize(51, 560)
         else:
-            self.OpenBotBoard.SetSize(51, 440)
+            self.OpenBotBoard.SetSize(51, 380)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
@@ -60,9 +72,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
 
         self.SettingsButton = self.comp.Button(self.OpenBotBoard, '', 'Settings', 9, 10, self.Generel, 'OpenBot/Images/Hackbar/sett_0.tga', 'OpenBot/Images/Hackbar/sett_1.tga', 'OpenBot/Images/Hackbar/sett_2.tga')
         self.LevelbotButton = self.comp.Button(self.OpenBotBoard, '', 'Levelbot', 8, 43, self.OnLevelbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
-        self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 10, 320, self.OnFarmingBot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
-        self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 10, 360, self.OnRadar, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
-        self.AntiExpButton = self.comp.Button(self.OpenBotBoard, '', 'AntiExp', 10, 400, self.OnAntiExp, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
         #self.BuffbotButton = self.comp.Button(self.OpenBotBoard, '', 'Buffbot', 8, 78, self.BuffBot, 'OpenBot/Images/Hackbar/buff_0.tga', 'OpenBot/Images/Hackbar/buff_1.tga', 'OpenBot/Images/Hackbar/buff_0.tga')
         self.SpambotButton = self.comp.Button(self.OpenBotBoard, '', 'Spambot', 8, 253, self.Spambot, 'OpenBot/Images/Hackbar/spam_0.tga', 'OpenBot/Images/Hackbar/spam_1.tga', 'OpenBot/Images/Hackbar/spam_0.tga')
         if DEBUG:
@@ -73,6 +82,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.TeleButton = self.comp.Button(self.OpenBotBoard, '', 'Teleport', 10, 218, self.TeleportHack, 'OpenBot/Images/Hackbar/teleport_0.tga', 'OpenBot/Images/Hackbar/teleport_1.tga', 'OpenBot/Images/Hackbar/teleport_0.tga')
         self.InventoryButton = self.comp.Button(self.OpenBotBoard, '', 'Manager', 10, 183, self.InventoryManager, 'OpenBot/Images/Hackbar/inventory_0.tga', 'OpenBot/Images/Hackbar/inventory_1.tga', 'OpenBot/Images/Hackbar/inventory_0.tga')
         self.RunPythonButton = self.comp.Button(self.OpenBotBoard, '', 'Run-Python', 10, 288, self.RunPython, 'OpenBot/Images/Shortcuts/loadpy_0.tga', 'OpenBot/Images/Shortcuts/loadpy_1.tga', 'OpenBot/Images/Shortcuts/loadpy_0.tga')
+        self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 320, self.OnRadar, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 320, self.OnSkillbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        #self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 10, 320, self.OnFarmingBot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
 
 
         if DEBUG:
@@ -154,7 +166,15 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     def OnAntiExp(self):
         self.antiExp.switch_state()
     def OnFarmingBot(self):
+<<<<<<< Updated upstream
         FarmingBot.switch_state()
+=======
+        self.farmingbot.switch_state()
+
+    def OnSkillbot(self):
+        self.skillbot.switch_state()
+
+>>>>>>> Stashed changes
     def OnRadar(self):
         Radar.switch_state()
     def InventoryManager(self):
