@@ -1,14 +1,10 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
-<<<<<<< Updated upstream
 from OpenBot.Modules import FarmingBot
 from OpenBot.Modules import Radar
-from OpenBot.Modules.AntiExp import AntiExp
-=======
 from OpenBot.Modules.FarmingBot import FarmingBot
 from OpenBot.Modules.Skillbot import Skillbot
 from OpenBot.Modules.Radar import Radar
->>>>>>> Stashed changes
 DEBUG = eXLib.IS_DEBUG
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
@@ -23,13 +19,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
 
-<<<<<<< Updated upstream
-    antiExp = AntiExp()
-=======
     farmingbot = FarmingBot()
     skillbot = Skillbot()
     radar = Radar()
->>>>>>> Stashed changes
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
 
@@ -39,7 +31,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         if DEBUG:
             self.OpenBotBoard.SetSize(51, 560)
         else:
-            self.OpenBotBoard.SetSize(51, 380)
+            self.OpenBotBoard.SetSize(51, 460)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
@@ -83,8 +75,8 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.InventoryButton = self.comp.Button(self.OpenBotBoard, '', 'Manager', 10, 183, self.InventoryManager, 'OpenBot/Images/Hackbar/inventory_0.tga', 'OpenBot/Images/Hackbar/inventory_1.tga', 'OpenBot/Images/Hackbar/inventory_0.tga')
         self.RunPythonButton = self.comp.Button(self.OpenBotBoard, '', 'Run-Python', 10, 288, self.RunPython, 'OpenBot/Images/Shortcuts/loadpy_0.tga', 'OpenBot/Images/Shortcuts/loadpy_1.tga', 'OpenBot/Images/Shortcuts/loadpy_0.tga')
         self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 320, self.OnRadar, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
-        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 320, self.OnSkillbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
-        #self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 10, 320, self.OnFarmingBot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 360, self.OnSkillbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 10, 400, self.OnFarmingBot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
 
 
         if DEBUG:
@@ -163,20 +155,15 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         Shopcreator.switch_state()
     def TeleportHack(self):
         self.tele.switch_state()
-    def OnAntiExp(self):
-        self.antiExp.switch_state()
+
     def OnFarmingBot(self):
-<<<<<<< Updated upstream
-        FarmingBot.switch_state()
-=======
         self.farmingbot.switch_state()
 
     def OnSkillbot(self):
         self.skillbot.switch_state()
 
->>>>>>> Stashed changes
     def OnRadar(self):
-        Radar.switch_state()
+        self.radar.switch_state()
     def InventoryManager(self):
         Inventorymanager.switch_state()
     def FishingBot(self):

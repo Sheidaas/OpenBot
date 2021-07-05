@@ -77,7 +77,7 @@ class Radar(BotBase):
         # Metins Tab
         self.barMetins, self.fileListBoxMetins, self.ScrollBarMetins = comp.ListBoxEx2(self.metins_tab, 10, 30, 180, 100)
 
-        self.teleportToButtonMetin = comp.Button(self.metins_tab, 'Warp', '',10, 150, self.warpToSelectedFileLestBoxMetins,
+        self.teleportToButtonMetin = comp.Button(self.metins_tab, 'Warp', '',10, 150, self.warpToSelectedFileListBoxMetins,
                                             'd:/ymir work/ui/public/middle_button_01.sub',
                                             'd:/ymir work/ui/public/middle_button_02.sub',
                                             'd:/ymir work/ui/public/middle_button_03.sub')
@@ -111,7 +111,7 @@ class Radar(BotBase):
         for metin in self.metins:
             self.fileListBoxMetins.AppendItem(OpenLib.Item(metin['name']))
 
-    def warpToSelectedFileLestBoxMetins(self):
+    def warpToSelectedFileListBoxMetins(self):
         _item = self.fileListBoxMetins.GetSelectedItem()
         if _item is None:
             return

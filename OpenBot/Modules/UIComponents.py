@@ -21,8 +21,8 @@ ui.ComboBox.GetSelectedIndex = GetSelectedIndex
 ui.ComboBox.OnSelectItem = OnSelectItem
 
 
-#func is a callback that give responsabilty to the caller for changing the state
-#funcState is a callback that automatically changes the sate and pass it (the new state) as argument
+# func is a callback that give responsabilty to the caller for changing the state
+# funcState is a callback that automatically changes the sate and pass it (the new state) as argument
 class OnOffButton(ui.Button):
 	def __init__(self,OffUpVisual, OffOverVisual, OffDownVisual,OnUpVisual, OnOverVisual, OnDownVisual, image=None,tooltip=None,funcState=None,defaultValue=0):
 		defaultValue = bool(defaultValue)
