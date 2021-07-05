@@ -109,17 +109,17 @@ def ConvertPrice(price_str,item_num=1):
 
 
 	
-#def GetClass():
-#	race = net.GetMainActorRace()
-#	group = net.GetMainActorSkillGroup()
-#	if race == 0 or race == 4:
-#		return "Warrior" + "/" + str(group)
-#	elif race == 1 or race == 5:
-#		return "Assassin" + "/" + str(group)
-#	elif race == 2 or race == 6:
-#		return "Sura" + "/" + str(group)
-#	elif race == 3 or race == 7:
-#		return "Shaman" + "/" + str(group)
+def GetClass():
+	race = net.GetMainActorRace()
+	group = net.GetMainActorSkillGroup()
+	if race == 0 or race == 4:
+		return "Warrior", group
+	elif race == 1 or race == 5:
+		return "Assassin", group
+	elif race == 2 or race == 6:
+		return "Sura ", group
+	elif race == 3 or race == 7:
+		return "Shaman ", group
 		
 
 #Skip python select answers
