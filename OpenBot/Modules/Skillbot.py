@@ -1,4 +1,4 @@
-from UIComponents import Component
+import UIComponents
 from BotBase import BotBase
 import ui, chat, player
 import OpenLib, eXLib
@@ -63,7 +63,7 @@ class Skillbot(BotBase):
 
     def BuildWindow(self):
 
-        comp = Component()
+        comp = UIComponents.Component()
         self.Board = ui.BoardWithTitleBar()
         self.Board.SetSize(235, 255)
         self.Board.SetPosition(52, 40)
@@ -83,17 +83,18 @@ class Skillbot(BotBase):
 
         for skill in range(len(self.current_skill_set)):
             button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
-                                      '', 80, 40+(skill*30), defaultValue=False)
+                                      '', 80, 40+(skill*40), defaultValue=False)
             skill_name = 'skill'+str(self.current_skill_set[skill]['id'])
             self.skills_buttons_names.append(skill_name)
             setattr(self, skill_name, button)
             setattr(self, skill_name+'LastTime', 0)
 
-            last_time_button, slide, label = UIComponents.GetSliderButtonLabel(self.Board, self.SlideSpeedMove, '', 'Use Speed Boost', 28, 82,image="icon/item/27104.tga",funcState=self.OnSpeedHackOnOff,defaultValue=int(self.speedHack),defaultSlider=float(self.speedMultiplier/10))
-            setattr(self, skill_name+'LastTimeButton', last_time_button)
-            setattr(self, skill_name+'Slide', slide)
-            setattr(self, skill_name+'Label', label)
+            slot_bar, edit_line = comp.EditLine(self.Board, str(0), 80, 56+(skill*40), 40, 18, 25)
+            setattr(self, skill_name+'SlotBar', slot_bar)
+            setattr(self, skill_name+'EditLine', edit_line)
 
+            text = comp.TextLine(self.Board, 's. delay time', 130, 62+(skill*40), comp.RGB(255, 255, 255))
+            setattr(self, skill_name+'EditLineText', text)
 
     def _start(self, val):
         if val:
@@ -113,8 +114,31 @@ class Skillbot(BotBase):
             skill_button = getattr(self, skill_name)
             skill_dict = self.get_skill_dict_by_skill_name(skill_name)
             if skill_button.isOn:
-                if not player.IsSkillCoolTime(skill_dict['id']):
-                    eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                text = getattr(self, skill_name+'EditLine').GetText()
+                if not self.is_text_validate(text):
+                    self.enableButton.SetOff()
+                    self.Stop()
+                    return
+
+                # Getting skill[id]LastTime
+                skill_last_time = getattr(self, skill_name+'LastTime')
+                chat.AppendChat(3, str(skill_last_time) + ','+str(text))
+                val, skill_last_time = OpenLib.timeSleep(skill_last_time, int(text))
+                if val:
+                    setattr(self, skill_name+'LastTime', skill_last_time)
+                    if not player.IsSkillCoolTime(skill_dict['id']):
+                        eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+
+    def is_text_validate(self, text):
+        try:
+            int(text)
+        except ValueError:
+            chat.AppendChat(3, '[Skillbot] - The value must be a digit')
+            return False
+        if int(text) < 1:
+            chat.AppendChat(3, '[Skillbot] - The value must be in range 1 to infinity')
+            return False
+        return True
 
     def switch_state(self):
         if self.Board.IsShow():

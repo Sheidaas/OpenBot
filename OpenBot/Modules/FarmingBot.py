@@ -210,7 +210,6 @@ class FarmingBot(BotBase):
 
         elif vid_life_status == 1:
             DmgHacks.Resume()
-            
 
     def checkForMetinsAndOres(self):
         for vid in eXLib.InstancesList:

@@ -253,7 +253,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.bluePotions = bool(val)
 
 	def OnSpeedHackOnOff(self, val):
-		if val :
+		if val:
 			eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
 		else:
 			eXLib.SetMoveSpeedMultiplier(0.0)
@@ -265,11 +265,11 @@ class SettingsDialog(ui.ScriptWindow):
 
 	def SetTwoHand(self): 
 		chr.SetMotionMode(chr.MOTION_MODE_TWOHAND_SWORD)
-  
+
 	def OpenDmgMenu(self):
 		Dmg.switch_state()
 	
-	#General
+	# General
 	def CheckUsePotions(self):
 		val, self.timerPots = OpenLib.timeSleep(self.timerPots,self.TIME_POTS)
 		if val:
