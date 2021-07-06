@@ -4,41 +4,24 @@ import ui, chat, player
 import OpenLib, eXLib
 
 warriorBody = [
-    {'id': 1, 'name': '3-way cut', 'is_buff': False},
-    {'id': 2, 'name': 'Sword spin', 'is_buff': False},
-    {'id': 3, 'name': 'Dash', 'is_buff': False},
-    {'id': 4, 'name': 'Aura of the sword', 'is_buff': True},
-    {'id': 5, 'name': 'Berserk', 'is_buff': True}
+    {'id': 4, 'name': 'Aura of the sword'},
+    {'id': 5, 'name': 'Berserk'}
 ]
-warriorMental = {
-    16: 'Spirit strike',
-    17: 'Bash',
-    18: 'Stump',
-    19: 'Strong body',
-    20: 'Sword strike'
-}
-suraWP = {
-    61: 'Finger strike',
-    62: 'Dragon swirl',
-    63: 'Enchanted blade',
-    64: 'Fear',
-    65: 'Enchanted Armour'
-}
-suraBM = {
-    76: 'Dark strike',
-    77: 'Flame strike',
-    78: 'Flame spirit',
-    79: 'Dark protection',
-    80: 'Spirit Strike',
-    81: 'Dark orb'
-}
-ninjaDagger = {
-    31: 'Ambush',
-    32: 'Fast attack',
-    33: 'Rolling dagger',
-    34: 'Stealth',
-    35: 'Poisonous cloud'
-}
+warriorMental = [
+    {'id': 19, 'name': 'Strong body'},
+]
+suraWP = [
+    {'id': 63, 'name': 'Enchanted blade'},
+    {'id': 64, 'name': 'Fear'},
+    {'id': 65, 'name': 'Enchanted Armour'}
+]
+suraBM = [
+    {'id': 79, 'name': 'Dark protection'},
+    {'id': 81, 'name': 'Dark orb'}
+]
+ninjaDagger = [
+    {'id': 34, 'name': 'Stealth'},
+]
 ninjaArcher = {
     46: 'Repetitive shot',
     47: 'Arrow shower',
@@ -70,9 +53,13 @@ class Skillbot(BotBase):
         BotBase.__init__(self)
         raceName, groupSkill = OpenLib.GetClass()
         self.current_skill_set = {}
+        self.skills_buttons_names = []
         if groupSkill == 1:
             self.current_skill_set = warriorBody
         self.BuildWindow()
+
+    def render_many_buttons(self):
+        pass
 
     def BuildWindow(self):
 
@@ -94,32 +81,19 @@ class Skillbot(BotBase):
                                              OnDownVisual='OpenBot/Images/stop_2.tga',
                                              funcState=self._start, defaultValue=False)
 
-        if self.current_skill_set[0]['is_buff']:
-            self.skillOne = comp.OnOffButton(self.Board,
-                                             '\t\t\t\t\t\t' + self.current_skill_set[0]['name'],
-                                             '', 40, 40, defaultValue=False)
-        if self.current_skill_set[1]['is_buff']:
-            self.skillTwo = comp.OnOffButton(self.Board,
-                                             '\t\t\t\t\t\t' + self.current_skill_set[1]['name'],
-                                             '', 40, 60, defaultValue=False)
-        if self.current_skill_set[2]['is_buff']:
-            self.skillThree = comp.OnOffButton(self.Board,
-                                           '\t\t\t\t\t\t' + self.current_skill_set[2]['name'],
-                                           '', 40, 80, defaultValue=False)
-        if self.current_skill_set[3]['is_buff']:
-            self.skillFour = comp.OnOffButton(self.Board,
-                                              '\t\t\t\t\t\t' + self.current_skill_set[3]['name'],
-                                              '', 40, 100, defaultValue=False)
-        if self.current_skill_set[4]['is_buff']:
-            self.skillFive = comp.OnOffButton(self.Board,
-                                              '\t\t\t\t\t\t' + self.current_skill_set[4]['name'],
-                                              '', 40, 120, defaultValue=False)
+        for skill in range(len(self.current_skill_set)):
+            button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
+                                      '', 80, 40+(skill*30), defaultValue=False)
+            skill_name = 'skill'+str(self.current_skill_set[skill]['id'])
+            self.skills_buttons_names.append(skill_name)
+            setattr(self, skill_name, button)
+            setattr(self, skill_name+'LastTime', 0)
 
-        if len(self.current_skill_set) > 5:
-            if self.current_skill_set[5]['is_buff']:
-                self.skillSix = comp.OnOffButton(self.Board,
-                                                 '\t\t\t\t\t\t' + self.current_skill_set[5]['name'],
-                                                 '', 40, 140, defaultValue=False)
+            last_time_button, slide, label = UIComponents.GetSliderButtonLabel(self.Board, self.SlideSpeedMove, '', 'Use Speed Boost', 28, 82,image="icon/item/27104.tga",funcState=self.OnSpeedHackOnOff,defaultValue=int(self.speedHack),defaultSlider=float(self.speedMultiplier/10))
+            setattr(self, skill_name+'LastTimeButton', last_time_button)
+            setattr(self, skill_name+'Slide', slide)
+            setattr(self, skill_name+'Label', label)
+
 
     def _start(self, val):
         if val:
@@ -127,38 +101,20 @@ class Skillbot(BotBase):
         else:
             self.Stop()
 
+    def get_skill_dict_by_skill_name(self, skill_name):
+        id = int(skill_name.strip('skill'))
+        for skill in self.current_skill_set:
+            if skill['id'] == id:
+                return skill
+        return False
+
     def Frame(self):
-        if self.current_skill_set[0]['is_buff']:
-            if self.skillOne.isOn:
-                if not player.IsSkillCoolTime(self.current_skill_set[0]['id']):
-                    eXLib.SendUseSkillPacket(self.current_skill_set.keys[0]['id'], 0)
-
-        if self.current_skill_set[1]['is_buff']:
-            if self.skillTwo.isOn:
-                if not player.IsSkillCoolTime(self.current_skill_set[1]['id']):
-                    eXLib.SendUseSkillPacket(self.current_skill_set[1]['id'], 0)
-
-        if self.current_skill_set[2]['is_buff']:
-            if self.skillTree.isOn:
-                if not player.IsSkillCoolTime(self.current_skill_set[2]['id']):
-                    eXLib.SendUseSkillPacket(self.current_skill_set[2]['id'], 0)
-
-        if self.current_skill_set[3]['is_buff']:
-            if self.skillFour.isOn:
-                if not player.IsSkillCoolTime(self.current_skill_set[3]['id']):
-                    eXLib.SendUseSkillPacket(self.current_skill_set[3]['id'], 0)
-
-        if self.current_skill_set[4]['is_buff']:
-            if self.skillFive.isOn:
-                if not player.IsSkillCoolTime(self.current_skill_set[4]['id']):
-                    player.ClickSkillSlot(3)
-                    #eXLib.SendUseSkillPacket(self.current_skill_set[4]['id'], 0)
-
-        if len(self.current_skill_set) > 5:
-            if self.current_skill_set[5]['is_buff']:
-                if self.skillSix.isOn:
-                    if not player.IsSkillCoolTime(self.current_skill_set[5]['id']):
-                        eXLib.SendUseSkillPacket(self.current_skill_set[5]['id'], 0)
+        for skill_name in self.skills_buttons_names:
+            skill_button = getattr(self, skill_name)
+            skill_dict = self.get_skill_dict_by_skill_name(skill_name)
+            if skill_button.isOn:
+                if not player.IsSkillCoolTime(skill_dict['id']):
+                    eXLib.SendUseSkillPacket(skill_dict['id'], 0)
 
     def switch_state(self):
         if self.Board.IsShow():
