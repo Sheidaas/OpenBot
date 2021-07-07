@@ -16,12 +16,12 @@ class SettingsDialog(ui.ScriptWindow):
 		self.restartHere = False
 		self.bluePotions = True
 		self.redPotions = True
-		self.speedHack = True
+		self.speedHack = False
 		self.antiExpTimerSleep = 0
 		self.antiExp = False
 		self.minMana = 95
 		self.minHealth = 80
-		self.speedMultiplier = 0.5
+		self.speedMultiplier = 0.0
 
 		self.pickUp = False
 		self.pickUpRange = 290
@@ -128,7 +128,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.bluePotions = boolean(FileManager.ReadConfig("UseBluePots"))
 		self.redPotions = boolean(FileManager.ReadConfig("UseRedPots"))
 		self.speedHack = boolean(FileManager.ReadConfig("SpeedHack"))
-		self.speedMultiplier = int(FileManager.ReadConfig("SpeedHackMultiplier"))
+		self.speedMultiplier = float(FileManager.ReadConfig("SpeedHackMultiplier"))
 		self.minMana = int(FileManager.ReadConfig("MinMana"))
 		self.minHealth = int(FileManager.ReadConfig("MinHealth"))
 		self.pickUp = boolean(FileManager.ReadConfig("PickupUse"))
@@ -249,8 +249,8 @@ class SettingsDialog(ui.ScriptWindow):
 		self.bluePotLabel.SetText(str(self.minMana))
 
 	def SlideMovSpeedMove(self):
-		self.speedMultiplier = int(self.SlideSpeedHack.GetSliderPos()*10)
-		self.speedHackLabel.SetText(str(self.speedMultiplier))
+		self.speedMultiplier = float(self.SlideSpeedHack.GetSliderPos()*10)
+		self.speedHackLabel.SetText(str('{:,.2f}'.format(self.speedMultiplier)))
 		if self.speedHack:
 			eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
 
@@ -261,6 +261,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.bluePotions = bool(val)
 
 	def OnSpeedHackOnOff(self, val):
+		self.speedHack = val
 		if val:
 			eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
 		else:
@@ -295,8 +296,8 @@ class SettingsDialog(ui.ScriptWindow):
 		if vid == 0 or vid == net.GetMainActorVID() or eXLib.IsDead(vid):
 			return
 		typ = chr.GetInstanceType(vid)
-		if typ != OpenLib.MONSTER_TYPE and typ != OpenLib.METIN_TYPE:
-			return
+		#if typ != OpenLib.MONSTER_TYPE and typ != OpenLib.METIN_TYPE:
+			#return
 		
 		mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
 		is_remote = False
