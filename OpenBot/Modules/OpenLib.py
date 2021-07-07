@@ -135,22 +135,9 @@ def ConvertPrice(price_str,item_num=1):
 def GetClass():
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
-<<<<<<< Updated upstream
+
 	race = race % 4
-	
 	return (race+1)*group
-=======
-	chat.AppendChat(3, str(group))
-	if race == WARRIOR_MALE_ID or race == WARRIOR_FEMALE_ID:
-		return "Warrior", group
-	elif race == NINJA_MALE_ID or race == NINJA_FEMALE_ID:
-		return "Assassin", group
-	elif race == SURA_MALE_ID or race == SURA_FEMALE_IDA:
-		return "Sura ", group
-	elif race == SHAMAN_MALE_ID or race == SHAMAN_FEMALE_ID:
-		return "Shaman ", group
->>>>>>> Stashed changes
-		
 
 #Skip python select answers
 def skipAnswers(event_answers,hook=False):
