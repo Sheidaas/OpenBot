@@ -46,6 +46,19 @@ MOVING_TO_TARGET = 1
 ATTACKING_TARGET = 0
 TARGET_IS_DEAD = -1
 
+#SkillSet
+SKILL_SET_NONE = 0
+SKILL_SET_BODY_WARRIOR = 1
+SKILL_SET_MENTAL_WARRIOR = 2
+SKILL_SET_DAGGER_NINJA = 3
+SKILL_SET_ARCHER_NINJA = 4
+SKILL_SET_WEAPONS_SURA = 5
+SKILL_SET_MAGIC_SURA = 6
+SKILL_SET_DRAGON_SHAMAN = 7
+SKILL_SET_HEAL_SHAMAN = 8
+SKILL_SET_1_LYCAN = 9
+SKILL_SET_2_LYCAN = 10
+
 ORES_IDS = {
     20047:'diamond',
     20048:'amber',
@@ -113,14 +126,9 @@ def ConvertPrice(price_str,item_num=1):
 def GetClass():
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
-	if race == 0 or race == 4:
-		return "Warrior", group
-	elif race == 1 or race == 5:
-		return "Assassin", group
-	elif race == 2 or race == 6:
-		return "Sura ", group
-	elif race == 3 or race == 7:
-		return "Shaman ", group
+	race = race % 4
+	
+	return (race+1)*group
 		
 
 #Skip python select answers
