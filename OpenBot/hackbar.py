@@ -2,10 +2,9 @@ import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
 from OpenBot.Modules import FarmingBot
 from OpenBot.Modules import Radar
-from OpenBot.Modules.FarmingBot import FarmingBot
 from OpenBot.Modules.Skillbot import Skillbot
 from OpenBot.Modules.Radar import Radar
-DEBUG = eXLib.IS_DEBUG
+DEBUG = False
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
 
@@ -19,7 +18,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
 
-    farmingbot = FarmingBot()
     skillbot = Skillbot()
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
@@ -157,7 +155,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.tele.switch_state()
 
     def OnFarmingBot(self):
-        self.farmingbot.switch_state()
+        FarmingBot.switch_state()
 
     def OnSkillbot(self):
         self.skillbot.switch_state()
@@ -221,8 +219,12 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         elif direction == 4:
             trueX = x - 2400
             trueY = y
+        chr.SelectInstance(net.GetMainActorVID())
         chr.SetPixelPosition(int(trueX), int(trueY), int(z))
         eXLib.SendStatePacket(trueX,trueY,0,eXLib.CHAR_STATE_STOP,0)
+        eXLib.SendStatePacket(trueX+100,trueY+100,0,1,0)
+        eXLib.SendStatePacket(trueX-100,trueY-100,0,1,0)
+        eXLib.SendStatePacket(trueX,trueY,0,1,0)
         #player.SetSingleDIKKeyState(app.DIK_UP, TRUE)
         #player.SetSingleDIKKeyState(app.DIK_UP, FALSE)
 try:

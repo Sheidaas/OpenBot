@@ -15,7 +15,7 @@ FARMING_STATE = 3
 class FarmingBot(BotBase):
 
     def __init__(self):
-        BotBase.__init__(self, 0.5)
+        BotBase.__init__(self, 0.1)
         self.CURRENT_STATE = WALKING_STATE
         self.is_walking = True  # if False character is using teleport, otherwise character is walking
         self.current_point = 0  # Current position index
