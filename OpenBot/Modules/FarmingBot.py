@@ -21,7 +21,7 @@ class FarmingBot(BotBase):
         self.current_point = 0  # Current position index
         self.path = []  # Dict of tuples with coordinates [(0, 0), (2, 2)] etc
 
-        self.lastTime = 0
+        self.lastTimeMine = 0
 
         self.farm_metins = True
         self.metins_vid_list = []
@@ -51,7 +51,7 @@ class FarmingBot(BotBase):
                                           'd:/ymir work/ui/public/small_Button_01.sub',
                                           'd:/ymir work/ui/public/small_Button_02.sub',
                                           'd:/ymir work/ui/public/small_Button_03.sub')
-        self.deletePointButton = comp.Button(self.moving_tab, 'Delete', '', 10, 170, self.remove_selected,
+        self.deletePointButton = comp.Button(self.moving_tab, 'Delete', '', 10, 175, self.remove_selected,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
@@ -119,7 +119,7 @@ class FarmingBot(BotBase):
     def select_metin(self):
         if(len(self.metins_vid_list) > 0):
             self.selectedMetin = self.metins_vid_list.pop()
-            chat.AppendChat(3,str(self.selectedMetin))
+
     def select_ore(self):
         if(len(self.ores_vid_list) > 0):
             self.selectedOre = self.ores_vid_list.pop()
@@ -170,30 +170,37 @@ class FarmingBot(BotBase):
                 self.select_metin()
                 self.CURRENT_STATE = FARMING_STATE
             
-            elif self.farm_ores and len(self.metins_vid_list)>0:
+            elif self.farm_ores and len(self.ores_vid_list)>0:
                 self.select_ore()
                 self.CURRENT_STATE = MINING_STATE
             else:
                 self.go_to_next_position()
                 
             return
+
         elif self.CURRENT_STATE == MINING_STATE:
-            pass
+            self.mineOre()
+
+            return
+
         elif self.CURRENT_STATE == FARMING_STATE:
             self.farmMetin()
 
+            return
+
     def mineOre(self):
-        self.is_mining = True
 
         # Checking there is any reason to stop mining
         if not self.is_char_ready_to_mine():
-            self.Stop()
+            chat.AppendChat(3, 'Stop')
             return
-        OpenLib.RotateMainCharacterByVid(self.current_mining_ore)
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 12)
+
+
+
+        val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 12)
         if val:
-            self.lastTime = OpenLib.GetTime()
-            net.SendOnClickPacket(self.current_mining_ore)
+            chat.AppendChat(3, 'SendOnClickPacket')
+            net.SendOnClickPacket(self.selectedOre)
 
     def farmMetin(self):
 
@@ -225,7 +232,7 @@ class FarmingBot(BotBase):
             self.Board.Show()
 
     def is_char_ready_to_mine(self):
-        if OpenLib.isPlayerCloseToInstance(self.current_mining_ore):
+        if not OpenLib.isPlayerCloseToInstance(self.current_mining_ore):
             return False
         return True
 

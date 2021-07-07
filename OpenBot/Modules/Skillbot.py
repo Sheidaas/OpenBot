@@ -127,7 +127,13 @@ class Skillbot(BotBase):
                 if val:
                     setattr(self, skill_name+'LastTime', skill_last_time)
                     if not player.IsSkillCoolTime(skill_dict['id']):
-                        eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                        if not player.IsMountingHorse():
+                            eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                        else:
+                            chat.AppendChat(3, '/dismout')
+                            eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                            chat.AppendChat(3, '/mount')
+
 
     def is_text_validate(self, text):
         try:
