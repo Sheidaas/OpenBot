@@ -19,6 +19,15 @@ BOSS_TYPE = -1
 BOSS_IDS = dict()
 #SEARCH_ITEMS_MAX_PRICE = dict()
 
+WARRIOR_MALE_ID = 1
+WARRIOR_FEMALE_ID = 4
+SURA_MALE_ID = 2
+SURA_FEMALE_ID = 6
+NINJA_MALE_ID = 1
+NINJA_FEMALE_ID = 5
+SHAMAN_MALE_ID = 3
+SHAMAN_FEMALE_ID = 7
+
 MAX_INVENTORY_SIZE = 90
 
 #Max telport sitance before resync by server
@@ -133,6 +142,7 @@ def GetClass():
 	"""
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
+
 	race = race % 4
 	if(group!= 0):
 		return (2*race)+group

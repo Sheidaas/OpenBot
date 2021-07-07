@@ -14,12 +14,12 @@ class Radar(BotBase):
         self.showOre = True
         self.showMetins = True
         self.showPlayers = True
-        self.showGameMasters = True
+        self.showBoss = True
 
         self.metins = []
         self.ores = []
         self.players = []
-        self.game_masters = []
+        self.boss = []
 
         self.lastTime = 0
         self.lastTimeClearedList = 0
@@ -27,7 +27,7 @@ class Radar(BotBase):
 
     def BuildWindow(self):
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(235, 255)
+        self.Board.SetSize(290, 255)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('Radar')
@@ -36,13 +36,14 @@ class Radar(BotBase):
 
         comp = Component()
 
-        self.TabWidget = TabWindow(10, 30, 220, 220, self.Board,
-                                                ['Setings', 'Ores', 'Metins', 'Players'])
+        self.TabWidget = TabWindow(10, 30, 275, 220, self.Board,
+                                                ['Setings', 'Ores', 'Metins', 'Players', 'Boss'])
 
         self.settings_tab = self.TabWidget.GetTab(0)
         self.ores_tab = self.TabWidget.GetTab(1)
         self.metins_tab = self.TabWidget.GetTab(2)
         self.players_tab = self.TabWidget.GetTab(3)
+        self.boss_tab = self.TabWidget.GetTab(4)
 
 
         # Settings Tab
@@ -68,28 +69,37 @@ class Radar(BotBase):
                                               '\t\t\t\t\t\tShow players',
                                               '', 80, 70, funcState=self.switch_player_button, defaultValue=self.showPlayers)
 
-        #self.showGameMastersButton = comp.OnOffButton(self.settings_tab,'\t\t\t\t\t\tShow game masters', '', 80, 85, funcState=self.switch_game_masters_button, defaultValue=self.showGameMasters)
+        self.showBossButton = comp.OnOffButton(self.settings_tab,
+                                               '\t\t\t\t\t\tShow game masters', '', 80, 85,
+                                               funcState=self.switch_boss_button,
+                                               defaultValue=self.showBoss)
 
 
+        x_size = 235
+        y_size = 100
         # Ores Tab
-        self.barOres, self.fileListBoxOres, self.ScrollBarOres = comp.ListBoxEx2(self.ores_tab, 10, 30, 180, 100)
-
+        self.barOres, self.fileListBoxOres, self.ScrollBarOres = comp.ListBoxEx2(self.ores_tab, 10, 30, x_size, y_size)
         # Metins Tab
-        self.barMetins, self.fileListBoxMetins, self.ScrollBarMetins = comp.ListBoxEx2(self.metins_tab, 10, 30, 180, 100)
-
-        self.teleportToButtonMetin = comp.Button(self.metins_tab, 'Warp', '',10, 150, self.warpToSelectedFileListBoxMetins,
+        self.barMetins, self.fileListBoxMetins, self.ScrollBarMetins = comp.ListBoxEx2(self.metins_tab, 10, 30, x_size, y_size)
+        self.teleportToButtonMetin = comp.Button(self.metins_tab, 'Warp', '', 10, 150, self.warpToSelectedFileListBoxMetins,
                                             'd:/ymir work/ui/public/middle_button_01.sub',
                                             'd:/ymir work/ui/public/middle_button_02.sub',
                                             'd:/ymir work/ui/public/middle_button_03.sub')
-        self.barPlayers, self.fileListBoxPlayers, self.ScrollBarPlayers = comp.ListBoxEx2(self.players_tab, 10, 30, 180, 100)
-
-        self.teleportToButtonPlayer = comp.Button(self.players_tab, 'Warp', '',10, 150, self.warpToSelectedFileLestBoxPlayers,
+        # Players Tab
+        self.barPlayers, self.fileListBoxPlayers, self.ScrollBarPlayers = comp.ListBoxEx2(self.players_tab, 10, 30, x_size, y_size)
+        self.teleportToButtonPlayer = comp.Button(self.players_tab, 'Warp', '', 10, 150, self.warpToSelectedFileListBoxPlayers,
                                             'd:/ymir work/ui/public/middle_button_01.sub',
                                             'd:/ymir work/ui/public/middle_button_02.sub',
                                             'd:/ymir work/ui/public/middle_button_03.sub')
-        self.barOres, self.fileListBoxOres, self.ScrollBarOres = comp.ListBoxEx2(self.ores_tab, 10, 30, 180, 100)
-
-        self.teleportToButtonOres = comp.Button(self.ores_tab, 'Warp', '',10, 150, self.warpToSelectedFileLestBoxOres,
+        # Ores Tab
+        self.barOres, self.fileListBoxOres, self.ScrollBarOres = comp.ListBoxEx2(self.ores_tab, 10, 30, x_size, y_size)
+        self.teleportToButtonOres = comp.Button(self.ores_tab, 'Warp', '', 10, 150, self.warpToSelectedFileListBoxOres,
+                                            'd:/ymir work/ui/public/middle_button_01.sub',
+                                            'd:/ymir work/ui/public/middle_button_02.sub',
+                                            'd:/ymir work/ui/public/middle_button_03.sub')
+        # Boss Tab
+        self.barBoss, self.fileListBoxBoss, self.ScrollBarBoss = comp.ListBoxEx2(self.boss_tab, 10, 30, x_size, y_size)
+        self.teleportToButtonBoss = comp.Button(self.boss_tab, 'Warp', '', 10, 150, self.warpToSelectedFileListBoxBoss,
                                             'd:/ymir work/ui/public/middle_button_01.sub',
                                             'd:/ymir work/ui/public/middle_button_02.sub',
                                             'd:/ymir work/ui/public/middle_button_03.sub')
@@ -137,7 +147,7 @@ class Radar(BotBase):
         for player in self.players:
             self.fileListBoxPlayers.AppendItem(OpenLib.Item(player['name']))
 
-    def warpToSelectedFileLestBoxPlayers(self):
+    def warpToSelectedFileListBoxPlayers(self):
         _item = self.fileListBoxPlayers.GetSelectedItem()
         if _item is None:
             return
@@ -163,7 +173,33 @@ class Radar(BotBase):
         for ore in self.ores:
             self.fileListBoxOres.AppendItem(OpenLib.Item(ore['name']))
 
-    def warpToSelectedFileLestBoxOres(self):
+    def warpToSelectedFileListBoxOres(self):
+        _item = self.fileListBoxBoss.GetSelectedItem()
+        if _item is None:
+            return
+        boss_name = _item.GetText()
+        for boss in self.boss:
+            if boss['name'] == boss_name:
+                Movement.TeleportToPosition(boss['x'], boss['y'])
+
+    def addToFileListBoxBoss(self, vid):
+        x, y, z = chr.GetPixelPosition(vid)
+        name = chr.GetNameByVID(vid)
+        boss = {
+            'vid': vid,
+            'x': x,
+            'y': y,
+            'name': name
+        }
+        self.boss.append(boss)
+        self.uptadeFileListBoxBoss()
+
+    def uptadeFileListBoxBoss(self):
+        self.fileListBoxBoss.RemoveAllItems()
+        for boss in self.boss:
+            self.fileListBoxBoss.AppendItem(OpenLib.Item(boss['name']))
+
+    def warpToSelectedFileListBoxBoss(self):
         _item = self.fileListBoxOres.GetSelectedItem()
         if _item is None:
             return
@@ -181,8 +217,8 @@ class Radar(BotBase):
     def switch_player_button(self, val):
         self.showPlayers = val
 
-    def switch_game_masters_button(self, val):
-        self.showGameMasters = val
+    def switch_boss_button(self, val):
+        self.showBoss = val
 
     def _start(self, val):
         if val:
@@ -211,11 +247,14 @@ class Radar(BotBase):
     def AddNewOre(self, vid):
         self.addToFileListBoxOres(vid)
 
-    def IsThisOreNew(self, vid):
-        for ore in self.ores:
-            if ore['vid'] == vid:
+    def IsThisBossNew(self, vid):
+        for boss in self.boss:
+            if boss['vid'] == vid:
                 return False
         return True
+
+    def AddNewBoss(self, vid):
+        self.addToFileListBoxBoss(vid)
 
     def Frame(self):
         MAIN_CHAR_VID = m2netm2g.GetMainActorVID()
@@ -239,6 +278,10 @@ class Radar(BotBase):
                     if OpenLib.IsThisPlayer(vid):
                         if self.IsThisPlayerNew(vid):
                             self.AddNewPlayer(vid)
+                if self.showBoss:
+                    if OpenLib.IsThisBoss(vid):
+                        if self.IsThisBossNew(vid):
+                            self.AddNewBoss(vid)
 
     def clear_lists(self):
         self.fileListBoxOres.RemoveAllItems()

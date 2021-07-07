@@ -22,40 +22,49 @@ suraBM = [
 ninjaDagger = [
     {'id': 34, 'name': 'Stealth'},
 ]
-ninjaArcher = {
-    46: 'Repetitive shot',
-    47: 'Arrow shower',
-    48: 'Fire arrow',
-    49: 'Feather walk',
-    50: 'Poison arrow'
-}
-shamanDragon = {
-    106: 'Flying Talisman',
-    107: 'Shooting Dragon',
-    108: 'Dragon Roar',
-    109: 'Blessing',
-    110: 'Reflect',
-    111: 'Dragons Strength'
-}
-shamanHeal = {
-    91: 'Lightning claw',
-    92: 'Summon lightning',
-    93: 'Lightning throw',
-    94: 'Cure',
-    95: 'Swiftness',
-    96: 'Attack up',
-}
+ninjaArcher = [
+    {'id':49, 'name': 'Feather walk'},
+]
+shamanDragon = [
+    {'id': 109, 'name': 'Blessing'},
+    {'id': 110, 'name': 'Reflect'},
+    {'id': 111, 'name': 'Dragons Strength'}
+]
+shamanHeal = [
+    {'id': 94, 'name': 'Cure'},
+    {'id': 95, 'name': 'Swiftness'},
+    {'id': 96, 'name': 'Attack up'},
+]
+lycan_1, lycan_2 = [], []
 
 
 class Skillbot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self)
-        raceName, groupSkill = OpenLib.GetClass()
+        groupSkill = OpenLib.GetClass()
         self.current_skill_set = {}
         self.skills_buttons_names = []
-        if groupSkill == 1:
+        if groupSkill == OpenLib.SKILL_SET_BODY_WARRIOR:
             self.current_skill_set = warriorBody
+        elif groupSkill == OpenLib.SKILL_SET_MENTAL_WARRIOR:
+            self.current_skill_set = warriorMental
+        elif groupSkill == OpenLib.SKILL_SET_ARCHER_NINJA:
+            self.current_skill_set = ninjaArcher
+        elif groupSkill == OpenLib.SKILL_SET_DAGGER_NINJA:
+            self.current_skill_set = ninjaDagger
+        elif groupSkill == OpenLib.SKILL_SET_WEAPONS_SURA:
+            self.current_skill_set = suraWP
+        elif groupSkill == OpenLib.SKILL_SET_MAGIC_SURA:
+            self.current_skill_set = suraBM
+        elif groupSkill == OpenLib.SKILL_SET_DRAGON_SHAMAN:
+            self.current_skill_set = shamanDragon
+        elif groupSkill == OpenLib.SKILL_SET_HEAL_SHAMAN:
+            self.current_skill_set = shamanHeal
+        elif groupSkill == OpenLib.SKILL_SET_1_LYCAN:
+            self.current_skill_set = lycan_1
+        elif groupSkill == OpenLib.SKILL_SET_2_LYCAN:
+            self.current_skill_set = lycan_2
         self.BuildWindow()
 
     def render_many_buttons(self):
@@ -127,7 +136,11 @@ class Skillbot(BotBase):
                 if val:
                     setattr(self, skill_name+'LastTime', skill_last_time)
                     if not player.IsSkillCoolTime(skill_dict['id']):
-                        eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                        if not player.IsMountingHorse():
+                            eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+                        else:
+                            eXLib.SendUseSkillPacket(skill_dict['id'], 0)
+
 
     def is_text_validate(self, text):
         try:
