@@ -127,8 +127,10 @@ def GetClass():
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
 	race = race % 4
+	if(group!= 0):
+		return (2*race)+group
 	
-	return (race+1)*group
+	return 0
 		
 
 #Skip python select answers
