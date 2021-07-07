@@ -22,19 +22,19 @@ suraBM = [
 ninjaDagger = [
     {'id': 34, 'name': 'Stealth'},
 ]
-ninjaArcher = {
+ninjaArcher = [
     {'id':49, 'name': 'Feather walk'},
-}
-shamanDragon = {
+]
+shamanDragon = [
     {'id': 109, 'name': 'Blessing'},
     {'id': 110, 'name': 'Reflect'},
     {'id': 111, 'name': 'Dragons Strength'}
-}
-shamanHeal = {
+]
+shamanHeal = [
     {'id': 94, 'name': 'Cure'},
     {'id': 95, 'name': 'Swiftness'},
     {'id': 96, 'name': 'Attack up'},
-}
+]
 lycan_1, lycan_2 = [], []
 
 
