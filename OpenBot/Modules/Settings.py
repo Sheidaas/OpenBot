@@ -285,7 +285,7 @@ class SettingsDialog(ui.ScriptWindow):
 		Dmg.switch_state()
 	
 	def UseOnClickDamage(self):
-		if not self.useOnClickDmg:
+		if not self.useOnClickDmg or OpenLib.GetClass() != OpenLib.SKILL_SET_DAGGER_NINJA:
 			return
 		val, self.timerDmg = OpenLib.timeSleep(self.timerDmg,self.onClickDmgSpeed)
 		if not val:

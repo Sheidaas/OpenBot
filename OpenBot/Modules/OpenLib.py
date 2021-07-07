@@ -124,6 +124,13 @@ def ConvertPrice(price_str,item_num=1):
 
 	
 def GetClass():
+	"""
+	Returns the a distinct number associated with the skillgroup
+	The possible values are on the beginning of this file under skillset
+
+	Returns:
+		[(int,int)]: Returns a distinct number ofr each skill group or SKILL_SET_NONE if player has no skillset. 
+	"""
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
 	race = race % 4

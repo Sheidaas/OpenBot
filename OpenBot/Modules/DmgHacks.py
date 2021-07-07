@@ -27,7 +27,7 @@ class DmgHacks(ui.Window):
 		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga' )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
 		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\tCloud exploit', '', 170, 50)
-		
+
 		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 92, self.comp.RGB(255, 255, 255))
 		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 126, self.comp.RGB(255, 255, 255))
 		self.MonsterLabel = self.comp.TextLine(self.Board, 'Monsters', 13, 160, self.comp.RGB(255, 255, 255))
@@ -169,7 +169,7 @@ class DmgHacks(ui.Window):
 				if eXLib.IsPositionBlocked(mob_x,mob_y):
 					lst.remove(vid)
 					continue
-				if self.cloudBtn.isOn == True:
+				if self.cloudBtn.isOn == True and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				#Checking the distance between teleports might increase the range and make it more stable
 				elif isArch:
