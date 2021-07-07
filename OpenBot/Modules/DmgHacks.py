@@ -26,6 +26,8 @@ class DmgHacks(ui.Window):
 
 		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga' )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
+		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\tCloud exploit', '', 170, 50)
+		
 		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 92, self.comp.RGB(255, 255, 255))
 		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 126, self.comp.RGB(255, 255, 255))
 		self.MonsterLabel = self.comp.TextLine(self.Board, 'Monsters', 13, 160, self.comp.RGB(255, 255, 255))
@@ -115,6 +117,27 @@ class DmgHacks(ui.Window):
 			lst.remove(enemy)
 			vid_hits+=1
 		return vid_hits
+
+	
+	def AttackCloud(self,lst,x,y):
+		#chat.AppendChat(3,"Attacking with arch")
+		Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
+		self.lastPos = (x,y)
+		#eXLib.SendStatePacket(x,y,0,eXLib.CHAR_STATE_STOP,0)
+		vid_hits = 0
+		for vid in lst:
+			mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
+			if OpenLib.dist(x,y,mob_x,mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
+				if not player.IsSkillCoolTime(5):
+					#chat.AppendChat(3,"Skill Time, X:" + str(mob_x) + " Y:" + str(mob_y) + " VID: " +str(vid) + " Dist: " + str(OpenLib.dist(x,y,mob_x,mob_y)))
+					eXLib.SendUseSkillPacketBySlot(5,vid)
+				x,y,z = chr.GetPixelPosition(vid)
+				eXLib.SendAddFlyTarget(vid,x,y)
+				eXLib.SendShoot(35)
+				lst.remove(vid)
+				vid_hits+=1
+
+		return vid_hits
     
 				
 	def OnUpdate(self):
@@ -146,12 +169,15 @@ class DmgHacks(ui.Window):
 				if eXLib.IsPositionBlocked(mob_x,mob_y):
 					lst.remove(vid)
 					continue
+				if self.cloudBtn.isOn == True:
+					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				#Checking the distance between teleports might increase the range and make it more stable
-				if isArch:
+				elif isArch:
 					hit_counter+=self.AttackArch(lst,mob_x, mob_y)
 				else:
 					hit_counter+=self.TeleportAttack(lst,mob_x, mob_y)
 				i+=1
+
 			Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
 	def Close(self):
 		self.Board.Hide()

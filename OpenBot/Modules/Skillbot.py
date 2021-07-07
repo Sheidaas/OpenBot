@@ -5,7 +5,7 @@ import OpenLib, eXLib
 
 warriorBody = [
     {'id': 4, 'name': 'Aura of the sword'},
-    {'id': 5, 'name': 'Berserk'}
+    {'id': 3, 'name': 'Berserk'}
 ]
 warriorMental = [
     {'id': 19, 'name': 'Strong body'},

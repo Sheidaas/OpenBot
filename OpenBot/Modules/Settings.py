@@ -30,6 +30,10 @@ class SettingsDialog(ui.ScriptWindow):
 		self.excludeInFilter = True
 		self.useRangePickup = False
 
+		self.useOnClickDmg = False
+		self.onClickDmgSpeed = 0.0
+		self.timerDmg = OpenLib.GetTime()
+
 		self.wallHack = False
 
 		self.sellItems = set()
@@ -73,16 +77,17 @@ class SettingsDialog(ui.ScriptWindow):
 		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  'OpenBot/Images/General/dmg_0.tga', 'OpenBot/Images/General/dmg_1.tga', 'OpenBot/Images/General/dmg_0.tga')
   		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, 'OpenBot/Images/General/onehand_0.tga', 'OpenBot/Images/General/onehand_1.tga', 'OpenBot/Images/General/onehand_0.tga')
 		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, 'OpenBot/Images/General/twohand_0.tga', 'OpenBot/Images/General/twohand_1.tga', 'OpenBot/Images/General/twohand_0.tga')
+		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Damage hack on selected target', 28, 18,image="icon/item/27101.tga",funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
 
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
 		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart Here', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
 		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 200, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
 		self.antiExpBtn =self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAntiExp', '', 20, 180,funcState=self.startAntiExp,defaultValue=int(self.antiExp))
-
+		
 		self.redPotButton,self.SlideRedPot,self.redPotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideRedMove, '', 'Use Red Potions', 28, 18,image="icon/item/27002.tga",funcState=self.OnRedOnOff,defaultValue=int(self.redPotions),defaultSlider=float(self.minHealth/100.0))
 		self.bluePotButton,self.SlideBluePot,self.bluePotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideBlueMove, '', 'Use Blue Potions', 28, 50,image="icon/item/27005.tga",funcState=self.OnBlueOnOff,defaultValue=int(self.bluePotions),defaultSlider=float(self.minMana/100.0))
-		self.speedHackButton,self.SlideSpeedHack,self.speedHackLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideSpeedMove, '', 'Use Speed Boost', 28, 82,image="icon/item/27104.tga",funcState=self.OnSpeedHackOnOff,defaultValue=int(self.speedHack),defaultSlider=float(self.speedMultiplier/10))
+		self.speedHackButton,self.SlideSpeedHack,self.speedHackLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideMovSpeedMove, '', 'Use Speed Boost', 28, 82,image="icon/item/27104.tga",funcState=self.OnSpeedHackOnOff,defaultValue=int(self.speedHack),defaultSlider=float(self.speedMultiplier/10))
 		
 		
 		##PICKUP
@@ -113,7 +118,8 @@ class SettingsDialog(ui.ScriptWindow):
 		self.pickupRangeSlide()
 		self.SlideRedMove()
 		self.SlideBlueMove()
-		self.SlideSpeedMove()
+		self.SlideMovSpeedMove()
+		self.OnDmgSpeedMove()
 
 	def LoadSettings(self):
 		#OpenLog.DebugPrint("Loading Settings")
@@ -131,6 +137,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.excludeInFilter = boolean(FileManager.ReadConfig("FilterMode"))
 		self.useRangePickup = boolean(FileManager.ReadConfig("UseRangePickup"))
 		self.wallHack = boolean(FileManager.ReadConfig("WallHack"))
+		self.onClickDmgSpeed  = boolean(FileManager.ReadConfig("OnClickDamageSpeed"))
 		for i in FileManager.LoadListFile(FileManager.CONFIG_PICKUP_FILTER):
 			self.addPickFilterItem(int(i))
 		self.sellItems = {int(i) for i in FileManager.LoadListFile(FileManager.CONFIG_SELL_INVENTORY)}
@@ -151,6 +158,7 @@ class SettingsDialog(ui.ScriptWindow):
 		FileManager.WriteConfig("FilterMode", str(self.excludeInFilter))
 		FileManager.WriteConfig("UseRangePickup", str(self.useRangePickup))
 		FileManager.WriteConfig("WallHack", str(self.wallHack))
+		FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
 		#chat.AppendChat(3,str(self.pickUp))
 		FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
 		FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
@@ -240,7 +248,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.minMana = int(self.SlideBluePot.GetSliderPos()*100)
 		self.bluePotLabel.SetText(str(self.minMana))
 
-	def SlideSpeedMove(self):
+	def SlideMovSpeedMove(self):
 		self.speedMultiplier = int(self.SlideSpeedHack.GetSliderPos()*10)
 		self.speedHackLabel.SetText(str(self.speedMultiplier))
 		if self.speedHack:
@@ -257,6 +265,13 @@ class SettingsDialog(ui.ScriptWindow):
 			eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
 		else:
 			eXLib.SetMoveSpeedMultiplier(0.0)
+
+	def OnDmgOnOff(self,val):
+		self.useOnClickDmg = val
+
+	def OnDmgSpeedMove(self):
+		self.onClickDmgSpeed = float(self.dmgSlider.GetSliderPos())
+		self.dmgLabel.SetText(str(self.onClickDmgSpeed*1000))
 			
 		
 	#Attack
@@ -269,6 +284,34 @@ class SettingsDialog(ui.ScriptWindow):
 	def OpenDmgMenu(self):
 		Dmg.switch_state()
 	
+	def UseOnClickDamage(self):
+		if not self.useOnClickDmg:
+			return
+		val, self.timerDmg = OpenLib.timeSleep(self.timerDmg,self.onClickDmgSpeed)
+		if not val:
+			return
+		vid = player.GetTargetVID()
+		x,y,z = player.GetMainCharacterPosition()
+		if vid == 0 or vid == net.GetMainActorVID() or eXLib.IsDead(vid):
+			return
+		typ = chr.GetInstanceType(vid)
+		if typ != OpenLib.MONSTER_TYPE and typ != OpenLib.METIN_TYPE:
+			return
+		
+		mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
+		is_remote = False
+		if OpenLib.dist(x,y,mob_x,mob_y) > OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
+			is_remote = True
+			Movement.TeleportStraightLine(x,y,mob_x,mob_y)
+		if not player.IsSkillCoolTime(5):
+			eXLib.SendUseSkillPacketBySlot(5,vid)
+		eXLib.SendAddFlyTarget(vid,mob_x,mob_y)
+		eXLib.SendShoot(35)
+
+		if is_remote:
+			Movement.TeleportStraightLine(mob_x,mob_y,x,y)
+
+
 	# General
 	def CheckUsePotions(self):
 		val, self.timerPots = OpenLib.timeSleep(self.timerPots,self.TIME_POTS)
@@ -363,6 +406,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.checkReviveAndLogin()
 		self.PickUp()
 		self.antiExpFunc()
+		self.UseOnClickDamage()
 
 
 	def switch_state(self):

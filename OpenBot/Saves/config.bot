@@ -199,4 +199,5 @@ UseRangePickup=True
 LevelAllowLocation=False
 AutoLogin=False
 SpeedHack=False
-SpeedHackMultiplier=3
+SpeedHackMultiplier=0
+OnClickDamageSpeed=0.0
