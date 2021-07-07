@@ -19,6 +19,15 @@ BOSS_TYPE = -1
 BOSS_IDS = dict()
 #SEARCH_ITEMS_MAX_PRICE = dict()
 
+WARRIOR_MALE_ID = 1
+WARRIOR_FEMALE_ID = 4
+SURA_MALE_ID = 2
+SURA_FEMALE_ID = 6
+NINJA_MALE_ID = 1
+NINJA_FEMALE_ID = 5
+SHAMAN_MALE_ID = 3
+SHAMAN_FEMALE_ID = 7
+
 MAX_INVENTORY_SIZE = 90
 
 #Max telport sitance before resync by server
@@ -126,9 +135,21 @@ def ConvertPrice(price_str,item_num=1):
 def GetClass():
 	race = net.GetMainActorRace()
 	group = net.GetMainActorSkillGroup()
+<<<<<<< Updated upstream
 	race = race % 4
 	
 	return (race+1)*group
+=======
+	chat.AppendChat(3, str(group))
+	if race == WARRIOR_MALE_ID or race == WARRIOR_FEMALE_ID:
+		return "Warrior", group
+	elif race == NINJA_MALE_ID or race == NINJA_FEMALE_ID:
+		return "Assassin", group
+	elif race == SURA_MALE_ID or race == SURA_FEMALE_IDA:
+		return "Sura ", group
+	elif race == SHAMAN_MALE_ID or race == SHAMAN_FEMALE_ID:
+		return "Shaman ", group
+>>>>>>> Stashed changes
 		
 
 #Skip python select answers
