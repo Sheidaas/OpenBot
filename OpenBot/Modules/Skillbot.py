@@ -42,7 +42,7 @@ class Skillbot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self)
-        raceName, groupSkill = OpenLib.GetClass()
+        groupSkill = OpenLib.GetClass()
         self.current_skill_set = {}
         self.skills_buttons_names = []
         if groupSkill == OpenLib.SKILL_SET_BODY_WARRIOR:
