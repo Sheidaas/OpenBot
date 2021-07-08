@@ -29,7 +29,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         if DEBUG:
             self.OpenBotBoard.SetSize(51, 560)
         else:
-            self.OpenBotBoard.SetSize(51, 450)
+            self.OpenBotBoard.SetSize(51, 460)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
@@ -72,9 +72,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.TeleButton = self.comp.Button(self.OpenBotBoard, '', 'Teleport', 10, 218, self.TeleportHack, 'OpenBot/Images/Hackbar/teleport_0.tga', 'OpenBot/Images/Hackbar/teleport_1.tga', 'OpenBot/Images/Hackbar/teleport_0.tga')
         self.InventoryButton = self.comp.Button(self.OpenBotBoard, '', 'Manager', 10, 183, self.InventoryManager, 'OpenBot/Images/Hackbar/inventory_0.tga', 'OpenBot/Images/Hackbar/inventory_1.tga', 'OpenBot/Images/Hackbar/inventory_0.tga')
         self.RunPythonButton = self.comp.Button(self.OpenBotBoard, '', 'Run-Python', 10, 288, self.RunPython, 'OpenBot/Images/Shortcuts/loadpy_0.tga', 'OpenBot/Images/Shortcuts/loadpy_1.tga', 'OpenBot/Images/Shortcuts/loadpy_0.tga')
-        self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 323, self.OnRadar, 'OpenBot/Images/Hackbar/radar_0.tga', 'OpenBot/Images/Hackbar/radar_1.tga', 'OpenBot/Images/Hackbar/radar_0.tga')
-        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 358, self.OnSkillbot, 'OpenBot/Images/Hackbar/skill_0.tga', 'OpenBot/Images/Hackbar/skill_1.tga', 'OpenBot/Images/Hackbar/skill_0.tga')
-        self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
+        self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 320, self.OnRadar, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 360, self.OnSkillbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
+        self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 10, 400, self.OnFarmingBot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
 
 
         if DEBUG:

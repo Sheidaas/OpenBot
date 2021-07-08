@@ -198,6 +198,6 @@ WallHack=True
 UseRangePickup=True
 LevelAllowLocation=False
 AutoLogin=False
-SpeedHack=True
+SpeedHack=False
 SpeedHackMultiplier=2.70491814613
 OnClickDamageSpeed=0.0
