@@ -24,7 +24,7 @@ class DmgHacks(ui.Window):
 		self.Board.Hide()
 		self.comp = UIComponents.Component()
 
-		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga' )
+		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState=self.OnOffBtnState )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
 		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\tCloud exploit', '', 170, 50)
 
@@ -74,6 +74,9 @@ class DmgHacks(ui.Window):
 	def Speed_func(self):
 		self.speed= float(self.SpeedSlider.GetSliderPos())
 		self.speedNum.SetText(str(int(self.speed*1000)) + ' ms')
+
+	def OnOffBtnState(self,val):
+		self.pause = val
 	
 	
 	def OpenWindow(self):
