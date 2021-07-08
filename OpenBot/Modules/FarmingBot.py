@@ -104,7 +104,7 @@ class FarmingBot(BotBase):
             else:
                 if ore_id in self.ores_to_mine:
                     self.ores_to_mine.remove(ore_id)
-            chat.AppendChat(3, str(self.ores_to_mine))
+            #chat.AppendChat(3, str(self.ores_to_mine))
 
         return function
 
@@ -257,7 +257,7 @@ class FarmingBot(BotBase):
                     self.ores_vid_list.append(vid)
             elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
                 self.metins_vid_list.append(vid)
-        chat.AppendChat(3, str(self.ores_vid_list))
+            # chat.AppendChat(3, str(self.ores_vid_list))
 
     def switch_state(self):
         if self.Board.IsShow():
