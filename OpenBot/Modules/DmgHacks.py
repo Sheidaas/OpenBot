@@ -7,7 +7,6 @@ ATTACK_MAX_DIST_NO_TELEPORT = 290
 class DmgHacks(ui.Window):
 	def __init__(self):
 		ui.Window.__init__(self)
-		self.pause = False
 		self.BuildWindow()
 
 	def __del__(self):
@@ -76,7 +75,7 @@ class DmgHacks(ui.Window):
 		self.speedNum.SetText(str(int(self.speed*1000)) + ' ms')
 
 	def OnOffBtnState(self,val):
-		self.pause = val
+		pass
 	
 	
 	def OpenWindow(self):
@@ -145,7 +144,7 @@ class DmgHacks(ui.Window):
 				
 	def OnUpdate(self):
 		val, self.lastTime = OpenLib.timeSleep(self.lastTime,self.speed)
-		if(val and self.enableButton.isOn and not self.pause):
+		if(val and self.enableButton.isOn):
 			if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
 				return
 			isArch = self.IsWeaponArch()
@@ -191,14 +190,12 @@ def Pause():
 	Pauses the damage hack.
 	"""
 	Dmg.enableButton.SetOff()
-	Dmg.pause = True
 
 def Resume():
 	"""
 	Resumes damage hack.
 	"""
 	Dmg.enableButton.SetOn()
-	Dmg.pause = False
 
 def switch_state():
 	"""

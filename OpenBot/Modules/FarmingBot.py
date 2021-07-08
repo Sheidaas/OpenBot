@@ -162,12 +162,15 @@ class FarmingBot(BotBase):
     def _start(self, val):
         if not val:
             self.Stop()
+            DmgHacks.Pause()
         else:
             self.Start()
+            
 
     def StartBot(self):
         if len(self.path) < 2:
             self.Stop()
+            DmgHacks.Pause()
             return
 
     def StopBot(self):
@@ -257,7 +260,6 @@ class FarmingBot(BotBase):
                     self.ores_vid_list.append(vid)
             elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
                 self.metins_vid_list.append(vid)
-        chat.AppendChat(3, str(self.ores_vid_list))
 
     def switch_state(self):
         if self.Board.IsShow():
