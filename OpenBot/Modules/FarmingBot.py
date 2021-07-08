@@ -28,6 +28,7 @@ class FarmingBot(BotBase):
         self.selectedMetin = 0
         self.farm_ores = False
         self.ores_vid_list = []
+        self.ores_to_mine = []
         self.selectedOre = 0
 
 
@@ -46,6 +47,7 @@ class FarmingBot(BotBase):
         self.minings_tab = self.TabWidget.GetTab(1)
         self.metins_tab = self.TabWidget.GetTab(2)
 
+        # Moving tab
         self.barItems, self.fileListBox, self.ScrollBar = comp.ListBoxEx2(self.moving_tab, 10, 30, 180, 100)
         self.addPointButton = comp.Button(self.moving_tab, 'Add', '', 10, 150, self.add_point,
                                           'd:/ymir work/ui/public/small_Button_01.sub',
@@ -76,6 +78,35 @@ class FarmingBot(BotBase):
                                               '\t\t\t\t\t\tMetins?',
                                               '', 125, 190, funcState=self.switch_farming_metin,
                                                  defaultValue=self.farm_metins)
+
+        # Ores tab
+        index_y = 0
+        index_x = 0
+        for ore in OpenLib.ORES_IDS:
+            setattr(self, 'is_mine_' + str(ore), False)
+            button = comp.OnOffButton(self.minings_tab,
+                             '\t\t\t\t\t\t' + OpenLib.ORES_IDS[ore],
+                             '', 10+(index_x*60), 30+(index_y*40), funcState=self.create_switch_function('is_mine_' + str(ore), ore),
+                             defaultValue=getattr(self, 'is_mine_' + str(ore)))
+            setattr(self, str(ore)+'Button', button)
+
+            index_y += 1
+            if index_y % 4 == 0:
+                index_y = 0
+                index_x += 1
+
+    def create_switch_function(self, arg_name, ore_id):
+
+        def function(val):
+            setattr(self, arg_name, val)
+            if val:
+                self.ores_to_mine.append(ore_id)
+            else:
+                if ore_id in self.ores_to_mine:
+                    self.ores_to_mine.remove(ore_id)
+            chat.AppendChat(3, str(self.ores_to_mine))
+
+        return function
 
     def switch_walking(self, val):
         self.is_walking = val
@@ -161,17 +192,17 @@ class FarmingBot(BotBase):
         self.Move(x, y, callback)
 
     def Frame(self):
+        self.ores_vid_list = []
+        self.metins_vid_list = []
+        self.checkForMetinsAndOres()
         if self.CURRENT_STATE == WALKING_STATE:
-            self.ores_vid_list = []
-            self.metins_vid_list = []
-            self.checkForMetinsAndOres()
-
             if self.farm_metins and len(self.metins_vid_list)>0:
                 self.select_metin()
                 self.CURRENT_STATE = FARMING_STATE
             
             elif self.farm_ores and len(self.ores_vid_list)>0:
                 self.select_ore()
+                self.MoveToVid(self.selectedOre)
                 self.CURRENT_STATE = MINING_STATE
             else:
                 self.go_to_next_position()
@@ -197,7 +228,7 @@ class FarmingBot(BotBase):
 
 
 
-        val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 12)
+        val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 30)
         if val:
             chat.AppendChat(3, 'SendOnClickPacket')
             net.SendOnClickPacket(self.selectedOre)
@@ -206,24 +237,27 @@ class FarmingBot(BotBase):
 
         vid_life_status = OpenLib.AttackTarget(self.selectedMetin)
 
-        if vid_life_status == -1:
+        if vid_life_status == OpenLib.TARGET_IS_DEAD:
             player.SetAttackKeyState(False)
             DmgHacks.Pause()
             self.selectedMetin = 0
             self.CURRENT_STATE = WALKING_STATE
 
-        elif vid_life_status == 0:
+        elif vid_life_status == OpenLib.ATTACKING_TARGET:
             DmgHacks.Resume()
 
-        elif vid_life_status == 1:
+        elif vid_life_status == OpenLib.MOVING_TO_TARGET:
             DmgHacks.Resume()
 
     def checkForMetinsAndOres(self):
         for vid in eXLib.InstancesList:
             if OpenLib.IsThisOre(vid):
-                self.ores_vid_list.append(vid)
+                chr.SelectInstance(vid)
+                if chr.GetRace() in self.ores_to_mine:
+                    self.ores_vid_list.append(vid)
             elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
                 self.metins_vid_list.append(vid)
+        chat.AppendChat(3, str(self.ores_vid_list))
 
     def switch_state(self):
         if self.Board.IsShow():
@@ -232,7 +266,10 @@ class FarmingBot(BotBase):
             self.Board.Show()
 
     def is_char_ready_to_mine(self):
-        if not OpenLib.isPlayerCloseToInstance(self.current_mining_ore):
+        if self.selectedOre not in eXLib.InstancesList:
+            self.selectedOre = 0
+            self.CURRENT_STATE = WALKING_STATE
+        if not OpenLib.isPlayerCloseToInstance(self.selectedOre):
             return False
         return True
 

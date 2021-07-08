@@ -5,7 +5,8 @@ import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileMan
 from datetime import datetime
 #import pack
 
-CONFIG_BOSSES_ID = eXLib.PATH + 'OpenBot/Saves/boss_ids.txt'
+# Player VID
+PLAYER_VID = net.GetMainActorVID()
 
 #Range of player attack
 ATTACK_RANGE = 270
@@ -17,6 +18,7 @@ PLAYER_TYPE = 6
 BOSS_TYPE = -1
 
 BOSS_IDS = dict()
+ORES_IDS = dict()
 #SEARCH_ITEMS_MAX_PRICE = dict()
 
 WARRIOR_MALE_ID = 1
@@ -67,37 +69,6 @@ SKILL_SET_DRAGON_SHAMAN = 7
 SKILL_SET_HEAL_SHAMAN = 8
 SKILL_SET_1_LYCAN = 9
 SKILL_SET_2_LYCAN = 10
-
-ORES_IDS = {
-    20047:'diamond',
-    20048:'amber',
-    20049:'fossil_wood',
-    20050:'cooper',
-    20051:'silver',
-    20052:'gold',
-    20054:'ebony',
-    20055:'shell',
-    20056:'white_gold',
-    20057:'crystal',
-    20058:'quartz',
-    20059:'heavens_tear'
-}
-
-def isBoss(vnum):
-	"""
-	Check if instance is boss.
-
-	Args:
-		vnum ([int]): Virtual number of the instance.
-
-	Returns:
-		[bool]: Returns True if is boss and False otherwise.
-	"""
-	if chr.GetVirtualNumber(vnum) in BOSS_IDS:
-		return True
-	else:
-		return False
-		
 
 def Revive():
 	"""
@@ -193,13 +164,23 @@ def IsThisMetin(vid):
 	return False
 
 def IsThisBoss(vid):
-	if chr.GetInstanceType(vid) == BOSS_TYPE:
+	"""
+	Check if instance is boss.
+
+	Args:
+		vnum ([int]): Virtual number of the instance.
+
+	Returns:
+		[bool]: Returns True if is boss and False otherwise.
+	"""
+	chr.SelectInstance(vid)
+	if chr.GetRace() in BOSS_IDS.keys():
 		return True
 	return False
 
 def IsThisOre(vid):
 	chr.SelectInstance(vid)
-	if chr.GetRace() in ORES_IDS:
+	if chr.GetRace() in ORES_IDS.keys():
 		return True
 	return False
 
@@ -428,16 +409,15 @@ def isPlayerCloseToInstance(vid_target):
 	Returns:
 		[type]: [description]
 	"""
-	my_vid = net.GetMainActorVID()
-	target_x,target_y,zz = chr.GetPixelPosition(vid_target) 
-	for vid in eXLib.InstancesList:
-		if not chr.HasInstance(vid):
-			continue
-		if chr.GetInstanceType(vid) == PLAYER_TYPE and vid != my_vid:
-			curr_x,curr_y,z = chr.GetPixelPosition(vid)
-			distance = dist(target_x,target_y,curr_x,curr_y)
-			if(distance < 300):
-				return True
+	if vid_target not in eXLib.InstancesList:
+		return False
+
+	player_x, player_y, player_z = chr.GetPixelPosition(PLAYER_VID)
+	target_x, target_y, target_z = chr.GetPixelPosition(vid_target)
+	distance = dist(target_x, target_y, player_x, player_y)
+
+	if distance < 300:
+		return True
 	
 	return False
 		
@@ -717,8 +697,6 @@ class EterPackOperator(object):
 
 		
 #LoadDictFile(CONFIG_PSHOP_AUTO_BUY,SEARCH_ITEMS_MAX_PRICE,float)
-
-
-
-FileManager.LoadDictFile(CONFIG_BOSSES_ID,BOSS_IDS,int)
+FileManager.LoadDictFile(FileManager.CONFIG_BOSSES_ID, BOSS_IDS, int)
+FileManager.LoadDictFile(FileManager.CONFIG_ORES_ID, ORES_IDS, int)
 import Movement

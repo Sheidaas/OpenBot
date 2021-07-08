@@ -1,0 +1,12 @@
+Diamond=20047
+Amber=20048
+Fossil Wood=20049
+Cooper=20050
+Silver=20051
+Gold=20052
+Ebony=20054
+Shell=20055
+White gold=20056
+Crystal=20057
+Quartz=20058
+Heavens Tear=20059
