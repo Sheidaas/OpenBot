@@ -272,7 +272,7 @@ class SettingsDialog(ui.ScriptWindow):
 
 	def OnDmgSpeedMove(self):
 		self.onClickDmgSpeed = float(self.dmgSlider.GetSliderPos())
-		self.dmgLabel.SetText(str(self.onClickDmgSpeed*1000))
+		self.dmgLabel.SetText(str(int(self.onClickDmgSpeed*1000)))
 			
 		
 	#Attack
