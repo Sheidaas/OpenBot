@@ -63,14 +63,14 @@ class Radar(BotBase):
 
         self.showMetinsButton = comp.OnOffButton(self.settings_tab,
                                               '\t\t\t\t\t\tShow metins',
-                                              '', 80, 55,  funcState=self.switch_metins_button,
+                                              '', 80, 60,  funcState=self.switch_metins_button,
                                               defaultValue=self.showMetins)
         self.showPlayersButton = comp.OnOffButton(self.settings_tab,
                                               '\t\t\t\t\t\tShow players',
-                                              '', 80, 70, funcState=self.switch_player_button, defaultValue=self.showPlayers)
+                                              '', 80, 80, funcState=self.switch_player_button, defaultValue=self.showPlayers)
 
         self.showBossButton = comp.OnOffButton(self.settings_tab,
-                                               '\t\t\t\t\t\tShow game masters', '', 80, 85,
+                                               '\t\t\t\t\t\tShow boss', '', 80, 100,
                                                funcState=self.switch_boss_button,
                                                defaultValue=self.showBoss)
 
@@ -174,13 +174,13 @@ class Radar(BotBase):
             self.fileListBoxOres.AppendItem(OpenLib.Item(ore['name']))
 
     def warpToSelectedFileListBoxOres(self):
-        _item = self.fileListBoxBoss.GetSelectedItem()
+        _item = self.fileListBoxOres.GetSelectedItem()
         if _item is None:
             return
-        boss_name = _item.GetText()
-        for boss in self.boss:
-            if boss['name'] == boss_name:
-                Movement.TeleportToPosition(boss['x'], boss['y'])
+        ores_name = _item.GetText()
+        for ore in self.ores:
+            if ore['name'] == ores_name:
+                Movement.TeleportToPosition(ore['x'], ore['y'])
 
     def addToFileListBoxBoss(self, vid):
         x, y, z = chr.GetPixelPosition(vid)
@@ -200,13 +200,13 @@ class Radar(BotBase):
             self.fileListBoxBoss.AppendItem(OpenLib.Item(boss['name']))
 
     def warpToSelectedFileListBoxBoss(self):
-        _item = self.fileListBoxOres.GetSelectedItem()
+        _item = self.fileListBoxBoss.GetSelectedItem()
         if _item is None:
             return
-        ore_name = _item.GetText()
-        for ore in self.ores:
-            if ore['name'] == ore_name:
-                Movement.TeleportToPosition(ore['x'], ore['y'])
+        boss_name = _item.GetText()
+        for boss in self.boss:
+            if boss['name'] == boss_name:
+                Movement.TeleportToPosition(boss['x'], boss['y'])
 
     def switch_ore_button(self, val):
         self.showOre = val
@@ -241,6 +241,12 @@ class Radar(BotBase):
     def IsThisPlayerNew(self, vid):
         for player in self.players:
             if player['vid'] == vid:
+                return False
+        return True
+
+    def IsThisOreNew(self, vid):
+        for ore in self.ores:
+            if ore['vid'] == vid:
                 return False
         return True
 
@@ -290,6 +296,8 @@ class Radar(BotBase):
         self.metins = []
         self.fileListBoxPlayers.RemoveAllItems()
         self.players = []
+        self.fileListBoxBoss.RemoveAllItems()
+        self.boss = []
 
     def switch_state(self):
         if self.Board.IsShow():
