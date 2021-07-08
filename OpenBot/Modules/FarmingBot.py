@@ -238,16 +238,16 @@ class FarmingBot(BotBase):
 
         vid_life_status = OpenLib.AttackTarget(self.selectedMetin)
 
-        if vid_life_status == OpenLib.T:
+        if vid_life_status == OpenLib.TARGET_IS_DEAD:
             player.SetAttackKeyState(False)
             DmgHacks.Pause()
             self.selectedMetin = 0
             self.CURRENT_STATE = WALKING_STATE
 
-        elif vid_life_status == 0:
+        elif vid_life_status == OpenLib.ATTACKING_TARGET:
             DmgHacks.Resume()
 
-        elif vid_life_status == 1:
+        elif vid_life_status == OpenLib.MOVING_TO_TARGET:
             DmgHacks.Resume()
 
     def checkForMetinsAndOres(self):

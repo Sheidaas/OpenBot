@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="484c173f-d001-4eaa-ac9a-034f31d9e634" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/OpenBot/Saves/ores_ids.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenBot/Modules/FarmingBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/FarmingBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenBot/Modules/FileManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/FileManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenBot/Modules/OpenLib.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/OpenLib.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenBot/Modules/Radar.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/Radar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenBot/Saves/config.bot" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Saves/config.bot" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
