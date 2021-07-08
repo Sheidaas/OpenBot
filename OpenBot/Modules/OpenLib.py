@@ -5,9 +5,6 @@ import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileMan
 from datetime import datetime
 #import pack
 
-# Player VID
-PLAYER_VID = net.GetMainActorVID()
-
 #Range of player attack
 ATTACK_RANGE = 270
 

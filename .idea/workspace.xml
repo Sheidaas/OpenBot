@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="484c173f-d001-4eaa-ac9a-034f31d9e634" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="703d55f2-768f-41bc-99e8-92c51a5f24d9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenBot/Modules/FarmingBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/FarmingBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenBot/Modules/OpenLib.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Modules/OpenLib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenBot/Saves/config.bot" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Saves/config.bot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenBot/Saves/pickup_filter.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OpenBot/Saves/pickup_filter.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,18 +16,8 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
-  <component name="ProjectId" id="1v1VAfjILpF1LTW7ColcnDkQSgx" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="1v33EepQU3EpRjkMR2k4TFFmp12" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -34,6 +26,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -42,27 +35,16 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="484c173f-d001-4eaa-ac9a-034f31d9e634" name="Default Changelist" comment="" />
-      <created>1625729467126</created>
+      <changelist id="703d55f2-768f-41bc-99e8-92c51a5f24d9" name="Default Changelist" comment="" />
+      <created>1625776839839</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1625729467126</updated>
-      <workItem from="1625729487676" duration="10728000" />
+      <updated>1625776839839</updated>
+      <workItem from="1625776845003" duration="711000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>

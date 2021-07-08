@@ -104,7 +104,7 @@ class FarmingBot(BotBase):
             else:
                 if ore_id in self.ores_to_mine:
                     self.ores_to_mine.remove(ore_id)
-            #chat.AppendChat(3, str(self.ores_to_mine))
+            chat.AppendChat(3, str(self.ores_to_mine))
 
         return function
 
