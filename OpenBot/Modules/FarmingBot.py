@@ -192,11 +192,10 @@ class FarmingBot(BotBase):
         self.Move(x, y, callback)
 
     def Frame(self):
+        self.ores_vid_list = []
+        self.metins_vid_list = []
+        self.checkForMetinsAndOres()
         if self.CURRENT_STATE == WALKING_STATE:
-            self.ores_vid_list = []
-            self.metins_vid_list = []
-            self.checkForMetinsAndOres()
-
             if self.farm_metins and len(self.metins_vid_list)>0:
                 self.select_metin()
                 self.CURRENT_STATE = FARMING_STATE
