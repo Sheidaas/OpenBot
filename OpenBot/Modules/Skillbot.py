@@ -94,15 +94,11 @@ class Skillbot(BotBase):
             button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
                                       '', 100, 58+(skill*60), defaultValue=False)
 
-
-
-
-
             self.skills_buttons_names.append(skill_name)
             setattr(self, skill_name, button)
             setattr(self, skill_name+'LastTime', 10)
 
-            slot_bar, edit_line = comp.EditLine(self.Board, str(0), 80, 72+(skill*60), 40, 18, 25)
+            slot_bar, edit_line = comp.EditLine(self.Board, str(5), 80, 72+(skill*60), 40, 18, 25)
             setattr(self, skill_name+'SlotBar', slot_bar)
             setattr(self, skill_name+'EditLine', edit_line)
 
@@ -142,9 +138,7 @@ class Skillbot(BotBase):
                         if not player.IsMountingHorse():
                             eXLib.SendUseSkillPacket(skill_dict['id'], 0)
                         else:
-                            player.ClickSkillSlot(9)
                             eXLib.SendUseSkillPacket(skill_dict['id'], 0)
-                            player.ClickSkillSlot(9)
 
     def is_text_validate(self, text):
         try:

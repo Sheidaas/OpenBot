@@ -31,9 +31,9 @@ SHAMAN_FEMALE_ID = 7
 
 MAX_INVENTORY_SIZE = 90
 
-#Max telport sitance before resync by server
+# Max teleport distance before resync by server
 MAX_TELEPORT_DIST = 2400
-ATTACK_MAX_DIST_NO_TELEPORT =290
+ATTACK_MAX_DIST_NO_TELEPORT = 290
 
 MIN_RACE_SHOP = 30000
 MAX_RACE_SHOP = 30008

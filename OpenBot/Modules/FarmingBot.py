@@ -1,7 +1,7 @@
 from BotBase import BotBase
 import DmgHacks
 import Movement
-import OpenLib
+import OpenLib, FileManager
 import UIComponents
 import player, ui, chat, chr, net
 import eXLib
@@ -43,10 +43,11 @@ class FarmingBot(BotBase):
 
         comp = UIComponents.Component()
         self.TabWidget = UIComponents.TabWindow(10, 30, 220, 260, self.Board,
-                                                ['Moving', 'Mining', 'Metins'])
+                                                ['Moving', 'Mining', 'Metins', 'Settings'])
         self.moving_tab = self.TabWidget.GetTab(0)
         self.minings_tab = self.TabWidget.GetTab(1)
         self.metins_tab = self.TabWidget.GetTab(2)
+        self.settings_tab = self.TabWidget.GetTab(3)
 
         # Moving tab
         self.barItems, self.fileListBox, self.ScrollBar = comp.ListBoxEx2(self.moving_tab, 10, 30, 180, 100)
@@ -58,6 +59,11 @@ class FarmingBot(BotBase):
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
+        self.deleteAllPointsButton = comp.Button(self.moving_tab, 'Clear', '', 10, 200, self.remove_all,
+                                             'd:/ymir work/ui/public/small_Button_01.sub',
+                                             'd:/ymir work/ui/public/small_Button_02.sub',
+                                             'd:/ymir work/ui/public/small_Button_03.sub')
+
         self.enableButton = comp.OnOffButton(self.moving_tab, '', '', 70, 150,
                                              OffUpVisual='OpenBot/Images/start_0.tga',
                                              OffOverVisual='OpenBot/Images/start_1.tga',
@@ -95,6 +101,37 @@ class FarmingBot(BotBase):
             if index_y % 4 == 0:
                 index_y = 0
                 index_x += 1
+
+        # Settings tab
+        self.settingsLoadButton =   comp.Button(self.settings_tab, 'Load', '', 40, 40, self.load_path,
+                                             'd:/ymir work/ui/public/small_Button_01.sub',
+                                             'd:/ymir work/ui/public/small_Button_02.sub',
+                                             'd:/ymir work/ui/public/small_Button_03.sub')
+        self.settingsSaveButton =   comp.Button(self.settings_tab, 'Save', '', 40, 65, self.save_path,
+                                             'd:/ymir work/ui/public/small_Button_01.sub',
+                                             'd:/ymir work/ui/public/small_Button_02.sub',
+                                             'd:/ymir work/ui/public/small_Button_03.sub')
+        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 80, 40, 60, 30, 25)
+
+
+    def load_path(self):
+        path = FileManager.FARMBOT_WAYPOINTS_LISTS + self.edit_line.GetText()
+        waypoints = FileManager.LoadListFile(path)
+        self.path = []
+        for point in waypoints:
+            points = point.split(',')
+            x = points[0][1:-1]
+            y = points[1][1:-1]
+            self.path.append((float(x), float(y)))
+        self.update_points_list()
+
+    def save_path(self):
+        path = FileManager.FARMBOT_WAYPOINTS_LISTS + self.edit_line.GetText()
+        FileManager.SaveListFile(path, self.path)
+
+    def remove_all(self):
+        self.fileListBox.RemoveAllItems()
+        self.path = []
 
     def create_switch_function(self, arg_name, ore_id):
 
@@ -158,6 +195,7 @@ class FarmingBot(BotBase):
 
     def onWaypointReach(self):
         self.next_point()
+        self.lastTimeWaitingState = OpenLib.GetTime()
         self.CURRENT_STATE = WAITING_STATE
 
     def _start(self, val):
@@ -203,7 +241,6 @@ class FarmingBot(BotBase):
             val, self.lastTimeWaitingState = OpenLib.timeSleep(self.lastTimeWaitingState, 4)
             if val:
                 self.lastTimeWaitingState = 0
-                chat.AppendChat(3, 'Going to walking state')
                 self.CURRENT_STATE = WALKING_STATE
 
         if self.CURRENT_STATE == WALKING_STATE:
@@ -250,6 +287,7 @@ class FarmingBot(BotBase):
             player.SetAttackKeyState(False)
             DmgHacks.Pause()
             self.selectedMetin = 0
+            self.lastTimeWaitingState = OpenLib.GetTime()
             self.CURRENT_STATE = WAITING_STATE
 
         elif vid_life_status == OpenLib.ATTACKING_TARGET:
