@@ -9,10 +9,12 @@ from datetime import datetime
 ATTACK_RANGE = 270
 
 #Types
+NONE_TYPE = -99
 METIN_TYPE = 2
 MONSTER_TYPE = 0
 PLAYER_TYPE = 6
 BOSS_TYPE = -1
+ORE_TYPE = -2
 
 BOSS_IDS = dict()
 ORES_IDS = dict()

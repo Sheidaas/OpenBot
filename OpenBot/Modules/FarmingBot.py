@@ -7,6 +7,7 @@ import player, ui, chat, chr, net
 import eXLib
 
 # STATES
+WAITING_STATE = 0
 WALKING_STATE = 1
 MINING_STATE = 2
 FARMING_STATE = 3
@@ -22,7 +23,7 @@ class FarmingBot(BotBase):
         self.path = []  # Dict of tuples with coordinates [(0, 0), (2, 2)] etc
 
         self.lastTimeMine = 0
-
+        self.lastTimeWaitingState = 0
         self.farm_metins = True
         self.metins_vid_list = []
         self.selectedMetin = 0
@@ -157,7 +158,7 @@ class FarmingBot(BotBase):
 
     def onWaypointReach(self):
         self.next_point()
-        self.CURRENT_STATE = WALKING_STATE
+        self.CURRENT_STATE = WAITING_STATE
 
     def _start(self, val):
         if not val:
@@ -198,12 +199,19 @@ class FarmingBot(BotBase):
         self.ores_vid_list = []
         self.metins_vid_list = []
         self.checkForMetinsAndOres()
+        if self.CURRENT_STATE == WAITING_STATE:
+            val, self.lastTimeWaitingState = OpenLib.timeSleep(self.lastTimeWaitingState, 4)
+            if val:
+                self.lastTimeWaitingState = 0
+                chat.AppendChat(3, 'Going to walking state')
+                self.CURRENT_STATE = WALKING_STATE
+
         if self.CURRENT_STATE == WALKING_STATE:
-            if self.farm_metins and len(self.metins_vid_list)>0:
+            if self.farm_metins and len(self.metins_vid_list) > 0:
                 self.select_metin()
                 self.CURRENT_STATE = FARMING_STATE
             
-            elif self.farm_ores and len(self.ores_vid_list)>0:
+            elif self.farm_ores and len(self.ores_vid_list) > 0:
                 self.select_ore()
                 self.MoveToVid(self.selectedOre)
                 self.CURRENT_STATE = MINING_STATE
@@ -229,8 +237,6 @@ class FarmingBot(BotBase):
             chat.AppendChat(3, 'Stop')
             return
 
-
-
         val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 30)
         if val:
             chat.AppendChat(3, 'SendOnClickPacket')
@@ -244,7 +250,7 @@ class FarmingBot(BotBase):
             player.SetAttackKeyState(False)
             DmgHacks.Pause()
             self.selectedMetin = 0
-            self.CURRENT_STATE = WALKING_STATE
+            self.CURRENT_STATE = WAITING_STATE
 
         elif vid_life_status == OpenLib.ATTACKING_TARGET:
             DmgHacks.Resume()
@@ -271,6 +277,7 @@ class FarmingBot(BotBase):
         if self.selectedOre not in eXLib.InstancesList:
             self.selectedOre = 0
             self.CURRENT_STATE = WALKING_STATE
+            return False
         if not OpenLib.isPlayerCloseToInstance(self.selectedOre):
             return False
         return True
