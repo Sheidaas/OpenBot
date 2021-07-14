@@ -9,10 +9,12 @@ from datetime import datetime
 ATTACK_RANGE = 270
 
 #Types
+NONE_TYPE = -99
 METIN_TYPE = 2
 MONSTER_TYPE = 0
 PLAYER_TYPE = 6
 BOSS_TYPE = -1
+ORE_TYPE = -2
 
 BOSS_IDS = dict()
 ORES_IDS = dict()
@@ -29,9 +31,9 @@ SHAMAN_FEMALE_ID = 7
 
 MAX_INVENTORY_SIZE = 90
 
-#Max telport sitance before resync by server
+# Max teleport distance before resync by server
 MAX_TELEPORT_DIST = 2400
-ATTACK_MAX_DIST_NO_TELEPORT =290
+ATTACK_MAX_DIST_NO_TELEPORT = 290
 
 MIN_RACE_SHOP = 30000
 MAX_RACE_SHOP = 30008

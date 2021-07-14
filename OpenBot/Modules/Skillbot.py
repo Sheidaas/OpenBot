@@ -1,14 +1,14 @@
 import UIComponents
 from BotBase import BotBase
-import ui, chat, player
+import ui, chat, player, net
 import OpenLib, eXLib
 
 warriorBody = [
-    {'id': 4, 'name': 'Aura of the sword'},
-    {'id': 3, 'name': 'Berserk'}
+    {'id': 4, 'name': 'Aura of the sword', 'image_str': str('d:/ymir work/ui/skill/warrior/geomgyeong_03.sub')}, # palbang wir miecz # samyeon 3krotne ciecie gyeoksan walniecie gigongcham ?? geompung uderzenie miecza
+    {'id': 3, 'name': 'Berserk', 'image_str': str('d:/ymir work/ui/skill/warrior/jeongwi_03.sub')}   # cheongeun silne daejin tapniecie jeongwi berserk tanhwan sarza geomgyeong aura
 ]
 warriorMental = [
-    {'id': 19, 'name': 'Strong body'},
+    {'id': 19, 'name': 'Strong body', 'image_str': str('d:/ymir work/ui/skill/warrior/cheongeun_03.sub')},
 ]
 suraWP = [
     {'id': 63, 'name': 'Enchanted blade'},
@@ -67,9 +67,6 @@ class Skillbot(BotBase):
             self.current_skill_set = lycan_2
         self.BuildWindow()
 
-    def render_many_buttons(self):
-        pass
-
     def BuildWindow(self):
 
         comp = UIComponents.Component()
@@ -91,18 +88,21 @@ class Skillbot(BotBase):
                                              funcState=self._start, defaultValue=False)
 
         for skill in range(len(self.current_skill_set)):
-            button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
-                                      '', 80, 40+(skill*40), defaultValue=False)
             skill_name = 'skill'+str(self.current_skill_set[skill]['id'])
+            image = comp.ExpandedImage(self.Board, 80, 40+(skill*60), self.current_skill_set[skill]['image_str'])
+            setattr(self, skill_name+'Image', image)
+            button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
+                                      '', 100, 58+(skill*60), defaultValue=False)
+
             self.skills_buttons_names.append(skill_name)
             setattr(self, skill_name, button)
-            setattr(self, skill_name+'LastTime', 0)
+            setattr(self, skill_name+'LastTime', 10)
 
-            slot_bar, edit_line = comp.EditLine(self.Board, str(0), 80, 56+(skill*40), 40, 18, 25)
+            slot_bar, edit_line = comp.EditLine(self.Board, str(5), 80, 72+(skill*60), 40, 18, 25)
             setattr(self, skill_name+'SlotBar', slot_bar)
             setattr(self, skill_name+'EditLine', edit_line)
 
-            text = comp.TextLine(self.Board, 's. delay time', 130, 62+(skill*40), comp.RGB(255, 255, 255))
+            text = comp.TextLine(self.Board, 's. delay time', 130, 77+(skill*60), comp.RGB(255, 255, 255))
             setattr(self, skill_name+'EditLineText', text)
 
     def _start(self, val):
@@ -131,7 +131,6 @@ class Skillbot(BotBase):
 
                 # Getting skill[id]LastTime
                 skill_last_time = getattr(self, skill_name+'LastTime')
-                chat.AppendChat(3, str(skill_last_time) + ','+str(text))
                 val, skill_last_time = OpenLib.timeSleep(skill_last_time, int(text))
                 if val:
                     setattr(self, skill_name+'LastTime', skill_last_time)
@@ -140,7 +139,6 @@ class Skillbot(BotBase):
                             eXLib.SendUseSkillPacket(skill_dict['id'], 0)
                         else:
                             eXLib.SendUseSkillPacket(skill_dict['id'], 0)
-
 
     def is_text_validate(self, text):
         try:
