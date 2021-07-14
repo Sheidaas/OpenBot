@@ -87,29 +87,30 @@ class Skillbot(BotBase):
                                              OnDownVisual='OpenBot/Images/stop_2.tga',
                                              funcState=self._start, defaultValue=False)
 
-        for skill in range(len(self.current_skill_set)):
-            skill_name = 'skill'+str(self.current_skill_set[skill]['id'])
-            image = comp.ExpandedImage(self.Board, 80, 40+(skill*60), self.current_skill_set[skill]['image_str'])
-            setattr(self, skill_name+'Image', image)
-            button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
-                                      '', 100, 58+(skill*60), defaultValue=False)
-
-            self.skills_buttons_names.append(skill_name)
-            setattr(self, skill_name, button)
-            setattr(self, skill_name+'LastTime', 10)
-
-            slot_bar, edit_line = comp.EditLine(self.Board, str(5), 80, 72+(skill*60), 40, 18, 25)
-            setattr(self, skill_name+'SlotBar', slot_bar)
-            setattr(self, skill_name+'EditLine', edit_line)
-
-            text = comp.TextLine(self.Board, 's. delay time', 130, 77+(skill*60), comp.RGB(255, 255, 255))
-            setattr(self, skill_name+'EditLineText', text)
+        #for skill in range(len(self.current_skill_set)):
+        #    skill_name = 'skill'+str(self.current_skill_set[skill]['id'])
+        #    image = comp.ExpandedImage(self.Board, 80, 40+(skill*60), self.current_skill_set[skill]['image_str'])
+        #    setattr(self, skill_name+'Image', image)
+        #    button = comp.OnOffButton(self.Board, '\t\t\t\t\t\t' + self.current_skill_set[skill]['name'],
+        #                              '', 100, 58+(skill*60), defaultValue=False)
+#
+        #    self.skills_buttons_names.append(skill_name)
+        #    setattr(self, skill_name, button)
+        #    setattr(self, skill_name+'LastTime', 10)
+#
+        #    slot_bar, edit_line = comp.EditLine(self.Board, str(5), 80, 72+(skill*60), 40, 18, 25)
+        #    setattr(self, skill_name+'SlotBar', slot_bar)
+        #    setattr(self, skill_name+'EditLine', edit_line)
+#
+        #    text = comp.TextLine(self.Board, 's. delay time', 130, 77+(skill*60), comp.RGB(255, 255, 255))
+        #    setattr(self, skill_name+'EditLineText', text)
 
     def _start(self, val):
         if val:
             self.Start()
         else:
             self.Stop()
+
 
     def get_skill_dict_by_skill_name(self, skill_name):
         id = int(skill_name.strip('skill'))

@@ -1,4 +1,4 @@
-import eXLib,chat,OpenLog
+import eXLib,chat,OpenLog,app
 
 """
 Module resposible for handling file save and load operations.
@@ -276,3 +276,30 @@ def parseMapLinks(file_name=CONFIG_MAP_LINKS):
 		
 	return lst
 
+
+def parseSkillDesc():
+	"""
+	Parse skilldesc.txt and return a map containing the class, name and icon of each skill.
+	"""
+	try:
+		handle = app.OpenTextFile(app.GetLocalePath() + "/skilldesc.txt")
+		count = app.GetTextFileLineCount(handle)
+	except IOError:
+		chat.AppendChat(1, "Could not load " + app.GetLocalePath() + "/skilldesc.txt")
+		return
+	
+	skill_map = {}
+
+	for i in range(count):
+		line = app.GetTextFileLine(handle, i)
+		if str(line).count("\t") >= 21:
+			SkillData = str(line).split("\t")
+			skill_map[int(SkillData[0])] = {
+				"class":str(SkillData[1]).lower(),
+				"name":str(SkillData[2]),
+				"icon":str(SkillData[12]),
+				}
+	
+	app.CloseTextFile(handle)
+	
+	return skill_map

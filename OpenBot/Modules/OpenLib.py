@@ -69,6 +69,26 @@ SKILL_SET_HEAL_SHAMAN = 8
 SKILL_SET_1_LYCAN = 9
 SKILL_SET_2_LYCAN = 10
 
+skillSet_map = {
+	SKILL_SET_NONE : "NONE",
+	SKILL_SET_BODY_WARRIOR : "warrior",
+	SKILL_SET_MENTAL_WARRIOR : "warrior",
+	SKILL_SET_DAGGER_NINJA : "assassin",
+	SKILL_SET_ARCHER_NINJA : "assassin",
+	SKILL_SET_WEAPONS_SURA : "sura",
+	SKILL_SET_MAGIC_SURA : "sura",
+	SKILL_SET_DRAGON_SHAMAN : "shaman",
+	SKILL_SET_HEAL_SHAMAN : "shaman",
+	SKILL_SET_1_LYCAN : "wolfman",
+	SKILL_SET_2_LYCAN : "wolfman"
+}
+
+#Contains the following information about the skills
+#"CLASS"
+#"NAME"
+#"ICON"
+SKILL_INFORMATION = FileManager.parseSkillDesc()
+
 def Revive():
 	"""
 	Revive the main instance.
@@ -100,8 +120,12 @@ def ConvertPrice(price_str,item_num=1):
 
 	return (wons,rest_yang)
 
+def GetSkillIconPath(id,grade=1):
+	skill = SKILL_INFORMATION[id]
+	skill_class = skill["class"]
+	skill_icon_name = skill["icon"]
+	return "d:/ymir work/ui/skill/" + skill_class + "/" + skill_icon_name + "_0"+str(grade)+".sub"
 
-	
 def GetClass():
 	"""
 	Returns the a distinct number associated with the skillgroup

@@ -1,4 +1,4 @@
-import ui
+import ui,wndMgr
 
 def RGB(r, g, b):
 	return (r*255, g*255, b*255)
@@ -126,8 +126,7 @@ class Component:
 		button.SetToolTipText(tooltipText)
 		#button.SetEvent(func)
 		button.Show()
-		return button	
-
+		return button
 		
 	def HideButton(self, parent, buttonName, tooltipText, x, y, func, UpVisual, OverVisual, DownVisual):
 		button = ui.Button()
@@ -403,6 +402,7 @@ class TabWindow(ui.Window):
 		for btn,page in self.tabs:
 			page.Hide()
 		self.GetCurTab().Show()
+
 
 
 #Return a button,slider and label, all *args and **kwargs are used on button
