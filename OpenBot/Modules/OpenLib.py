@@ -46,7 +46,7 @@ INV_FULL_MIN_EMPTY = 10
 MAX_ITEM_COUNT = 200
 
 #Maximum distance to pickup before telport
-MAX_PICKUP_DIST = 290
+MAX_PICKUP_DIST = 290.0
 
 
 #State of a player

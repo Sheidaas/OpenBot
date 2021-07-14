@@ -24,7 +24,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.speedMultiplier = 0.0
 
 		self.pickUp = False
-		self.pickUpRange = 290
+		self.pickUpRange = 290.0
 		self.pickUpSpeed = 0.5
 		self.pickFilter = set()
 		self.excludeInFilter = True
@@ -132,7 +132,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.minMana = int(FileManager.ReadConfig("MinMana"))
 		self.minHealth = int(FileManager.ReadConfig("MinHealth"))
 		self.pickUp = boolean(FileManager.ReadConfig("PickupUse"))
-		self.pickUpRange = int(FileManager.ReadConfig("PickupRange"))
+		self.pickUpRange = float(FileManager.ReadConfig("PickupRange"))
 		self.pickUpSpeed = float(FileManager.ReadConfig("PickupSpeed"))
 		self.excludeInFilter = boolean(FileManager.ReadConfig("FilterMode"))
 		self.useRangePickup = boolean(FileManager.ReadConfig("UseRangePickup"))
@@ -224,8 +224,8 @@ class SettingsDialog(ui.ScriptWindow):
 		self.speedPickupLabel.SetText(str('{:,.2f} s'.format(self.pickUpSpeed)))
 
 	def pickupRangeSlide(self):
-		self.pickUpRange = int(self.SliderangePickup.GetSliderPos()*10000)
-		self.rangePickupLabel.SetText(str(self.pickUpRange))
+		self.pickUpRange = float(self.SliderangePickup.GetSliderPos()*10000)
+		self.rangePickupLabel.SetText(str('{:,.0f}'.format(self.pickUpRange)))
 
 	def OnRangePickupOnOff(self,val):
 		self.useRangePickup = val
@@ -371,10 +371,11 @@ class SettingsDialog(ui.ScriptWindow):
 			if vid == 0:
 				return
 			dst = OpenLib.dist(x,y,itemX,itemY)
-			allowedRange = max(self.pickUpRange,OpenLib.MAX_PICKUP_DIST) 
+			allowedRange = max(self.pickUpRange,float(OpenLib.MAX_PICKUP_DIST)) 
 			if dst <= allowedRange:
 				#Teleport to item
 				if dst >= OpenLib.MAX_PICKUP_DIST:
+					#return
 					if not self.useRangePickup:
 						return
 					Movement.TeleportStraightLine(x,y,itemX,itemY)
