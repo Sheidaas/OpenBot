@@ -18,11 +18,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
 
-<<<<<<< Updated upstream
-=======
+
     channel_switcher = ChannelSwitcher()
-    skillbot = Skillbot()
->>>>>>> Stashed changes
+    skillbot = Skillbot.instance
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()

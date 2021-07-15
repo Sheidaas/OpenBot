@@ -106,7 +106,6 @@ class FarmingBot(BotBase):
                 index_x += 1
 
         # Settings tab
-<<<<<<< Updated upstream
         self.settingsLoadButton =   comp.Button(self.settings_tab, 'Load', '', 40, 40, self.load_path,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
@@ -116,7 +115,7 @@ class FarmingBot(BotBase):
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
         self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 90, 40, 60, 40, 25)
-=======
+
         self.settingsLoadButton = comp.Button(self.settings_tab, 'Load', '', 40, 30, self.load_path,
                                               'd:/ymir work/ui/public/small_Button_01.sub',
                                               'd:/ymir work/ui/public/small_Button_02.sub',
@@ -131,7 +130,6 @@ class FarmingBot(BotBase):
 
         self.slot_barWaitingTime, self.edit_lineWaitingTime = \
             comp.EditLine(self.settings_tab, '5', 100, 120, 40, 30, 25)
->>>>>>> Stashed changes
 
         self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', '', 40, 80,
                                                          funcState=self.switch_always_use_waithack,
@@ -169,10 +167,6 @@ class FarmingBot(BotBase):
             else:
                 if ore_id in self.ores_to_mine:
                     self.ores_to_mine.remove(ore_id)
-<<<<<<< Updated upstream
-            #chat.AppendChat(3, str(self.ores_to_mine))
-=======
->>>>>>> Stashed changes
 
         return function
 
