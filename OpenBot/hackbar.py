@@ -1,8 +1,7 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
 from OpenBot.Modules import FarmingBot
-from OpenBot.Modules import Radar
-from OpenBot.Modules.Skillbot import Skillbot
+from OpenBot.Modules import Radar, Skillbot
 from OpenBot.Modules.Radar import Radar
 DEBUG = False
 if DEBUG:
@@ -18,7 +17,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
 
-    skillbot = Skillbot()
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
@@ -158,7 +156,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         FarmingBot.switch_state()
 
     def OnSkillbot(self):
-        self.skillbot.switch_state()
+        Skillbot.switch_state()
 
     def OnRadar(self):
         self.radar.switch_state()

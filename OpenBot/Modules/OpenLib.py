@@ -67,20 +67,18 @@ SKILL_SET_MAGIC_SURA = 6
 SKILL_SET_DRAGON_SHAMAN = 7
 SKILL_SET_HEAL_SHAMAN = 8
 SKILL_SET_1_LYCAN = 9
-SKILL_SET_2_LYCAN = 10
 
 skillSet_map = {
-	SKILL_SET_NONE : "NONE",
-	SKILL_SET_BODY_WARRIOR : "warrior",
-	SKILL_SET_MENTAL_WARRIOR : "warrior",
-	SKILL_SET_DAGGER_NINJA : "assassin",
-	SKILL_SET_ARCHER_NINJA : "assassin",
-	SKILL_SET_WEAPONS_SURA : "sura",
-	SKILL_SET_MAGIC_SURA : "sura",
-	SKILL_SET_DRAGON_SHAMAN : "shaman",
-	SKILL_SET_HEAL_SHAMAN : "shaman",
-	SKILL_SET_1_LYCAN : "wolfman",
-	SKILL_SET_2_LYCAN : "wolfman"
+	SKILL_SET_NONE : ["NONE",0],
+	SKILL_SET_BODY_WARRIOR : ["warrior",1],
+	SKILL_SET_MENTAL_WARRIOR : ["warrior",16],
+	SKILL_SET_DAGGER_NINJA : ["assassin",31],
+	SKILL_SET_ARCHER_NINJA : ["assassin",46],
+	SKILL_SET_WEAPONS_SURA : ["sura",61],
+	SKILL_SET_MAGIC_SURA : ["sura",76],
+	SKILL_SET_DRAGON_SHAMAN : ["shaman",91],
+	SKILL_SET_HEAL_SHAMAN : ["shaman",106],
+	SKILL_SET_1_LYCAN : ["wolfman",170]
 }
 
 #Contains the following information about the skills
@@ -121,10 +119,27 @@ def ConvertPrice(price_str,item_num=1):
 	return (wons,rest_yang)
 
 def GetSkillIconPath(id,grade=1):
+	"""
+	Returns the icon path of a skill image.
+	Args:
+		id(int) : Id of the skill.
+		grade(int) : Grade of the skill 1-3.
+	"""
 	skill = SKILL_INFORMATION[id]
 	skill_class = skill["class"]
 	skill_icon_name = skill["icon"]
 	return "d:/ymir work/ui/skill/" + skill_class + "/" + skill_icon_name + "_0"+str(grade)+".sub"
+
+def GetClassSkillIDs(_class):
+	"""
+	Returns all skill ids of each class.
+	Args:
+		_class(int) : The SkillSet of the class.
+	"""
+	startIndex = skillSet_map[_class][1]
+	return [ i for i in range(skillSet_map[_class][1],startIndex+6)]
+
+
 
 def GetClass():
 	"""

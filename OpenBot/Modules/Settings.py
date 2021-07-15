@@ -63,17 +63,6 @@ class SettingsDialog(ui.ScriptWindow):
 		self.attackTab = self.TabWidget.GetTab(2)
 		self.shopTab = self.TabWidget.GetTab(3)
 
-
-		#self.MovespeedLabel = self.comp.TextLine(self.generalTab, '300', 256, 68, self.comp.RGB(255, 255, 255))
-		#self.AttackspeedLabel = self.comp.TextLine(self.attackTab, '200', 256, 108, self.comp.RGB(255, 255, 255))
-		#self.SlideMovespeed = self.comp.SliderBar(self.generalTab, 0.6, self.SlideMove, 66, 70)
-		#self.SlideAttackspeed = self.comp.SliderBar(self.attackTab, 0.4, self.SlideAttack, 66, 110)
-		
-		#self.AttackSpeedButton = self.comp.Button(self.attackTab, '', 'Attack-Speed', 25, 60, self.SetAttackSpeed, 'OpenBot/Images/Shortcuts/attack_0.tga', 'OpenBot/Images/Shortcuts/attack_1.tga', 'OpenBot/Images/Shortcuts/attack_0.tga')
-		#self.MoveSpeedButton = self.comp.Button(self.generalTab, '', 'Move-Speed', 25, 110, self.SetMoveSpeed, 'OpenBot/Images/Shortcuts/move_0.tga', 'OpenBot/Images/Shortcuts/move_1.tga', 'OpenBot/Images/Shortcuts/move_0.tga')
-		#self.DayButton = self.comp.Button(self.Board, '', 'Day', 25, 120, self.SetDay, 'OpenBot/Images/General/sun_0.tga', 'OpenBot/Images/General/sun_1.tga', 'OpenBot/Images/General/sun_0.tga')
-		#self.NightButton = self.comp.Button(self.Board, '', 'Night', 80, 120, self.SetNight, 'OpenBot/Images/General/moon_0.tga', 'OpenBot/Images/General/moon_1.tga', 'OpenBot/Images/General/moon_0.tga')
-		
 		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  'OpenBot/Images/General/dmg_0.tga', 'OpenBot/Images/General/dmg_1.tga', 'OpenBot/Images/General/dmg_0.tga')
   		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, 'OpenBot/Images/General/onehand_0.tga', 'OpenBot/Images/General/onehand_1.tga', 'OpenBot/Images/General/onehand_0.tga')
 		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, 'OpenBot/Images/General/twohand_0.tga', 'OpenBot/Images/General/twohand_1.tga', 'OpenBot/Images/General/twohand_0.tga')

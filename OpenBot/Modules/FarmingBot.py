@@ -92,8 +92,8 @@ class FarmingBot(BotBase):
         for ore in OpenLib.ORES_IDS:
             setattr(self, 'is_mine_' + str(ore), False)
             button = comp.OnOffButton(self.minings_tab,
-                             '\t\t\t\t\t\t' + OpenLib.ORES_IDS[ore],
-                             '', 10+(index_x*60), 30+(index_y*40), funcState=self.create_switch_function('is_mine_' + str(ore), ore),
+                             '',
+                             '', 30+(index_x*60), 30+(index_y*40),image="icon/item/"+OpenLib.ORES_IDS[ore]+".tga", funcState=self.create_switch_function('is_mine_' + str(ore), ore),
                              defaultValue=getattr(self, 'is_mine_' + str(ore)))
             setattr(self, str(ore)+'Button', button)
 
@@ -111,7 +111,7 @@ class FarmingBot(BotBase):
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
-        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 80, 40, 60, 30, 25)
+        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 90, 40, 60, 40, 25)
 
 
     def load_path(self):
@@ -142,7 +142,7 @@ class FarmingBot(BotBase):
             else:
                 if ore_id in self.ores_to_mine:
                     self.ores_to_mine.remove(ore_id)
-            chat.AppendChat(3, str(self.ores_to_mine))
+            #chat.AppendChat(3, str(self.ores_to_mine))
 
         return function
 
@@ -271,12 +271,12 @@ class FarmingBot(BotBase):
 
         # Checking there is any reason to stop mining
         if not self.is_char_ready_to_mine():
-            chat.AppendChat(3, 'Stop')
+            #chat.AppendChat(3, 'Stop')
             return
 
         val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 30)
         if val:
-            chat.AppendChat(3, 'SendOnClickPacket')
+            #chat.AppendChat(3, 'SendOnClickPacket')
             net.SendOnClickPacket(self.selectedOre)
 
     def farmMetin(self):
