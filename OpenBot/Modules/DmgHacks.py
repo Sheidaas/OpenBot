@@ -1,7 +1,6 @@
 import eXLib,ui,net,chr,player,chat,item
 import OpenLib,FileManager,Movement,UIComponents
 from FileManager import boolean
-ATTACK_MAX_DIST_NO_TELEPORT = 290
 
 
 class DmgHacks(ui.Window):
@@ -91,7 +90,7 @@ class DmgHacks(ui.Window):
 		vid_hits = 0
 		for vid in lst:
 			mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-			if OpenLib.dist(x,y,mob_x,mob_y) < ATTACK_MAX_DIST_NO_TELEPORT:
+			if OpenLib.dist(x,y,mob_x,mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
 				#chat.AppendChat(3,"Sent Attack, X:" + str(mob_x) + " Y:" + str(mob_y) + "VID: " +str(vid))
 				eXLib.SendAttackPacket(vid,0)
 				lst.remove(vid)
@@ -165,6 +164,7 @@ class DmgHacks(ui.Window):
 					lst.append(vid)
 			hit_counter = 0
 			i = 0
+			#chat.AppendChat(3,str(len(lst)))
 			while len(lst) > 0 and hit_counter < self.maxMonster:
 				vid = lst[0]
 				mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
@@ -173,14 +173,13 @@ class DmgHacks(ui.Window):
 					continue
 				if self.cloudBtn.isOn == True and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
-				#Checking the distance between teleports might increase the range and make it more stable
 				elif isArch:
 					hit_counter+=self.AttackArch(lst,mob_x, mob_y)
 				else:
 					hit_counter+=self.TeleportAttack(lst,mob_x, mob_y)
 				i+=1
-
-			Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
+			if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=300):
+				Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
 	def Close(self):
 		self.Board.Hide()
 		self.saveSettings()
