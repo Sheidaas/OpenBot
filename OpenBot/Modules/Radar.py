@@ -34,8 +34,7 @@ class Radar(BotBase):
 
         comp = Component()
 
-        self.TabWidget = TabWindow(10, 30, 275, 220, self.Board,
-                                                ['Settings', 'Entities'])
+        self.TabWidget = TabWindow(10, 30, 275, 220, self.Board, ['Settings', 'Entities'])
 
         self.settings_tab = self.TabWidget.GetTab(0)
         self.entities_list = self.TabWidget.GetTab(1)

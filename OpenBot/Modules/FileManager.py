@@ -20,7 +20,7 @@ CONFIG_SHOP_CREATOR = eXLib.PATH + 'OpenBot/Saves/item_sell_prices.txt'
 CONFIG_SELL_INVENTORY = eXLib.PATH + 'OpenBot/Saves/items_to_sell.txt'
 CONFIG_LOCATION_CHANGER = eXLib.PATH + 'OpenBot/Saves/location_changer.txt'
 SHOP_CREATOR_LOG = eXLib.PATH + 'OpenBot/Saves/shop_log.txt'
-FARMBOT_WAYPOINTS_LISTS = eXLib.PATH + 'OpenBot/Saves/'
+FARMBOT_WAYPOINTS_LISTS = eXLib.PATH + 'OpenBot/Saves/Paths'
 
 
 #For parsing
@@ -57,7 +57,6 @@ class FileHandler():
 		if self.inMemory:
 			with open(self.fileName,'w') as f:
 				f.writelines(self.lines)
-		#self.inMemory = False
 	
 	def SaveFile(self):
 		self.CloseFile()

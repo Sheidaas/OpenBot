@@ -40,16 +40,16 @@ class OnOffButton(ui.Button):
 		self.OnChange()
 
 	def OnChange(self):
-		if self.isOn == True:
+		if self.isOn is True:
 			self.SetOff()
 		else:
 			self.SetOn()
 
-		if self.FuncState != None:
+		if self.FuncState is not None:
 			self.FuncState(self.isOn)
 
-	def SetValue(self,val):
-		if val == 1 or val == True:
+	def SetValue(self, val):
+		if val == 1 or val is True:
 			self.SetOn()
 		else:
 			self.SetOff()
@@ -65,14 +65,17 @@ class OnOffButton(ui.Button):
 		self.SetOverVisual(self.OffOverVisual)
 		self.SetDownVisual(self.OffDownVisual)
 		self.isOn = False
+
 	def __del__(self):
 		self.Hide()
-		if self.image != None:
+		if self.image is not None:
 			self.image.Hide()
 			self.image.__del__()
 		ui.Button.__del__(self)
-	
+
+
 class SlotWithToolTip(ui.SlotWindow):
+
 	def __init__(self,x,y,vnum,count,slotIndex,parent):
 		slot = ui.SlotWindow.__init__(self)
 		slot.SetParent(parent)

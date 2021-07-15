@@ -628,6 +628,12 @@ def GetCurrentChannel():
 		OpenLog.DebugPrint("Exception raised when trying to obtain current channel.")
 		return 0
 
+def GetCurrentServer():
+	try:
+		return net.GetServerInfo().split(',')[0]
+	except:
+		OpenLog.DebugPrint("Exception raised when trying to obtain current channel.")
+		return 0
 
 class WaitingDialog(ui.ScriptWindow):
 
