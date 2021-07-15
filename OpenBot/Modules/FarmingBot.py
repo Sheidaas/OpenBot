@@ -21,9 +21,13 @@ class FarmingBot(BotBase):
         self.is_walking = True  # if False character is using teleport, otherwise character is walking
         self.current_point = 0  # Current position index
         self.path = []  # Dict of tuples with coordinates [(0, 0), (2, 2)] etc
+        self.dont_use_waithack = False
+        self.always_use_waithack = False
+        self.is_waypoint_reached = False
 
         self.lastTimeMine = 0
         self.lastTimeWaitingState = 0
+        self.timeForWaitingState = 5
         self.farm_metins = True
         self.metins_vid_list = []
         self.selectedMetin = 0
@@ -43,11 +47,10 @@ class FarmingBot(BotBase):
 
         comp = UIComponents.Component()
         self.TabWidget = UIComponents.TabWindow(10, 30, 220, 260, self.Board,
-                                                ['Moving', 'Mining', 'Metins', 'Settings'])
+                                                ['Moving', 'Mining', 'Settings'])
         self.moving_tab = self.TabWidget.GetTab(0)
         self.minings_tab = self.TabWidget.GetTab(1)
-        self.metins_tab = self.TabWidget.GetTab(2)
-        self.settings_tab = self.TabWidget.GetTab(3)
+        self.settings_tab = self.TabWidget.GetTab(2)
 
         # Moving tab
         self.barItems, self.fileListBox, self.ScrollBar = comp.ListBoxEx2(self.moving_tab, 10, 30, 180, 100)
@@ -103,6 +106,7 @@ class FarmingBot(BotBase):
                 index_x += 1
 
         # Settings tab
+<<<<<<< Updated upstream
         self.settingsLoadButton =   comp.Button(self.settings_tab, 'Load', '', 40, 40, self.load_path,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
@@ -112,7 +116,30 @@ class FarmingBot(BotBase):
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
         self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 90, 40, 60, 40, 25)
+=======
+        self.settingsLoadButton = comp.Button(self.settings_tab, 'Load', '', 40, 30, self.load_path,
+                                              'd:/ymir work/ui/public/small_Button_01.sub',
+                                              'd:/ymir work/ui/public/small_Button_02.sub',
+                                              'd:/ymir work/ui/public/small_Button_03.sub')
 
+        self.settingsSaveButton = comp.Button(self.settings_tab, 'Save', '', 40, 55, self.save_path,
+                                              'd:/ymir work/ui/public/small_Button_01.sub',
+                                              'd:/ymir work/ui/public/small_Button_02.sub',
+                                              'd:/ymir work/ui/public/small_Button_03.sub')
+
+        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 100, 40, 75, 30, 25)
+
+        self.slot_barWaitingTime, self.edit_lineWaitingTime = \
+            comp.EditLine(self.settings_tab, '5', 100, 120, 40, 30, 25)
+>>>>>>> Stashed changes
+
+        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', '', 40, 80,
+                                                         funcState=self.switch_always_use_waithack,
+                                                         defaultValue=self.always_use_waithack)
+
+        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', '', 40, 105,
+                                                      funcState=self.switch_dont_use_waithack,
+                                                      defaultValue=self.dont_use_waithack)
 
     def load_path(self):
         path = FileManager.FARMBOT_WAYPOINTS_LISTS + self.edit_line.GetText()
@@ -142,9 +169,21 @@ class FarmingBot(BotBase):
             else:
                 if ore_id in self.ores_to_mine:
                     self.ores_to_mine.remove(ore_id)
+<<<<<<< Updated upstream
             #chat.AppendChat(3, str(self.ores_to_mine))
+=======
+>>>>>>> Stashed changes
 
         return function
+
+    def switch_always_use_waithack(self, val):
+        self.always_use_waithack = val
+        if val:
+            self.dont_use_waithack = False
+            self.showOffWaithackButton.SetOff()
+
+    def switch_dont_use_waithack(self, val):
+        self.dont_use_waithack = val
 
     def switch_walking(self, val):
         self.is_walking = val
@@ -233,29 +272,43 @@ class FarmingBot(BotBase):
         x, y, z = chr.GetPixelPosition(vid)
         self.Move(x, y, callback)
 
+    def search_for_farm(self):
+        if self.farm_metins and len(self.metins_vid_list) > 0:
+            self.select_metin()
+            self.CURRENT_STATE = FARMING_STATE
+            return FARMING_STATE
+
+        elif self.farm_ores and len(self.ores_vid_list) > 0:
+            self.select_ore()
+            self.MoveToVid(self.selectedOre)
+            self.CURRENT_STATE = MINING_STATE
+            return MINING_STATE
+
+        else:
+            return WALKING_STATE
+
     def Frame(self):
-        self.ores_vid_list = []
-        self.metins_vid_list = []
+        if self.always_use_waithack and self.CURRENT_STATE == WALKING_STATE:
+            DmgHacks.Resume()
+        else:
+            DmgHacks.Pause()
+
         self.checkForMetinsAndOres()
         if self.CURRENT_STATE == WAITING_STATE:
-            val, self.lastTimeWaitingState = OpenLib.timeSleep(self.lastTimeWaitingState, 4)
+            text = self.edit_lineWaitingTime.GetText()
+            if self.is_text_validate(text):
+                self.timeForWaitingState = int(text)
+            val, self.lastTimeWaitingState = OpenLib.timeSleep(self.lastTimeWaitingState, self.timeForWaitingState)
             if val:
                 self.lastTimeWaitingState = 0
                 self.CURRENT_STATE = WALKING_STATE
+            else:
+                self.search_for_farm()
 
         if self.CURRENT_STATE == WALKING_STATE:
-            if self.farm_metins and len(self.metins_vid_list) > 0:
-                self.select_metin()
-                self.CURRENT_STATE = FARMING_STATE
-            
-            elif self.farm_ores and len(self.ores_vid_list) > 0:
-                self.select_ore()
-                self.MoveToVid(self.selectedOre)
-                self.CURRENT_STATE = MINING_STATE
-            else:
+            if self.search_for_farm() == WALKING_STATE:
                 self.go_to_next_position()
-                
-            return
+                return
 
         elif self.CURRENT_STATE == MINING_STATE:
             self.mineOre()
@@ -291,12 +344,16 @@ class FarmingBot(BotBase):
             self.CURRENT_STATE = WAITING_STATE
 
         elif vid_life_status == OpenLib.ATTACKING_TARGET:
-            DmgHacks.Resume()
+            if not self.dont_use_waithack:
+                DmgHacks.Resume()
 
         elif vid_life_status == OpenLib.MOVING_TO_TARGET:
-            DmgHacks.Resume()
+            if not self.dont_use_waithack:
+                DmgHacks.Resume()
 
     def checkForMetinsAndOres(self):
+        self.ores_vid_list = []
+        self.metins_vid_list = []
         for vid in eXLib.InstancesList:
             if OpenLib.IsThisOre(vid):
                 chr.SelectInstance(vid)
@@ -317,6 +374,17 @@ class FarmingBot(BotBase):
             self.CURRENT_STATE = WALKING_STATE
             return False
         if not OpenLib.isPlayerCloseToInstance(self.selectedOre):
+            return False
+        return True
+
+    def is_text_validate(self, text):
+        try:
+            int(text)
+        except ValueError:
+            chat.AppendChat(3, '[Farmbot] - The value must be a digit')
+            return False
+        if int(text) < 0:
+            chat.AppendChat(3, '[Farmbot] - The value must be in range 0 to infinity')
             return False
         return True
 
