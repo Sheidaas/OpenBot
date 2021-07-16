@@ -1,9 +1,8 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
 from OpenBot.Modules import FarmingBot
-from OpenBot.Modules import Radar, Skillbot
+from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher
 from OpenBot.Modules.Radar import Radar
-from OpenBot.Modules.ChannelSwitcher import ChannelSwitcher
 DEBUG = False
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
@@ -19,8 +18,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     spam = Spambot.SpamDialog()
 
 
-    channel_switcher = ChannelSwitcher()
-    skillbot = Skillbot.instance
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
@@ -31,7 +28,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         if DEBUG:
             self.OpenBotBoard.SetSize(51, 600)
         else:
-            self.OpenBotBoard.SetSize(51, 450)
+            self.OpenBotBoard.SetSize(51, 500)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
@@ -77,7 +74,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 323, self.OnRadar, 'OpenBot/Images/Hackbar/radar_0.tga', 'OpenBot/Images/Hackbar/radar_1.tga', 'OpenBot/Images/Hackbar/radar_0.tga')
         self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 358, self.OnSkillbot, 'OpenBot/Images/Hackbar/skill_0.tga', 'OpenBot/Images/Hackbar/skill_1.tga', 'OpenBot/Images/Hackbar/skill_0.tga')
         self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
-        self.ChannelSwitcherButton = self.comp.Button(self.OpenBotBoard, '', 'ChannelSwitcher', 8, 428, self.OnChannelSwitcher, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
+        self.ChannelSwitcherButton = self.comp.Button(self.OpenBotBoard, '', 'ChannelSwitcher', 8, 428, self.OnChannelSwitcher, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
@@ -160,7 +157,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         FarmingBot.switch_state()
 
     def OnChannelSwitcher(self):
-        self.channel_switcher.switch_state()
+        ChannelSwitcher.switch_state()
 
     def OnSkillbot(self):
         Skillbot.switch_state()

@@ -1,107 +1,82 @@
-from BotBase import BotBase
-import OpenLib, UIComponents
+import OpenLib, UIComponents, Hooks, Settings
 import serverInfo, background, ui, chat, net, app, introLogin # introLogin gives ServerStateChecker module
 
 
-class ChannelSwitcher(BotBase):
+def __PhaseChangeChannelCallback(phase):
+    global instance
+    if instance.currState == STATE_NONE:
+        return
+    else:
+        if phase == OpenLib.PHASE_GAME:
+            instance.SetStateNone()
+        elif phase == OpenLib.PHASE_LOGIN:
+            if Settings.instance.autoLogin:
+                return
+            net.DirectEnter(0,0)
+        elif phase == OpenLib.PHASE_SELECT:
+            instance.ConnectToGame()
+
+
+def getCallBackWithArg(func,arg):
+    return lambda: func(arg)
+
+STATE_NONE = 0
+STATE_CHANGING_CHANNEL = 1
+
+class ChannelSwitcher:
 
     def __init__(self):
-        BotBase.__init__(self)
-        self.channels = []
-
+        self.channels = {}
+        self.currState = STATE_NONE
+        self.selectedChannel = 0
         self.BuildWindow()
 
     def BuildWindow(self):
-        component = UIComponents.Component()
+        self.component = UIComponents.Component()
 
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(200, 300)
+        self.Board.SetSize(200, 190)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('Channel Switcher')
         self.Board.SetCloseEvent(self.switch_state)
         self.Board.Hide()
 
-        self.barItems, self.fileListBox, self.ScrollBar = component.ListBoxEx2(self.Board, 10, 10, 180, 100)
+        #self.barItems, self.fileListBox, self.ScrollBar = component.ListBoxEx2(self.Board, 50, 40, 100, 150)
+        #self.fileListBox.SetViewItemCount(10)
 
-        self.connectButton = component.Button(self.Board, 'Connect', '', 10, 220, self.OnConnectButton,
-                                          'd:/ymir work/ui/public/small_Button_01.sub',
-                                          'd:/ymir work/ui/public/small_Button_02.sub',
-                                          'd:/ymir work/ui/public/small_Button_03.sub')
-
-        self.refreshButton = component.Button(self.Board, 'Refresh', '', 10, 250, self.OnRefreshButton,
-                                          'd:/ymir work/ui/public/small_Button_01.sub',
-                                          'd:/ymir work/ui/public/small_Button_02.sub',
-                                          'd:/ymir work/ui/public/small_Button_03.sub')
+        self.refreshButton = self.component.Button(self.Board, 'Refresh', '', 55, 150, self.OnRefreshButton,
+                                          'd:/ymir work/ui/public/large_Button_01.sub',
+                                          'd:/ymir work/ui/public/large_Button_02.sub',
+                                          'd:/ymir work/ui/public/large_Button_03.sub')
 
     def OnRefreshButton(self):
         self.GetChannels()
-        self.fileListBox.RemoveAllItems()
-        for channel in self.channels:
-            self.fileListBox.AppendItem(OpenLib.Item('Channel ' + str(channel['id'])))
+        #self.fileListBox.RemoveAllItems()
+        x = 27
+        y = 50
+        for id in sorted(self.channels):#.items():
+            self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' +str(id), '', x, y, getCallBackWithArg(self.OnConnectButton,int(id)),
+                                          'd:/ymir work/ui/public/small_Button_01.sub',
+                                          'd:/ymir work/ui/public/small_Button_02.sub',
+                                          'd:/ymir work/ui/public/small_Button_03.sub')
+            
+            x+=50
+            if(x>=170):
+                x = 27
+                y+=30
 
-    def _find_channel_by_name(self, name):
-        str_id = name.split('Channel ')[1]
-        chat.AppendChat(3, str(str_id))
-        for channel in self.channels:
-            if channel['id'] == int(str_id):
-                return channel
-        return False
-
-    def OnConnectButton(self):
-        _channel = self.fileListBox.GetSelectedItem()
-        channel = self._find_channel_by_name(_channel.text)
-        if not channel:
+    def OnConnectButton(self,id):
+        _channel = id#self.fileListBox.GetSelectedItem().text
+        if not _channel:
             chat.AppendChat(3, '[ChannelSwitcher] You did not select a channel')
             return
 
-        region_id = self.GetRegionID()
-        server_id = self.GetServerID()
-
-
-        try:
-            serverName = serverInfo.REGION_DICT[region_id][server_id]["name"]
-            chat.AppendChat(3, str(serverName))
-            chat.AppendChat(3, str(channel))
-            channelName = serverInfo.REGION_DICT[region_id][server_id]["channel"][channel['id']]["name"]
-            addrKey = serverInfo.REGION_DICT[region_id][server_id]["channel"][channel['id']]["key"]
-            chat.AppendChat(3, str(addrKey))
-            ip = serverInfo.REGION_DICT[region_id][server_id]["channel"][channel['id']]["ip"]
-            chat.AppendChat(3, str(ip))
-            tcp_port = serverInfo.REGION_DICT[region_id][server_id]["channel"][channel['id']]["tcp_port"]
-            chat.AppendChat(3, str(tcp_port))
-            state = serverInfo.REGION_DICT[region_id][server_id]["channel"][channel['id']]["state"]
-            chat.AppendChat(3, str(state))
-            account_ip = serverInfo.REGION_AUTH_SERVER_DICT[region_id][server_id]["ip"]
-            chat.AppendChat(3, str(account_ip))
-            account_port = serverInfo.REGION_AUTH_SERVER_DICT[region_id][server_id]["port"]
-            chat.AppendChat(3, str(account_port))
-
-            markKey = region_id * 1000 + server_id * 10
-            markAddrValue = serverInfo.MARKADDR_DICT[markKey]
-            net.SetMarkServer(markAddrValue["ip"], markAddrValue["tcp_port"])
-            app.SetGuildMarkPath(markAddrValue["mark"])
-            app.SetGuildSymbolPath(markAddrValue["symbol_path"])
-
-        except:
-            chat.AppendChat(3, '[ChannelSwitcher] An error occured while connect')
-            return
-
-       # if state == serverInfo.STATE_NONE:
-       #     chat.AppendChat(1, "Sorry the selected channel is offline!")
-       #     return
-       # elif state == serverInfo.STATE_DICT[3]:
-       #     chat.AppendChat(1, "Sorry the selected channel is full!")
-       #     return
-       # elif net.GetServerInfo().strip().split(", ")[1] == \
-       #         self.ChannelList.textDict[self.ChannelList.selectedLine].strip().split(" ")[0]:
-       #     chat.AppendChat(1, "You are already on the selected channel!")
-       #     return
         if self.IsSpecialMap():
-           chat.AppendChat(1, "Sorry in this area you cannot change channel without logout!")
+           chat.AppendChat(1, "[ChannelSwitcher] Sorry in this area you cannot change channel without logout!")
            return
 
-        self.DirectConnect(ip, tcp_port, account_ip, account_port)
+        self.ChangeChannelById(_channel)
 
 
     def GetRegionID(self):
@@ -117,7 +92,8 @@ class ChannelSwitcher(BotBase):
                     return int(server)
 
     def GetChannels(self):
-        self.channels = []
+        del self.channels
+        self.channels = {}
         region_id = self.GetRegionID()
         server_id = self.GetServerID()
 
@@ -128,11 +104,14 @@ class ChannelSwitcher(BotBase):
             return
 
         for channelID, channelDataDict in channelDict.items():
-            self.channels.append({
-                'id': channelID,
+            self.channels[int(channelID)] = {
+                'id': int(channelID),
                 'name': channelDataDict['name'],
-                'state': channelDataDict['state']
-            })
+                'ip': channelDataDict['ip'],
+                'port': channelDataDict['tcp_port'],
+                'acc_ip' : serverInfo.REGION_AUTH_SERVER_DICT[region_id][server_id]['ip'],
+                'acc_port' : serverInfo.REGION_AUTH_SERVER_DICT[region_id][server_id]['port']
+            }
 
     def IsSpecialMap(self):
         maps = [
@@ -160,11 +139,31 @@ class ChannelSwitcher(BotBase):
             return True
         return False
 
-    def DirectConnect(self, ip, tcp_port, accout_ip, account_port):
-        net.ConnectToAccountServer(ip, tcp_port, accout_ip, account_port)
-
+    def ConnectToChannel(self):
+        net.ConnectToAccountServer(self.selectedChannel["ip"], self.selectedChannel["port"], self.selectedChannel["acc_ip"], self.selectedChannel["acc_port"])
         net.SendSelectCharacterPacket(0)
-        net.SendEnterGamePacket()
+
+    def ConnectToGame(self):
+        net.SendSelectCharacterPacket(0)
+        return
+
+    def ChangeChannelById(self,id):
+        if int(id) not in self.channels:
+            chat.AppendChat(3,"[Channel-Switcher] - Channel " + str(id) + " doesn't exist")
+            return
+
+        self.selectedChannel = self.channels[int(id)]
+        self.currState = STATE_CHANGING_CHANNEL
+        self.ConnectToChannel()
+
+
+    def SetStateNone(self):
+        self.selectedChannel = 0
+        self.currState = STATE_NONE
+
+
+    def __del__(self):
+        Hooks.deletePhaseCallback("channelCallback")
 
     def switch_state(self):
         if self.Board.IsShow():
@@ -172,3 +171,9 @@ class ChannelSwitcher(BotBase):
         else:
             self.OnRefreshButton()
             self.Board.Show()
+
+def switch_state():
+    instance.switch_state()
+
+instance = ChannelSwitcher()
+Hooks.registerPhaseCallback("channelCallback",__PhaseChangeChannelCallback)

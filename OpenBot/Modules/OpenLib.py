@@ -39,8 +39,9 @@ MIN_RACE_SHOP = 30000
 MAX_RACE_SHOP = 30008
 
 #Possible game phases
-PHASE_GAME = 5
 PHASE_LOGIN = 1
+PHASE_SELECT = 2
+PHASE_GAME = 5
 
 
 #Minumum number of empty slots for the inventory to be considered full
@@ -139,6 +140,26 @@ def GetClassSkillIDs(_class):
 	startIndex = skillSet_map[_class][1]
 	return [ i for i in range(skillSet_map[_class][1],startIndex+6)]
 
+
+def GetServerInfo(channel):
+	"""
+	Returns the channel info
+	"""
+	import serverInfo
+	for serverNum in serverInfo.REGION_DICT[0].keys():
+	    if serverInfo.REGION_DICT[0][serverNum]['name'] == net.GetServerInfo().split(',')[0]:
+	        serverName = serverInfo.REGION_DICT[0][serverNum]['name']
+	        channelName = serverInfo.REGION_DICT[0][serverNum]['channel'][channel]['name']
+	        account_addr_new = serverInfo.REGION_AUTH_SERVER_DICT[0][serverNum]['ip']
+	        account_port_new = serverInfo.REGION_AUTH_SERVER_DICT[0][serverNum]['port']
+	        addr_new = serverInfo.REGION_DICT[0][serverNum]['channel'][channel]['ip']
+	        port_new = serverInfo.REGION_DICT[0][serverNum]['channel'][channel]['tcp_port']
+	        return (serverName,
+	         channelName,
+	         account_addr_new,
+	         account_port_new,
+	         addr_new,
+	         port_new)
 
 
 def GetClass():

@@ -322,6 +322,7 @@ class SettingsDialog(ui.ScriptWindow):
 			OpenLib.Revive()
 		
 		if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
+			#net.DirectEnter(0,0)
 			net.DirectEnter(0,0)
 	
 	def WallHackSwich(self,val):
