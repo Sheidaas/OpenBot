@@ -47,7 +47,7 @@ class Skillbot(BotBase):
     def SaveSettings(self):
         for skill in self.currentSkillSet:
             FileManager.WriteConfig(str(skill['id']), str(skill['icon'].isOn), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('IsTurnedOn', str(self.enableButton.isOn))
+        FileManager.WriteConfig('IsTurnedOn', str(FileManager.boolean(self.enableButton.isOn)))
         FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
 
     def LoadSettings(self):

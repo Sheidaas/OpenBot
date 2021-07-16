@@ -136,7 +136,9 @@ class MovementDialog(ui.ScriptWindow):
         self.callback = callback
         if(round(x) != round(self.currDestinationX) or round(y) != round(self.currDestinationY)):
             my_x,my_y,z = player.GetMainCharacterPosition()
+            OpenLog.DebugPrint("[MOVEMENT] Finding Path from ("+str(my_x)+","+str(my_y)+") to " + "("+str(x)+","+str(y)+")")
             self.path = eXLib.FindPath(my_x,my_y,x,y)
+            OpenLog.DebugPrint("[MOVEMENT] Path Found with "+str(len(self.path)) +" points")
             if(len(self.path)>0):
                 self.currDestinationX = x
                 self.currDestinationY = y

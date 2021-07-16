@@ -1,4 +1,4 @@
-from OpenBot.Modules import ChannelSwitcher, Skillbot
+from OpenBot.Modules import ChannelSwitcher, Skillbot, OpenLog
 from BotBase import BotBase
 import DmgHacks
 import Movement
@@ -289,6 +289,7 @@ class FarmingBot(BotBase):
 
     def Frame(self):
         if self.can_change_channel:
+            OpenLog.DebugPrint("[Farming-bot] Changing Channel")
             self.can_change_channel = False
             self.go_to_next_channel()
             return
@@ -300,6 +301,7 @@ class FarmingBot(BotBase):
 
         self.checkForMetinsAndOres()
         if self.CURRENT_STATE == WAITING_STATE:
+            OpenLog.DebugPrint("[Farming-bot] WAITING_STATE")
             text = self.edit_lineWaitingTime.GetText()
             if self.is_text_validate(text):
                 self.timeForWaitingState = int(text)
@@ -311,6 +313,7 @@ class FarmingBot(BotBase):
                 self.search_for_farm()
 
         if self.CURRENT_STATE == WALKING_STATE:
+            OpenLog.DebugPrint("[Farming-bot] WALKING_STATE")
             if self.search_for_farm() == WALKING_STATE:
                 self.go_to_next_position()
                 return
@@ -321,6 +324,7 @@ class FarmingBot(BotBase):
             return
 
         elif self.CURRENT_STATE == FARMING_STATE:
+            OpenLog.DebugPrint("[Farming-bot] FARMING_STATE")
             self.farmMetin()
 
             return

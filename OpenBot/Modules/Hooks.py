@@ -1,5 +1,6 @@
 import game,sys,chat,net
 import functools
+import OpenLog
 
 """
 Hooking module.
@@ -80,6 +81,7 @@ def phaseIntercept(*args,**kwargs):
 	global CURRENT_PHASE
 	if len(args)>1 and args[1] != 0:
 		CURRENT_PHASE = args[0]
+	OpenLog.DebugPrint("PHASE: "+ str(CURRENT_PHASE))
 	for callback_id in phaseCallbacks:
 		callback = phaseCallbacks[callback_id]
 		if callable(callback):

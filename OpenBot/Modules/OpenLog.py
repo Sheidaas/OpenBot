@@ -8,6 +8,10 @@ def DebugPrint(arg):
 	Args:
 		arg ([str]): Information to log.
 	"""
-	#with open(eXLib.PATH+"\\Log.txt","a") as f:
-		#f.write(str(datetime.now())+": "+arg+"\n")
-	pass
+	with open(eXLib.PATH+"\\Log.txt","a") as f:
+		f.write(str(datetime.now())+": "+arg+"\n")
+
+
+#To override the file
+f = open(eXLib.PATH+"\\Log.txt","w")
+f.close()
