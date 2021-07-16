@@ -11,13 +11,14 @@ def __PhaseChangeSkillCallback(phase):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkillsUI()
-
+        instance.startUpWait = True
 
 class Skillbot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self)
-
+        self.startUpWaitTime = 0
+        self.startUpWait = False
         self.currentSkillSet = []
 
         self.BuildWindow()
@@ -76,6 +77,7 @@ class Skillbot(BotBase):
                 "id": id,
                 "slot": i + 1,
             })
+        self.LoadSettings()
 
 
     def _start(self, val):
@@ -86,18 +88,20 @@ class Skillbot(BotBase):
 
 
     def Frame(self):
-        self.LoadSettings()
-
-        for skill in self.currentSkillSet:
-            if not player.IsSkillCoolTime(skill['slot']) and skill['icon'].isOn:
-                if not player.IsMountingHorse():
-                    # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
-                    eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
-                else:
-                    net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-
-                    eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
-                    net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+        if not self.startUpWait:
+            for skill in self.currentSkillSet:
+                if not player.IsSkillCoolTime(skill['slot']) and skill['icon'].isOn:
+                    if not player.IsMountingHorse():
+                        # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
+                        eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
+                    else:
+                        net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                        eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
+                        net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+        else:
+            val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, 2)
+            if val:
+                self.startUpWait = False
 
 
     def switch_state(self):
@@ -117,4 +121,4 @@ def switch_state():
     instance.switch_state()
 
 instance = Skillbot()
-Hooks.registerPhaseCallback("skillCallback",__PhaseChangeSkillCallback)
+Hooks.registerPhaseCallback("skillCallback", __PhaseChangeSkillCallback)

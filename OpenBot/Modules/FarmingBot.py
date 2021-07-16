@@ -2,7 +2,7 @@ from OpenBot.Modules import ChannelSwitcher, Skillbot, OpenLog
 from BotBase import BotBase
 import DmgHacks
 import Movement
-import OpenLib, FileManager
+import OpenLib, FileManager, Hooks
 import UIComponents
 import player, ui, chat, chr, net
 import eXLib
@@ -13,6 +13,10 @@ WALKING_STATE = 1
 MINING_STATE = 2
 FARMING_STATE = 3
 
+def __PhaseTurnOnFarmbot(phase):
+    global farm
+    if phase == OpenLib.PHASE_GAME:
+        farm.StartBot()
 
 class FarmingBot(BotBase):
 
@@ -413,3 +417,4 @@ def switch_state():
 
 
 farm = FarmingBot()
+Hooks.registerPhaseCallback('farmbotCallback', __PhaseTurnOnFarmbot)
