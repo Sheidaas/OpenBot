@@ -1,3 +1,4 @@
+from OpenBot.Modules import ChannelSwitcher, Skillbot
 from BotBase import BotBase
 import DmgHacks
 import Movement
@@ -24,6 +25,8 @@ class FarmingBot(BotBase):
         self.dont_use_waithack = False
         self.always_use_waithack = False
         self.is_waypoint_reached = False
+        self.channel_switching = True
+        self.can_change_channel = False
 
         self.lastTimeMine = 0
         self.lastTimeWaitingState = 0
@@ -54,20 +57,20 @@ class FarmingBot(BotBase):
 
         # Moving tab
         self.barItems, self.fileListBox, self.ScrollBar = comp.ListBoxEx2(self.moving_tab, 10, 30, 180, 100)
-        self.addPointButton = comp.Button(self.moving_tab, 'Add', '', 10, 150, self.add_point,
+        self.addPointButton = comp.Button(self.moving_tab, 'Add', 'Add current position to path', 10, 140, self.add_point,
                                           'd:/ymir work/ui/public/small_Button_01.sub',
                                           'd:/ymir work/ui/public/small_Button_02.sub',
                                           'd:/ymir work/ui/public/small_Button_03.sub')
-        self.deletePointButton = comp.Button(self.moving_tab, 'Delete', '', 10, 175, self.remove_selected,
+        self.deletePointButton = comp.Button(self.moving_tab, 'Delete', 'Delete selected position in path', 10, 165, self.remove_selected,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
-        self.deleteAllPointsButton = comp.Button(self.moving_tab, 'Clear', '', 10, 200, self.remove_all,
+        self.deleteAllPointsButton = comp.Button(self.moving_tab, 'Clear', 'Clear path', 10, 190, self.remove_all,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
 
-        self.enableButton = comp.OnOffButton(self.moving_tab, '', '', 70, 150,
+        self.enableButton = comp.OnOffButton(self.moving_tab, '', 'Start', 70, 140,
                                              OffUpVisual='OpenBot/Images/start_0.tga',
                                              OffOverVisual='OpenBot/Images/start_1.tga',
                                              OffDownVisual='OpenBot/Images/start_2.tga',
@@ -78,15 +81,15 @@ class FarmingBot(BotBase):
 
         self.showWalkButton = comp.OnOffButton(self.moving_tab,
                                               '\t\t\t\t\t\tWalk?',
-                                              '', 125, 150,  funcState=self.switch_walking,
+                                              'If check, character is walking otherwise is teleporting', 125, 140,  funcState=self.switch_walking,
                                               defaultValue=self.is_walking)
         self.showMiningButton = comp.OnOffButton(self.moving_tab,
                                               '\t\t\t\t\t\tMining?',
-                                              '', 125, 170, funcState=self.switch_mining, defaultValue=self.farm_ores)
+                                              'Do you want to mine?', 125, 160, funcState=self.switch_mining, defaultValue=self.farm_ores)
 
         self.showFarmingMetinButton = comp.OnOffButton(self.moving_tab,
                                               '\t\t\t\t\t\tMetins?',
-                                              '', 125, 190, funcState=self.switch_farming_metin,
+                                              'Do you want farm metins?', 125, 180, funcState=self.switch_farming_metin,
                                                  defaultValue=self.farm_metins)
 
         # Ores tab
@@ -106,38 +109,36 @@ class FarmingBot(BotBase):
                 index_x += 1
 
         # Settings tab
-        self.settingsLoadButton =   comp.Button(self.settings_tab, 'Load', '', 40, 40, self.load_path,
+        self.settingsLoadButton =   comp.Button(self.settings_tab, 'Load', 'Load path by name of file', 20, 30, self.load_path,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
-        self.settingsSaveButton =   comp.Button(self.settings_tab, 'Save', '', 40, 65, self.save_path,
+
+        self.text_lineEditLine = comp.TextLine(self.settings_tab, 'name of file to load/save', 75, 20, comp.RGB(255, 255, 255))
+        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 70, 40, 120, 25, 25)
+
+        self.settingsSaveButton =   comp.Button(self.settings_tab, 'Save', 'Save path by name of file', 20, 55, self.save_path,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
-        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 90, 40, 60, 40, 25)
 
-        self.settingsLoadButton = comp.Button(self.settings_tab, 'Load', '', 40, 30, self.load_path,
-                                              'd:/ymir work/ui/public/small_Button_01.sub',
-                                              'd:/ymir work/ui/public/small_Button_02.sub',
-                                              'd:/ymir work/ui/public/small_Button_03.sub')
-
-        self.settingsSaveButton = comp.Button(self.settings_tab, 'Save', '', 40, 55, self.save_path,
-                                              'd:/ymir work/ui/public/small_Button_01.sub',
-                                              'd:/ymir work/ui/public/small_Button_02.sub',
-                                              'd:/ymir work/ui/public/small_Button_03.sub')
-
-        self.slot_bar, self.edit_line = comp.EditLine(self.settings_tab, 'filename.txt', 100, 40, 75, 30, 25)
-
-        self.slot_barWaitingTime, self.edit_lineWaitingTime = \
-            comp.EditLine(self.settings_tab, '5', 100, 120, 40, 30, 25)
-
-        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', '', 40, 80,
+        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 80,
                                                          funcState=self.switch_always_use_waithack,
                                                          defaultValue=self.always_use_waithack)
 
-        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', '', 40, 105,
+        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', 'If checked, farmbot wont use waithack for destroying metin', 20, 105,
                                                       funcState=self.switch_dont_use_waithack,
                                                       defaultValue=self.dont_use_waithack)
+
+        self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tSwitch channels', 'If checked, farmbot will change to next channel after complete a path', 20, 130,
+                                                      funcState=self.switch_channel_switching,
+                                                      defaultValue=self.channel_switching)
+
+        self.slot_barWaitingTime, self.edit_lineWaitingTime = \
+            comp.EditLine(self.settings_tab, '5', 20, 150, 40, 20, 25)
+
+        self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after moving', 70, 155, comp.RGB(255, 255, 255))
+        self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, ' or destorying metin',  85, 170, comp.RGB(255, 255, 255))
 
     def load_path(self):
         path = FileManager.FARMBOT_WAYPOINTS_LISTS + self.edit_line.GetText()
@@ -176,6 +177,9 @@ class FarmingBot(BotBase):
             self.dont_use_waithack = False
             self.showOffWaithackButton.SetOff()
 
+    def switch_channel_switching(self, val):
+        self.channel_switching = val
+
     def switch_dont_use_waithack(self, val):
         self.dont_use_waithack = val
 
@@ -212,6 +216,8 @@ class FarmingBot(BotBase):
         if self.current_point + 1 >= len(self.path):
             self.path.reverse()
             self.current_point = 1
+            if self.channel_switching:
+                self.can_change_channel = True
         else:
             self.current_point += 1
 
@@ -282,6 +288,11 @@ class FarmingBot(BotBase):
             return WALKING_STATE
 
     def Frame(self):
+        if self.can_change_channel:
+            self.can_change_channel = False
+            self.go_to_next_channel()
+            return
+
         if self.always_use_waithack and self.CURRENT_STATE == WALKING_STATE:
             DmgHacks.Resume()
         else:
@@ -382,6 +393,16 @@ class FarmingBot(BotBase):
             return False
         return True
 
+    def go_to_next_channel(self):
+        current_channel = OpenLib.GetCurrentChannel()
+        ChannelSwitcher.instance.OnRefreshButton()
+        if current_channel + 1 > len(ChannelSwitcher.instance.channels):
+            current_channel = 1
+        else:
+            current_channel += 1
+
+        chat.AppendChat(3, str(current_channel))
+        ChannelSwitcher.instance.ChangeChannelById(current_channel)
 
 def switch_state():
     farm.switch_state()

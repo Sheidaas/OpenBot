@@ -1,7 +1,7 @@
 import UIComponents
 from BotBase import BotBase
-import ui, chat, player, net
-import OpenLib, eXLib
+import ui, chat, player, net, m2netm2g
+import OpenLib, eXLib, FileManager
 import Hooks
 
 
@@ -17,7 +17,6 @@ class Skillbot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self)
-        groupSkill = OpenLib.GetClass()
 
         self.currentSkillSet = []
 
@@ -45,19 +44,37 @@ class Skillbot(BotBase):
                                              funcState=self._start, defaultValue=False)
 
 
+    def SaveSettings(self):
+        for skill in self.currentSkillSet:
+            FileManager.WriteConfig(str(skill['id']), str(skill['icon'].isOn), file=FileManager.CONFIG_SKILLBOT)
+        FileManager.WriteConfig('IsTurnedOn', str(self.enableButton.isOn))
+        FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
+
+    def LoadSettings(self):
+        is_turned_on = FileManager.boolean(FileManager.ReadConfig('IsTurnedOn', file=FileManager.CONFIG_SKILLBOT))
+        if is_turned_on:
+            if not self.enableButton.isOn:
+                self.enableButton.OnChange()
+
+        for skill in self.currentSkillSet:
+            is_skill_turned_on = FileManager.boolean(FileManager.ReadConfig(str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
+            if is_skill_turned_on:
+                if not skill['icon'].isOn:
+                    skill['icon'].OnChange()
+
 
     def resetSkillsUI(self):
         current_class = OpenLib.GetClass()
-        if(current_class == OpenLib.SKILL_SET_NONE):
+        if current_class == OpenLib.SKILL_SET_NONE:
             return
         skillIds = OpenLib.GetClassSkillIDs(current_class)
         del self.currentSkillSet[:]
         self.currentSkillSet = []
-        for i,id in enumerate(skillIds):
+        for i, id in enumerate(skillIds):
             self.currentSkillSet.append({
-                "icon":self.comp.OnOffButton(self.Board, '','', 15+ 35*i, 100,image=OpenLib.GetSkillIconPath(id)),
-                "id":id,
-                "slot":i+1,
+                "icon": self.comp.OnOffButton(self.Board, '', '', 15 + 35 * i, 100, image=OpenLib.GetSkillIconPath(id)),
+                "id": id,
+                "slot": i + 1,
             })
 
 
@@ -69,17 +86,26 @@ class Skillbot(BotBase):
 
 
     def Frame(self):
+        self.LoadSettings()
+
         for skill in self.currentSkillSet:
             if not player.IsSkillCoolTime(skill['slot']) and skill['icon'].isOn:
                 if not player.IsMountingHorse():
-                    chat.AppendChat(3,"[Skill-Bot] Using skill at slot "+str(skill['slot']))
+                    # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
                     eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
+                else:
+                    net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+
+                    eXLib.SendUseSkillPacketBySlot(skill['slot'], player.GetTargetVID())
+                    net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
 
 
     def switch_state(self):
         if self.Board.IsShow():
+            self.SaveSettings()
             self.Board.Hide()
         else:
+            self.LoadSettings()
             self.Board.Show()
 
 

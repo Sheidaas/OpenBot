@@ -17,7 +17,7 @@ def __PhaseChangeChannelCallback(phase):
             instance.ConnectToGame()
 
 
-def getCallBackWithArg(func,arg):
+def getCallBackWithArg(func, arg):
     return lambda: func(arg)
 
 STATE_NONE = 0
@@ -55,16 +55,17 @@ class ChannelSwitcher:
         #self.fileListBox.RemoveAllItems()
         x = 27
         y = 50
-        for id in sorted(self.channels):#.items():
-            self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' +str(id), '', x, y, getCallBackWithArg(self.OnConnectButton,int(id)),
-                                          'd:/ymir work/ui/public/small_Button_01.sub',
-                                          'd:/ymir work/ui/public/small_Button_02.sub',
-                                          'd:/ymir work/ui/public/small_Button_03.sub')
+        for id in sorted(self.channels): #.items():
+            self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' + str(id), '', x, y,
+                                                             getCallBackWithArg(self.OnConnectButton, int(id)),
+                                                             'd:/ymir work/ui/public/small_Button_01.sub',
+                                                             'd:/ymir work/ui/public/small_Button_02.sub',
+                                                             'd:/ymir work/ui/public/small_Button_03.sub')
             
-            x+=50
-            if(x>=170):
+            x += 50
+            if x >= 170:
                 x = 27
-                y+=30
+                y += 30
 
     def OnConnectButton(self,id):
         _channel = id#self.fileListBox.GetSelectedItem().text
@@ -77,7 +78,6 @@ class ChannelSwitcher:
            return
 
         self.ChangeChannelById(_channel)
-
 
     def GetRegionID(self):
         # FOR EU IS 0
@@ -104,6 +104,7 @@ class ChannelSwitcher:
             return
 
         for channelID, channelDataDict in channelDict.items():
+
             self.channels[int(channelID)] = {
                 'id': int(channelID),
                 'name': channelDataDict['name'],
@@ -145,11 +146,10 @@ class ChannelSwitcher:
 
     def ConnectToGame(self):
         net.SendSelectCharacterPacket(0)
-        return
 
-    def ChangeChannelById(self,id):
+    def ChangeChannelById(self, id):
         if int(id) not in self.channels:
-            chat.AppendChat(3,"[Channel-Switcher] - Channel " + str(id) + " doesn't exist")
+            chat.AppendChat(3, "[Channel-Switcher] - Channel " + str(id) + " doesn't exist")
             return
 
         self.selectedChannel = self.channels[int(id)]
@@ -172,8 +172,10 @@ class ChannelSwitcher:
             self.OnRefreshButton()
             self.Board.Show()
 
+
 def switch_state():
     instance.switch_state()
 
+
 instance = ChannelSwitcher()
-Hooks.registerPhaseCallback("channelCallback",__PhaseChangeChannelCallback)
+Hooks.registerPhaseCallback("channelCallback", __PhaseChangeChannelCallback)

@@ -12,6 +12,7 @@ CONFIG_MAP_LINKS = eXLib.PATH + 'OpenBot/Saves/map_linker.txt'
 
 CONFIG = eXLib.PATH + 'OpenBot/Saves/config.bot'
 CONFIG_PRICE = eXLib.PATH + 'OpenBot/Saves/priceconfig.bot'
+CONFIG_SKILLBOT = 'OpenBot/Saves/skillbot.bot'
 CONFIG_BOSSES_ID = eXLib.PATH + 'OpenBot/Saves/boss_ids.txt'
 CONFIG_ORES_ID = eXLib.PATH + 'OpenBot/Saves/ores_ids.txt'
 CONFIG_PSHOP_AUTO_BUY = eXLib.PATH + 'OpenBot/Saves/search_items_max_price.txt'
@@ -19,8 +20,10 @@ CONFIG_PICKUP_FILTER = eXLib.PATH + 'OpenBot/Saves/pickup_filter.txt'
 CONFIG_SHOP_CREATOR = eXLib.PATH + 'OpenBot/Saves/item_sell_prices.txt'
 CONFIG_SELL_INVENTORY = eXLib.PATH + 'OpenBot/Saves/items_to_sell.txt'
 CONFIG_LOCATION_CHANGER = eXLib.PATH + 'OpenBot/Saves/location_changer.txt'
+CONFIG_FARMBOT_SETTINGS = eXLib.PATH + 'OpenBot/Saves/farmbot.bot'
 SHOP_CREATOR_LOG = eXLib.PATH + 'OpenBot/Saves/shop_log.txt'
 FARMBOT_WAYPOINTS_LISTS = eXLib.PATH + 'OpenBot/Saves/Paths/'
+
 
 
 #For parsing
@@ -109,7 +112,7 @@ def WriteConfig(Setting,Value,file=CONFIG):
 	"""
 	if file not in files:
 		files[file] = FileHandler(file)
-	return files[file].WriteConfig(Setting,Value)
+	return files[file].WriteConfig(Setting, Value)
 
 
 #Load and save the entire file at once, the format is the same as ReadConfig

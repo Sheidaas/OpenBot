@@ -181,7 +181,7 @@ def GetClass():
 		
 
 #Skip python select answers
-def skipAnswers(event_answers,hook=False):
+def skipAnswers(event_answers, hook=False):
 	"""
 	Selects the event to be answers.
 	if hook=True will avoid quest answers from showing on screen, the caller is then resposible for removing the hook afterwards by calling showAnswers.
@@ -195,14 +195,17 @@ def skipAnswers(event_answers,hook=False):
 	for index,answer in enumerate(event_answers,start=1):
 		event.SelectAnswer(index,answer)
 
+
 def showAnswers():
 	"""
 	Removes the quest hook, in order for quest answers to be displayed.
 	"""
 	Hook.questHook.UnhookFunction()
-		
+
+
 def GetCurrentText(self):
 	return self.textLine.GetText()
+
 
 def OnSelectItem(self, index, name):
 	self.SetCurrentItem(name)
