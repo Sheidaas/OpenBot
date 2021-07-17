@@ -24,7 +24,7 @@ class DmgHacks(ui.Window):
 
 		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState=self.OnOffBtnState )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
-		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\tCloud exploit', '', 170, 50)
+		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCloud exploit', 'Only on dagger ninja', 170, 50)
 
 		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 92, self.comp.RGB(255, 255, 255))
 		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 126, self.comp.RGB(255, 255, 255))
@@ -52,12 +52,15 @@ class DmgHacks(ui.Window):
 		self.MonsterSlider.SetSliderPos(float(FileManager.ReadConfig("WaitHack_MaxMonsters")))
 		self.SpeedSlider.SetSliderPos(float(FileManager.ReadConfig("WaitHack_Speed")))
 		self.RangeSlider.SetSliderPos(float(FileManager.ReadConfig("WaitHack_Range")))
+		self.cloudBtn.SetValue(boolean(FileManager.ReadConfig("WaitHack_CloudExploit")))
 		self.playerClose.SetValue(boolean(FileManager.ReadConfig("WaitHack_PlayerClose")))
 	def saveSettings(self):
 		FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.MonsterSlider.GetSliderPos()))
 		FileManager.WriteConfig("WaitHack_Speed", str(self.SpeedSlider.GetSliderPos()))
 		FileManager.WriteConfig("WaitHack_Range", str(self.RangeSlider.GetSliderPos()))
 		FileManager.WriteConfig("WaitHack_PlayerClose", str(self.playerClose.isOn))
+		FileManager.WriteConfig("WaitHack_CloudExploit", str(self.cloudBtn.isOn))
+
 		FileManager.Save()
 	
 	
@@ -99,14 +102,6 @@ class DmgHacks(ui.Window):
 		return vid_hits
 		#chat.AppendChat(3,"After: " + str(len(lst)))
 
-	def IsWeaponArch(self):
-		idx = player.GetItemIndex(player.EQUIPMENT,item.EQUIPMENT_WEAPON)
-		if idx == 0:
-			return False
-		item.SelectItem(idx)
-		if item.GetItemType() == item.ITEM_TYPE_WEAPON and item.GetItemSubType() == item.WEAPON_BOW:
-			return True
-		return False
 
 	def AttackArch(self,lst,x,y):
 		vid_hits = 0
@@ -146,7 +141,7 @@ class DmgHacks(ui.Window):
 		if(val and self.enableButton.isOn):
 			if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
 				return
-			isArch = self.IsWeaponArch()
+			isArch = OpenLib.IsWeaponArch()
 			main_vid = net.GetMainActorVID()
 			x,y,z = chr.GetPixelPosition(main_vid)
 			self.lastPos = (x,y)

@@ -1,9 +1,8 @@
 import ui,app,chat,chr,net,player,item,skill,time,game,shop,chrmgr,OpenLib,eXLib
-import background,constInfo,miniMap,wndMgr,math,uiCommon,grp,FileManager,UIComponents,Movement,OpenLog
+import background,constInfo,miniMap,wndMgr,math,uiCommon,grp,FileManager,UIComponents,Movement,OpenLog, Hooks
 import DmgHacks as Dmg
 from FileManager import boolean
 import UIComponents
-
 
 class SettingsDialog(ui.ScriptWindow):
 	TIME_DEAD = 5
@@ -66,8 +65,8 @@ class SettingsDialog(ui.ScriptWindow):
 		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  'OpenBot/Images/General/dmg_0.tga', 'OpenBot/Images/General/dmg_1.tga', 'OpenBot/Images/General/dmg_0.tga')
   		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, 'OpenBot/Images/General/onehand_0.tga', 'OpenBot/Images/General/onehand_1.tga', 'OpenBot/Images/General/onehand_0.tga')
 		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, 'OpenBot/Images/General/twohand_0.tga', 'OpenBot/Images/General/twohand_1.tga', 'OpenBot/Images/General/twohand_0.tga')
-		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Damage hack on selected target', 28, 18,image="icon/item/27101.tga",funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
-
+		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Dmg on selected target (defaults to cloud damage on dagger ninja)', 28, 18,image="OpenBot/Images/General/monster.png",funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
+		
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
 		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart Here', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
@@ -293,10 +292,14 @@ class SettingsDialog(ui.ScriptWindow):
 		if OpenLib.dist(x,y,mob_x,mob_y) > OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
 			is_remote = True
 			Movement.TeleportStraightLine(x,y,mob_x,mob_y)
-		if not player.IsSkillCoolTime(5):
-			eXLib.SendUseSkillPacketBySlot(5,vid)
-		eXLib.SendAddFlyTarget(vid,mob_x,mob_y)
-		eXLib.SendShoot(35)
+		_class =  OpenLib.GetClass()
+		if _class == OpenLib.SKILL_SET_DAGGER_NINJA:
+			if not player.IsSkillCoolTime(5):
+				eXLib.SendUseSkillPacketBySlot(5,vid)
+			eXLib.SendAddFlyTarget(vid,mob_x,mob_y)
+			eXLib.SendShoot(35)
+		else:
+			eXLib.SendAttackPacket(vid,0)
 
 		if is_remote:
 			Movement.TeleportStraightLine(mob_x,mob_y,x,y)

@@ -659,6 +659,19 @@ def GetCurrentServer():
 		OpenLog.DebugPrint("Exception raised when trying to obtain current channel.")
 		return 0
 
+
+def IsWeaponArch(self):
+	"""
+	Return true if weapon is arch
+	"""
+	idx = player.GetItemIndex(player.EQUIPMENT,item.EQUIPMENT_WEAPON)
+	if idx == 0:
+		return False
+	item.SelectItem(idx)
+	if item.GetItemType() == item.ITEM_TYPE_WEAPON and item.GetItemSubType() == item.WEAPON_BOW:
+		return True
+	return False
+
 class WaitingDialog(ui.ScriptWindow):
 
 	def __init__(self):
