@@ -405,7 +405,7 @@ class FarmingBot(BotBase):
 
     def go_to_next_channel(self):
         current_channel = OpenLib.GetCurrentChannel()
-        ChannelSwitcher.instance.OnRefreshButton()
+        ChannelSwitcher.instance.GetChannels()
         if current_channel + 1 > len(ChannelSwitcher.instance.channels):
             current_channel = 1
         else:

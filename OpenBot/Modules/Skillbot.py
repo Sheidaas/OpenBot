@@ -56,7 +56,7 @@ class Skillbot(BotBase):
 
         self.comp = UIComponents.Component()
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(235, 255)
+        self.Board.SetSize(235, 150)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('Skillbot')

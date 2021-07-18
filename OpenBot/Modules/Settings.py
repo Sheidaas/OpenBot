@@ -1,6 +1,7 @@
 import ui,app,chat,chr,net,player,item,skill,time,game,shop,chrmgr,OpenLib,eXLib
 import background,constInfo,miniMap,wndMgr,math,uiCommon,grp,FileManager,UIComponents,Movement,OpenLog, Hooks
 import DmgHacks as Dmg
+import ChannelSwitcher
 from FileManager import boolean
 import ChannelSwitcher
 import UIComponents
@@ -135,6 +136,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.useRangePickup = boolean(FileManager.ReadConfig("UseRangePickup"))
 		self.wallHack = boolean(FileManager.ReadConfig("WallHack"))
 		self.onClickDmgSpeed  = boolean(FileManager.ReadConfig("OnClickDamageSpeed"))
+		self.antiExp = boolean(FileManager.ReadConfig("antiExp"))
 		for i in FileManager.LoadListFile(FileManager.CONFIG_PICKUP_FILTER):
 			self.addPickFilterItem(int(i))
 		self.sellItems = {int(i) for i in FileManager.LoadListFile(FileManager.CONFIG_SELL_INVENTORY)}
@@ -156,6 +158,7 @@ class SettingsDialog(ui.ScriptWindow):
 		FileManager.WriteConfig("UseRangePickup", str(self.useRangePickup))
 		FileManager.WriteConfig("WallHack", str(self.wallHack))
 		FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
+		FileManager.WriteConfig("antiExp", str(self.antiExp))
 		#chat.AppendChat(3,str(self.pickUp))
 		FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
 		FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
@@ -333,9 +336,9 @@ class SettingsDialog(ui.ScriptWindow):
 		if self.restartHere and player.GetStatus(player.HP) <= 0:
 			OpenLib.Revive()
 		
-		if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
+		#if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
 			#net.DirectEnter(0,0)
-			net.DirectEnter(0,0)
+			#ChannelSwitcher.instance.ConnectToChannel()
 	
 	def WallHackSwich(self,val):
 		if bool(val):

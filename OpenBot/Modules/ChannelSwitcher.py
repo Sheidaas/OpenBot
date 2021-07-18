@@ -11,6 +11,7 @@ def __PhaseChangeChannelCallback(phase):
             instance.SetStateNone()
         elif phase == OpenLib.PHASE_LOGIN:
             if Settings.instance.autoLogin:
+                net.DirectEnter(0,0)
                 return
             net.DirectEnter(0,0)
         elif phase == OpenLib.PHASE_SELECT:
@@ -27,6 +28,7 @@ class ChannelSwitcher:
 
     def __init__(self):
         self.channels = {}
+        self.currChannel = 0
         self.currState = STATE_NONE
         self.selectedChannel = 0
 
@@ -49,10 +51,10 @@ class ChannelSwitcher:
         y = 50
         for id in sorted(self.channels): #.items():
             self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' + str(id), '', x, y,
-                                                             getCallBackWithArg(self.OnConnectButton, int(id)),
-                                                             'd:/ymir work/ui/public/small_Button_01.sub',
-                                                             'd:/ymir work/ui/public/small_Button_02.sub',
-                                                             'd:/ymir work/ui/public/small_Button_03.sub')
+                                                            getCallBackWithArg(self.OnConnectButton, int(id)),
+                                                            'd:/ymir work/ui/public/small_Button_01.sub',
+                                                            'd:/ymir work/ui/public/small_Button_02.sub',
+                                                            'd:/ymir work/ui/public/small_Button_03.sub')
             
             x += 50
             if x >= 200:
