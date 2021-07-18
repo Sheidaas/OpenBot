@@ -336,8 +336,8 @@ class SettingsDialog(ui.ScriptWindow):
 		if self.restartHere and player.GetStatus(player.HP) <= 0:
 			OpenLib.Revive()
 		
-		#if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
-			#net.DirectEnter(0,0)
+		if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
+			net.DirectEnter(0,0)
 			#ChannelSwitcher.instance.ConnectToChannel()
 	
 	def WallHackSwich(self,val):

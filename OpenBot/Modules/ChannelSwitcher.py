@@ -11,9 +11,9 @@ def __PhaseChangeChannelCallback(phase):
             instance.SetStateNone()
         elif phase == OpenLib.PHASE_LOGIN:
             if Settings.instance.autoLogin:
-                net.DirectEnter(0,0)
                 return
-            net.DirectEnter(0,0)
+            else:
+                net.DirectEnter(0,0)
         elif phase == OpenLib.PHASE_SELECT:
             instance.ConnectToGame()
 

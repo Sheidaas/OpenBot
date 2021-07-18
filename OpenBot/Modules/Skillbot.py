@@ -82,7 +82,9 @@ class Skillbot(BotBase):
     def LoadSettings(self):
         is_turned_on = FileManager.boolean(FileManager.ReadConfig('IsTurnedOn', file=FileManager.CONFIG_SKILLBOT))
         if is_turned_on:
-            self.enableButton.OnChange()
+            self.enableButton.SetOn()
+        else:
+            self.enableButton.SetOff()
         
         for skill in self.currentSkillSet:
             is_skill_turned_on = FileManager.boolean(FileManager.ReadConfig(str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
