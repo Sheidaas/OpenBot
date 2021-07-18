@@ -660,11 +660,11 @@ def GetCurrentServer():
 		return 0
 
 
-def IsWeaponArch(self):
+def IsWeaponArch():
 	"""
 	Return true if weapon is arch
 	"""
-	idx = player.GetItemIndex(player.EQUIPMENT,item.EQUIPMENT_WEAPON)
+	idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
 	if idx == 0:
 		return False
 	item.SelectItem(idx)

@@ -26,9 +26,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.OpenBotBoard = ui.ThinBoard(layer="TOP_MOST")
         self.OpenBotBoard.SetPosition(0, 40)
         if DEBUG:
-            self.OpenBotBoard.SetSize(51, 600)
-        else:
             self.OpenBotBoard.SetSize(51, 500)
+        else:
+            self.OpenBotBoard.SetSize(51, 435)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
@@ -74,7 +74,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 323, self.OnRadar, 'OpenBot/Images/Hackbar/radar_0.tga', 'OpenBot/Images/Hackbar/radar_1.tga', 'OpenBot/Images/Hackbar/radar_0.tga')
         self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 358, self.OnSkillbot, 'OpenBot/Images/Hackbar/skill_0.tga', 'OpenBot/Images/Hackbar/skill_1.tga', 'OpenBot/Images/Hackbar/skill_0.tga')
         self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
-        self.ChannelSwitcherButton = self.comp.Button(self.OpenBotBoard, '', 'ChannelSwitcher', 8, 428, self.OnChannelSwitcher, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
+        #self.ChannelSwitcherButton = self.comp.Button(self.OpenBotBoard, '', 'ChannelSwitcher', 8, 428, self.OnChannelSwitcher, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')

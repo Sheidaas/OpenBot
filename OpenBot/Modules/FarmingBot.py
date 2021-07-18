@@ -16,7 +16,8 @@ FARMING_STATE = 3
 def __PhaseTurnOnFarmbot(phase):
     global farm
     if phase == OpenLib.PHASE_GAME:
-        farm.StartBot()
+        if farm.enableButton.isOn:
+            farm.Start()
 
 class FarmingBot(BotBase):
 
@@ -238,8 +239,7 @@ class FarmingBot(BotBase):
 
     def onWaypointReach(self):
         self.next_point()
-        self.lastTimeWaitingState = OpenLib.GetTime()
-        self.CURRENT_STATE = WAITING_STATE
+
 
     def _start(self, val):
         if not val:
@@ -270,6 +270,8 @@ class FarmingBot(BotBase):
             Movement.TeleportToPosition(x, y)
             if callback is not None:
                 callback()
+            self.lastTimeWaitingState = OpenLib.GetTime()
+            self.CURRENT_STATE = WAITING_STATE
 
     def MoveToVid(self, vid, callback=None):
         chr.SelectInstance(vid)
@@ -298,7 +300,7 @@ class FarmingBot(BotBase):
             self.go_to_next_channel()
             return
 
-        if self.always_use_waithack and self.CURRENT_STATE == WALKING_STATE:
+        if self.always_use_waithack:
             DmgHacks.Resume()
         else:
             DmgHacks.Pause()

@@ -29,23 +29,15 @@ class ChannelSwitcher:
         self.channels = {}
         self.currState = STATE_NONE
         self.selectedChannel = 0
-        self.BuildWindow()
 
-    def BuildWindow(self):
+    def BuildWindow(self, board):
         self.component = UIComponents.Component()
-
-        self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(200, 190)
-        self.Board.SetPosition(52, 40)
-        self.Board.AddFlag('movable')
-        self.Board.SetTitleName('Channel Switcher')
-        self.Board.SetCloseEvent(self.switch_state)
-        self.Board.Hide()
+        self.Board = board
 
         #self.barItems, self.fileListBox, self.ScrollBar = component.ListBoxEx2(self.Board, 50, 40, 100, 150)
         #self.fileListBox.SetViewItemCount(10)
 
-        self.refreshButton = self.component.Button(self.Board, 'Refresh', '', 55, 150, self.OnRefreshButton,
+        self.refreshButton = self.component.Button(self.Board, 'Refresh', '', 90, 150, self.OnRefreshButton,
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
@@ -53,7 +45,7 @@ class ChannelSwitcher:
     def OnRefreshButton(self):
         self.GetChannels()
         #self.fileListBox.RemoveAllItems()
-        x = 27
+        x = 65
         y = 50
         for id in sorted(self.channels): #.items():
             self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' + str(id), '', x, y,
@@ -63,8 +55,8 @@ class ChannelSwitcher:
                                                              'd:/ymir work/ui/public/small_Button_03.sub')
             
             x += 50
-            if x >= 170:
-                x = 27
+            if x >= 200:
+                x = 65
                 y += 30
 
     def OnConnectButton(self,id):

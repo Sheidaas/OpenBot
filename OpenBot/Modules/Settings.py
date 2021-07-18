@@ -2,6 +2,7 @@ import ui,app,chat,chr,net,player,item,skill,time,game,shop,chrmgr,OpenLib,eXLib
 import background,constInfo,miniMap,wndMgr,math,uiCommon,grp,FileManager,UIComponents,Movement,OpenLog, Hooks
 import DmgHacks as Dmg
 from FileManager import boolean
+import ChannelSwitcher
 import UIComponents
 
 class SettingsDialog(ui.ScriptWindow):
@@ -56,16 +57,17 @@ class SettingsDialog(ui.ScriptWindow):
 		
 		self.comp = UIComponents.Component()
 
-		self.TabWidget = UIComponents.TabWindow(10,30,300-20,370-40,self.Board,['General','Pickup','Attack','Shop'])
+		self.TabWidget = UIComponents.TabWindow(10,30,300-20,370-40,self.Board,['General','Pickup','Attack','Shop', 'Channels'])
 		self.generalTab = self.TabWidget.GetTab(0)
 		self.pickupTab = self.TabWidget.GetTab(1)
 		self.attackTab = self.TabWidget.GetTab(2)
 		self.shopTab = self.TabWidget.GetTab(3)
+		self.channelsTab = self.TabWidget.GetTab(4)
 
 		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  'OpenBot/Images/General/dmg_0.tga', 'OpenBot/Images/General/dmg_1.tga', 'OpenBot/Images/General/dmg_0.tga')
   		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, 'OpenBot/Images/General/onehand_0.tga', 'OpenBot/Images/General/onehand_1.tga', 'OpenBot/Images/General/onehand_0.tga')
 		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, 'OpenBot/Images/General/twohand_0.tga', 'OpenBot/Images/General/twohand_1.tga', 'OpenBot/Images/General/twohand_0.tga')
-		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Dmg on selected target (defaults to cloud damage on dagger ninja)', 28, 18,image="OpenBot/Images/General/monster.png",funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
+		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Dmg on selected target (defaults to cloud damage on dagger ninja)', 28, 18,image='OpenBot/Images/General/monster_1.tga',funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
 		
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
@@ -97,6 +99,13 @@ class SettingsDialog(ui.ScriptWindow):
 		self.AddSellItemBtn = self.comp.Button(self.shopTab, 'Add', '', 65, 185, self.OpenSellItemDialog, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
 		self.SellRemoveBtn = self.comp.Button(self.shopTab, 'Remove', '', 140, 185, self.UISellRemoveFilterItem, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
 		#self.BtnRedBuy = self.comp.OnOffButton(self.generalTab, '', 'Buy Red Pots', 200, 130, image='icon/item/27002.tga',funcState=self.OnRedBuy,defaultValue=int(self.wallHack))
+
+		## CHANNELS
+		self.ChannelSwitcher = ChannelSwitcher.instance
+		self.ChannelSwitcher.BuildWindow(self.channelsTab)
+		self.ChannelSwitcher.OnRefreshButton()
+		for id in sorted(self.ChannelSwitcher.channels):
+			setattr(self, 'channel_' + str(id), self.ChannelSwitcher.channels[id]['btn'])
 
 
 		##Init labels

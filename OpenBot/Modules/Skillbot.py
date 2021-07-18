@@ -12,6 +12,11 @@ def __PhaseChangeSkillCallback(phase):
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkillsUI()
         instance.startUpWait = True
+        if instance.enableButton.isOn:
+            instance.Start()
+        else:
+            instance.Stop()
+
 
 class Skillbot(BotBase):
 
@@ -31,7 +36,9 @@ class Skillbot(BotBase):
         79,
         94,
         95,
-        96
+        96,
+        3,
+        4,
 
     }
 
@@ -41,6 +48,7 @@ class Skillbot(BotBase):
         self.startUpWait = False
         self.currentSkillSet = []
 
+        self.isOn = False
         self.BuildWindow()
         self.resetSkillsUI()
 
@@ -56,31 +64,31 @@ class Skillbot(BotBase):
         self.Board.Hide()
 
         self.enableButton = self.comp.OnOffButton(self.Board, '', '', 15, 40,
-                                             OffUpVisual='OpenBot/Images/start_0.tga',
-                                             OffOverVisual='OpenBot/Images/start_1.tga',
-                                             OffDownVisual='OpenBot/Images/start_2.tga',
-                                             OnUpVisual='OpenBot/Images/stop_0.tga',
-                                             OnOverVisual='OpenBot/Images/stop_1.tga',
-                                             OnDownVisual='OpenBot/Images/stop_2.tga',
-                                             funcState=self._start, defaultValue=False)
+                                                  OffUpVisual='OpenBot/Images/start_0.tga',
+                                                  OffOverVisual='OpenBot/Images/start_1.tga',
+                                                  OffDownVisual='OpenBot/Images/start_2.tga',
+                                                  OnUpVisual='OpenBot/Images/stop_0.tga',
+                                                  OnOverVisual='OpenBot/Images/stop_1.tga',
+                                                  OnDownVisual='OpenBot/Images/stop_2.tga',
+                                                  funcState=self._start, defaultValue=self.isOn)
 
 
     def SaveSettings(self):
         for skill in self.currentSkillSet:
             FileManager.WriteConfig(str(skill['id']), str(skill['icon'].isOn), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('IsTurnedOn', str(self.enableButton.isOn))
+        FileManager.WriteConfig('IsTurnedOn', str(self.isOn), file=FileManager.CONFIG_SKILLBOT)
         FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
 
     def LoadSettings(self):
         is_turned_on = FileManager.boolean(FileManager.ReadConfig('IsTurnedOn', file=FileManager.CONFIG_SKILLBOT))
-        self.enableButton.SetValue(is_turned_on)
-
+        if is_turned_on:
+            self.enableButton.OnChange()
+        
         for skill in self.currentSkillSet:
             is_skill_turned_on = FileManager.boolean(FileManager.ReadConfig(str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
             if is_skill_turned_on:
                 if not skill['icon'].isOn:
                     skill['icon'].OnChange()
-
 
     def resetSkillsUI(self):
         current_class = OpenLib.GetClass()
@@ -99,7 +107,6 @@ class Skillbot(BotBase):
                 })
                 pos_x += 1
         self.LoadSettings()
-
 
     def _start(self, val):
         if val:
