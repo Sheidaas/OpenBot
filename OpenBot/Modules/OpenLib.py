@@ -10,6 +10,7 @@ ATTACK_RANGE = 270
 
 #Types
 NONE_TYPE = -99
+OBJECT_TYPE = 1
 METIN_TYPE = 2
 MONSTER_TYPE = 0
 PLAYER_TYPE = 6
@@ -246,6 +247,7 @@ def IsThisOre(vid):
 		return True
 	return False
 
+
 #Checks if inventory is full by checking empty spaces
 def isInventoryFull():
 	global player
@@ -414,6 +416,14 @@ def GetCurrentPhase():
 	#return eXLib.GetCurrentPhase()
 	return Hooks.GetCurrentPhase()
 
+def IsMonsterNearby():
+	for vid in eXLib.InstancesList:
+		if vid != player.GetMainCharacterIndex():
+			_type = chr.GetInstanceType(vid)
+			if _type == MONSTER_TYPE or _type == METIN_TYPE:
+				return True
+	return False
+
 def IsInGamePhase():
 	"""
 	Check if is in game phase.
@@ -460,6 +470,26 @@ def getAllStatusOfMainActor():
 
 	return character_status
 
+def GetNearestMonsterVid():
+	(closest_vid,_dist) = (0,999999999)
+	my_pos = player.GetMainCharacterPosition()
+	for vid in eXLib.InstancesList:
+		if not chr.HasInstance(vid):
+			continue
+
+		if eXLib.IsDead(vid):
+			continue
+		
+		_type = chr.GetInstanceType(vid)
+		if MONSTER_TYPE == _type or METIN_TYPE == _type:
+			monst_pos = chr.GetPixelPosition(vid)
+			this_dist = dist(my_pos[0],my_pos[1],monst_pos[0],monst_pos[1])
+
+			if this_dist < _dist:
+				_dist = this_dist
+				closest_vid = vid
+		
+	return closest_vid
 
 def isPlayerCloseToInstance(vid_target):
 	"""
@@ -474,14 +504,24 @@ def isPlayerCloseToInstance(vid_target):
 	if vid_target not in eXLib.InstancesList:
 		return False
 
-	player_x, player_y, player_z = chr.GetPixelPosition(PLAYER_VID)
+	player_x, player_y, player_z = player.GetMainCharacterPosition()
 	target_x, target_y, target_z = chr.GetPixelPosition(vid_target)
 	distance = dist(target_x, target_y, player_x, player_y)
 
-	if distance < 300:
+	if distance < 150:
 		return True
 	
 	return False
+
+def isPlayerCloseToPosition(position_x, position_y, max_dist=150):
+	player_x, player_y, player_z = player.GetMainCharacterPosition()
+	distance = dist(position_x, position_y, player_x, player_y)
+
+	if distance < max_dist:
+		return True
+	
+	return False
+
 		
 def getClosestInstance(_type,is_unblocked=True):
 	"""
@@ -498,16 +538,18 @@ def getClosestInstance(_type,is_unblocked=True):
 	for vid in eXLib.InstancesList:
 		if not chr.HasInstance(vid):
 			continue
+
 		if is_unblocked:
 			mob_x,mob_y,mob_z = chr.GetPixelPosition(vid)
 			if eXLib.IsPositionBlocked(mob_x,mob_y):
 				continue
+
 		this_distance = player.GetCharacterDistance(vid)
 		if eXLib.IsDead(vid):
 			continue
 
 		type = chr.GetInstanceType(vid)
-		if type in _type or (BOSS_TYPE in type and isBoss(vid)):
+		if type in _type:
 			if this_distance < _dist and not isPlayerCloseToInstance(vid):
 				_dist = this_distance
 				closest_vid = vid
