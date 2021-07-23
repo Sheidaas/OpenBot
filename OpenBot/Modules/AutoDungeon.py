@@ -151,16 +151,20 @@ def OpenAllSeals(args): # center position of floor,
                 }
     return action_dict
 
+def UpgradeDeamonTower(args):
+    item_slot = args[0]
+    net.SendRefinePacket(item_slot, 4)
+    return True
+
 # DUNGEON SCHEMA
 DEAMON_TOWER = {
     'requirements': {
         'maps': ['metin2_map_milgyo', 'metin2_map_deviltower1'],
-        'lvl': 40,
-    },
+        'lvl': 40,},
     'options': {
         'UseBlacksmith': False,
-        'GoAboveBlacksmith': False,
-    },
+        'SlotToUpgrade': 0,
+        'GoAboveBlacksmith': False,},
     'stages': {
         0: { # stage in hwang temple, entering dt
             'actions': [{ 'args': [20348, [0, 0], (53200, 59600), 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
@@ -209,22 +213,51 @@ DEAMON_TOWER = {
         5: { # stage with keys
             'actions': [{ 'args': [(40000, 44000)], # ID, event_answer, posiiton of npc, npc's map
                           'function': OpenAllSeals,
-                          'requirements': {IS_NEAR_POSITION: (13300, 40400, 5000)},
+                          'requirements': {IS_NEAR_POSITION: (40713, 19914, 5000)},
                           'on_success': [NEXT_ACTION],
                           'on_failed': []
                         }],},
         6: { # stage with blacksmith
-            'actions': [{ 'args': [(13300, 40400)], # WRONG POSITION!
+            'actions': [{ 'args': [(41000, 20000)],
+                          'function': ClearFloor,
+                          'requirements': {},
+                          'on_success': [NEXT_ACTION],
+                          'on_failed': []
+                        }
+
+                        ],},
+        },
+        7: { # stage with metins and chests
+            'actions': [{ 'args': [(61500, 20000)],
                           'function': ClearFloor,
                           'requirements': {}, # DONT NEED ANY
                           'on_success': [NEXT_ACTION],
                           'on_failed': []
                         }
 
-                        ],},
-        }
-}
+                        ],
+        },
+        8: { # stage with keys
+            'actions': [{ 'args': [(61690, 42200)],
+                          'function': ClearFloor,
+                          'requirements': {IS_NEAR_POSITION: (40713, 19914, 5000)}, # DONT NEED ANY
+                          'on_success': [NEXT_ACTION],
+                          'on_failed': []
+                        }
 
+                        ],
+        },
+        9: { # ripper
+            'actions': [{ 'args': [(61690, 61690)],
+                          'function': ClearFloor,
+                          'requirements': {}, # DONT NEED ANY
+                          'on_success': [NEXT_ACTION],
+                          'on_failed': []
+                        }
+
+                        ],
+        },
+        }
 
 def getCallBackWithArg(func, arg):
     return lambda: func(arg)
@@ -265,7 +298,7 @@ class AutoDungeon(BotBase):
         self.deamon_tower_tab = self.TabWidget.GetTab(0)
         self.settings_tab = self.TabWidget.GetTab(1)
                                 
-        self.enableDeamonTower = comp.OnOffButton(self.deamon_tower_tab, '', '', 140, 110,
+        self.enableDeamonTower = comp.OnOffButton(self.deamon_tower_tab, '', '', 150, 110,
                                                     OffUpVisual='OpenBot/Images/start_0.tga',
                                                     OffOverVisual='OpenBot/Images/start_1.tga',
                                                     OffDownVisual='OpenBot/Images/start_2.tga',
@@ -296,10 +329,25 @@ class AutoDungeon(BotBase):
         if self.CheckRequirementsForCurrSchema():
 
             if str(background.GetCurrentMapName()) == 'metin2_map_deviltower1':
-                self.currStage = 1
+                if self.isNearPosition((19004, 69011, 10000)):
+                    self.currStage = 1
+                elif self.isNearPosition((12599, 38399, 10000)):
+                    self.currStage = 2
+                elif self.isNearPosition((18000, 18000, 10000)):
+                    self.currStage = 3
+                elif self.isNearPosition((37037, 62659, 10000)):
+                    self.currStage = 4
+                elif self.isNearPosition((39539, 43607, 10000)):
+                    self.currStage = 5
+                elif self.isNearPosition((40713, 19914, 10000)):
+                    self.currStage = 6
+                else:
+                    DebugPrint('Invalid stage')
+                    return
+            else:
+                self.currStage = 0
 
-            OpenLog.DebugPrint('Could go state doing dungeon, currStage: ' + str(self.currStage))
-            OpenLog.DebugPrint(str(self.currSchema))
+            self.AddOptionalActionsToDeamonTower()
             self.currState = STATE_DOING_DUNGEON
             self.Start()
         else:
@@ -307,16 +355,27 @@ class AutoDungeon(BotBase):
 
     def AddOptionalActionsToDeamonTower(self):
         if self.currSchema['options']['UseBlacksmith']:
-            action_dict = {}
-            self.currAction['stages'][6]['actions'].append()
+            action_dict = { 'args': [self.currSchema['options']['SlotToUpgrade']],
+                          'function': UpgradeDeamonTower,
+                          'requirements': {} }
+            self.currSchema['stages'][6]['actions'].append(action_dict)
 
-        if self.currSchema['options']['GoAboveBlacksmith']:
-            pass
-        else:
-            action_dict = { 'args': [20348, [0, 0], (53200, 59600), 'metin2_map_milgyo'], # WRONG IDS AND POSITION, NEED TO CHECK IS THERE 3 BLACKSMITH WITH DIFFRENT IDS
+        if self.currSchema['options']['GoAboveBlacksmith'] and player.LEVEL >= 75:
+            action_dict = { 'args': [20348, [0, 0, 0], (42500, 21600), 'metin2_map_deviltower1'],
                           'function': EnterMapByNPC,
                           'requirements': { IS_IN_MAP: ['metin2_map_milgyo']}}
-            self.currAction['stages'][6]['actions'].append(action_dict)
+            self.currSchema['stages'][6]['actions'].append(action_dict)
+        else:
+            answer = []
+            if player.LEVEL < 75:
+                answer = [0, 0]
+            else:
+                answer = [0, 0, 2]
+
+            action_dict = { 'args': [20348, answer, (42500, 21600), 'metin2_map_deviltower1'],
+                          'function': EnterMapByNPC,
+                          'requirements': { IS_IN_MAP: ['metin2_map_milgyo']}}
+            self.currSchema['stages'][6]['actions'].append(action_dict)
 
     def CheckRequirementsForCurrSchema(self):
         for requirement in self.currSchema['requirements'].keys():
