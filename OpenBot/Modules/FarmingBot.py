@@ -43,6 +43,7 @@ class FarmingBot(BotBase):
         self.ores_vid_list = []
         self.ores_to_mine = []
         self.selectedOre = 0
+        self.is_currently_digging = False
 
 
         self.Board = ui.BoardWithTitleBar()
@@ -240,7 +241,6 @@ class FarmingBot(BotBase):
     def onWaypointReach(self):
         self.next_point()
 
-
     def _start(self, val):
         if not val:
             self.Stop()
@@ -248,7 +248,6 @@ class FarmingBot(BotBase):
         else:
             self.Start()
             
-
     def StartBot(self):
         if len(self.path) < 2:
             self.Stop()
@@ -342,10 +341,15 @@ class FarmingBot(BotBase):
             #chat.AppendChat(3, 'Stop')
             return
 
-        val, self.lastTimeMine = OpenLib.timeSleep(self.lastTimeMine, 30)
-        if val:
-            #chat.AppendChat(3, 'SendOnClickPacket')
-            net.SendOnClickPacket(self.selectedOre)
+        if not self.is_currently_digging:
+            player_vid = player.GetMainCharacterIndex()
+            chat.AppendChat(3, 'DIGG')
+            eXLib.RegisterDigMotionCallback(player_vid, self.select_ore, self.OnDigMotionCallback)
+            chat.AppendChat(3, 'DIGG After')
+            self.is_currently_digging = True
+
+    def OnDigMotionCallback(self):
+        self.is_currently_digging = False
 
     def farmMetin(self):
 
@@ -389,7 +393,9 @@ class FarmingBot(BotBase):
             self.CURRENT_STATE = WALKING_STATE
             return False
         if not OpenLib.isPlayerCloseToInstance(self.selectedOre):
-            return False
+            x, y, z = chr.GetPixelPosition(self.select_ore)
+            Movement.GoToPositionAvoidingObjects(x, y)
+
         return True
 
     def is_text_validate(self, text):

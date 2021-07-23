@@ -14,5 +14,5 @@ def DebugPrint(arg):
 
 
 #To override the file
-#f = open(eXLib.PATH+"\\Log.txt","w")
-#f.close()
+f = open(eXLib.PATH+"\\Log.txt","w")
+f.close()
