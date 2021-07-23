@@ -1,4 +1,4 @@
-# eXLib V1.1
+# eXLib V1.2
 ## General Functions
 - Get(\<string\> filePath) returns \<bytearray\><br>
   Similar to old app.Get, allows to extract any file encrypted.
@@ -126,11 +126,3 @@ These simulates the functions that were removed from the modules by Gameforge.
   - MoveToDestPosition(\<float\> x,\<float\> y)<br>
     Moves to a destination.
 	
-
-
-# Updates
-- v1.1:
-    - Added SetMoveSpeedMultiplier
-    - Added SendUseSkillPacket
-    - Fixed some memory leaks
-    - Fixed a bug where the pickup was picking wrong items
