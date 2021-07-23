@@ -158,4 +158,805 @@ recv ping packet. (securitymode 1700604)
 CResource::Load file not exist H<ã)•á»Ø
 OnShoot 
 OnShoot 
-OnShoo
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+recv ping packet. (securitymode 1700604)
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+recv ping packet. (securitymode 1700604)
+ >> GulidWarEndList [1698588 vs 2060712200]
+recv ping packet. (securitymode 1700604)
+ >> GulidWarList [1698588 vs 2060712200]
+recv ping packet. (securitymode 1700604)
+recv ping packet. (securitymode 1700604)
+recv ping packet. (securitymode 1700604)
+recv ping packet. (securitymode 1700604)
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+ >> GulidWarEndList [1698588 vs 2060712200]
+CPythonNonPlayer::LoadNonPlayerData: äè, sizeof(TMobTable)=1693492
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+CResource::Reload 8Kœ)‰Ï»Øðá\
+CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698692
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698692
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+OnShoot 
+OnShoot 
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+CPythonNonPlayer::LoadNonPlayerData: äè, sizeof(TMobTable)=1693492
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698692
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+VID [1700476]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤
+VID [1700476]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤
+VID [1700476]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤
+VID [1700476]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤
+VID [1700476]°¡ Å¸°ÙÀ» Ãß°¡ ¼³Á¤
+ >> GulidWarList [1698588 vs 2060712200]
+recv ping packet. (securitymode 1700604)
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+CPythonNonPlayer::LoadNonPlayerData: äè, sizeof(TMobTable)=1693492
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698692
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+ >> GulidWarList [1698588 vs 2060712200]
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+recv ping packet. (securitymode 1700604)
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+OnShoot 
+Python GraphicOnOff Destroy
+Python GraphicOnOff Clear
+Python Graphic Clear

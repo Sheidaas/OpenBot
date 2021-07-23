@@ -1,6 +1,7 @@
 import Movement
 import ui,OpenLib,NPCInteraction,DmgHacks,player,Settings,chat,OpenLog
 import abc
+
 class BotBase(ui.ScriptWindow):
 	""" 
 	Base class for a bot mode.
@@ -18,7 +19,7 @@ class BotBase(ui.ScriptWindow):
 	STATE_WATING = 3
 
 
-	def __init__(self,time_wait=0.1,shopOnFullInv = False):
+	def __init__(self,time_wait=0.1,shopOnFullInv = False,onlyGamePhase=True):
 		"""Constructor
 
 		Args:
@@ -31,6 +32,7 @@ class BotBase(ui.ScriptWindow):
 		self.State = self.STATE_STOPPED
 		self.time_wait = time_wait
 		self.generalTimer = 0
+		self.onlyGamePhase = True
 
 		#Shop - Can be changed using callback by super class
 		self.onInvFullCallback = None #Will call this function before going to shop
@@ -60,6 +62,9 @@ class BotBase(ui.ScriptWindow):
 	def _ResumeCallback(self):
 		OpenLog.DebugPrint("[BotBase] Resuming bot")
 		self.__SetStateBotting()
+
+	def SetOnlyGamePhase(self,onlyGame):
+		self.onlyGamePhase = onlyGame
 
 	def GoToShop(self):
 		if self.onInvFullCallback != None:
@@ -101,6 +106,14 @@ class BotBase(ui.ScriptWindow):
 		"""
 		self.time_wait = this_time
 
+	def SetOnlyGamePhase(self,onlyGame):
+		"""
+		Sets the frame to be run either only on game phase or on all phases.
+
+		Args:
+			this_time ([float]): If True, Frame will only be ran in Game phase otherwise will be ran in all phases.
+		"""
+		self.onlyGamePhase = onlyGame
 
 	def Start(self):
 		"""
@@ -163,7 +176,7 @@ class BotBase(ui.ScriptWindow):
 		if not val:
 			return
 
-		if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
+		if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME and self.onlyGamePhase:
 			return
 
 		if self.State == self.STATE_WATING:
