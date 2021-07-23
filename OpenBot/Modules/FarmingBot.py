@@ -1,4 +1,4 @@
-from OpenBot.Modules import ChannelSwitcher, Skillbot, OpenLog
+from OpenBot.Modules import ChannelSwitcher, OpenLog
 from BotBase import BotBase
 import DmgHacks
 import Movement
@@ -19,7 +19,16 @@ def __PhaseTurnOnFarmbot(phase):
         if farm.enableButton.isOn:
             farm.Start()
 
+def OnDigMotionCallback(main_vid,target_ore,n):
+    global farm
+    if(main_vid != net.GetMainActorVID()):
+        return
+    farm.hasRecivedSlash = True
+    farm.slash_timer = OpenLib.GetTime() + n*farm.MINING_SLASH_TIME #Time for mining to end
+
 class FarmingBot(BotBase):
+
+    MINING_SLASH_TIME = 2.1
 
     def __init__(self):
         BotBase.__init__(self, 0.1)
@@ -33,6 +42,10 @@ class FarmingBot(BotBase):
         self.channel_switching = True
         self.can_change_channel = False
 
+        eXLib.RegisterDigMotionCallback(OnDigMotionCallback)
+
+        self.slash_timer = OpenLib.GetTime()
+        self.hasRecivedSlash = False
         self.lastTimeMine = 0
         self.lastTimeWaitingState = 0
         self.timeForWaitingState = 5
@@ -338,18 +351,17 @@ class FarmingBot(BotBase):
 
         # Checking there is any reason to stop mining
         if not self.is_char_ready_to_mine():
-            #chat.AppendChat(3, 'Stop')
+            chat.AppendChat(3, 'Stop')
             return
 
         if not self.is_currently_digging:
-            player_vid = player.GetMainCharacterIndex()
-            chat.AppendChat(3, 'DIGG')
-            eXLib.RegisterDigMotionCallback(player_vid, self.select_ore, self.OnDigMotionCallback)
-            chat.AppendChat(3, 'DIGG After')
+            net.SendOnClickPacket(self.selectedOre)
             self.is_currently_digging = True
 
-    def OnDigMotionCallback(self):
-        self.is_currently_digging = False
+        this_time = OpenLib.GetTime()
+        if(this_time > self.slash_timer and self.hasRecivedSlash):
+            self.is_currently_digging = False
+            self.hasRecivedSlash = False
 
     def farmMetin(self):
 
@@ -393,8 +405,10 @@ class FarmingBot(BotBase):
             self.CURRENT_STATE = WALKING_STATE
             return False
         if not OpenLib.isPlayerCloseToInstance(self.selectedOre):
-            x, y, z = chr.GetPixelPosition(self.select_ore)
+            x, y, z = chr.GetPixelPosition(self.selectedOre)
             Movement.GoToPositionAvoidingObjects(x, y)
+            return False
+
 
         return True
 
@@ -421,6 +435,7 @@ class FarmingBot(BotBase):
         ChannelSwitcher.instance.ChangeChannelById(current_channel)
 
 def switch_state():
+    global farm
     farm.switch_state()
 
 

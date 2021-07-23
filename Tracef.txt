@@ -1,100 +1,161 @@
-Property already registered, replace xb,æl*Ù”@VhMÁ,ælŒc¡ÞœxN@ to xb,æl*Ù”@VhMÁ,ælŒc¡ÞœxN@
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-CResource::Load file not exist (ž%³Ù
-CResource::Load file not exist XmÇ%';Ù
-CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698748
-CPythonLoca::GetLoadingTipVnum - NO MAP INDEX:1698748
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RAW_AllocateSplats 1698996
-CTerrain::LoadShadowTexture 1698996 ms
-LoadShadowMap ðî 1698636 ms
-CMapOutdoor::LoadTerrain 1699016
-LoadWaterMapFile $î 1698992
-LoadRawHeightMapFile ¬î LoadHeightMap::CalculateNormal 1698988 ms
-LoadAttrMapFile àí 1698620
-LoadSplatFile 4ï CTerrain::RA
+CPythonNonPlayer::LoadNonPlayerData: äè, sizeof(TMobTable)=1693492
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CPythonSkill::RegisterSkillTable(ÌÞ) - NOT EXIST SkillDesc [Vnum:182484320 Line:1692660]
+CResource::Load file not exist  ¹éæ»Ø
+CResource::Load file not exist Eâéæ»Ø
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697396
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+DeleteCharacterInstance: no vid by 1697372
+CResource::Load file not exist @5G	ê»Ø
+Property already registered, replace À×TT?Z%à»ØlT_H_T?Z´á˜°e’Øùc to ¼á˜
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+LoadWaterMapFile ìí 1978027607
+LoadRawHeightMapFile tî LoadHeightMap::CalculateNormal 1698932 ms
+LoadAttrMapFile ¨í 1698564
+LoadSplatFile üî CTerrain::RAW_AllocateSplats 1698940
+CTerrain::LoadShadowTexture 1698940 ms
+LoadShadowMap ¸î 1698580 ms
+CMapOutdoor::LoadTerrain 1698960
+CResource::Load file not exist 
+CResource::Load file not exist Èd)‘Ø»Ø
+ >> GulidWarList [1698588 vs 2060712200]
+ >> GulidWarList [1698588 vs 2060712200]
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+LoadWaterMapFile „í 1978027607
+LoadRawHeightMapFile î LoadHeightMap::CalculateNormal 1698828 ms
+LoadAttrMapFile @í 1698460
+LoadSplatFile ”î CTerrain::RAW_AllocateSplats 1698836
+CTerrain::LoadShadowTexture 1698836 ms
+LoadShadowMap Pî 1698476 ms
+CMapOutdoor::LoadTerrain 1698856
+recv ping packet. (securitymode 1700604)
+recv ping packet. (securitymode 1700604)
+ >> GulidWarEndList [1698588 vs 2060712200]
+ >> GulidWarEndList [1698588 vs 2060712200]
+ >> GulidWarList [1698588 vs 2060712200]
+recv ping packet. (securitymode 1700604)
+CResource::Load file not exist H<ã)•á»Ø
+OnShoot 
+OnShoot 
+OnShoo

@@ -4,6 +4,7 @@ import Movement
 import chat, ui, chr, m2netm2g, background
 import OpenLib
 import eXLib
+import re
 
 
 class Radar(BotBase):
@@ -162,7 +163,7 @@ class Radar(BotBase):
         for vid in self.all_vids:
             if MAIN_CHAR_VID != vid:
                 chr.SelectInstance(vid)
-                chat.AppendChat(3, str(chr.GetInstanceType(vid)) + ' ' + str(chr.GetRace()) + ' ' + str(chr.GetName(vid)) + ' ' + str(chr.GetPixelPosition(vid)) )
+                #chat.AppendChat(3, str(chr.GetInstanceType(vid)) + ' ' + str(chr.GetRace()) + ' ' + str(chr.GetName(vid)) + ' ' + str(chr.GetPixelPosition(vid)) )
 
                 if self.IsThisEntityNew(vid):
                     if self.showOre:

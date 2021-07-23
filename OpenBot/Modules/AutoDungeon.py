@@ -534,7 +534,7 @@ class AutoDungeon(BotBase):
 
 
 def switch_state():
-    global istance
+    global instance
     instance.switch_state()
 
 instance = AutoDungeon()
