@@ -1,5 +1,5 @@
 _chr = chr
-from OpenBot.Modules.Hooks import Hook
+from OpenBot.Modules.Hooks import Hook, questHook
 import Hooks
 import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog
 from datetime import datetime
@@ -192,7 +192,7 @@ def skipAnswers(event_answers, hook=False):
 		hook ([boolean]): If true will hook quest answers, in order to not show it on screen.
 	"""
 	if hook:
-		Hook.questHook.HookFunction()
+		questHook.HookFunction()
 	for index,answer in enumerate(event_answers,start=1):
 		event.SelectAnswer(index,answer)
 
@@ -521,6 +521,20 @@ def isPlayerCloseToPosition(position_x, position_y, max_dist=150):
 		return True
 	
 	return False
+
+def GetInstanceByID(_id):
+	for vid in eXLib.InstancesList:
+		if not chr.HasInstance(vid):
+			continue
+		if eXLib.IsDead(vid):
+			continue
+		mob_x,mob_y,mob_z = chr.GetPixelPosition(vid)
+		if eXLib.IsPositionBlocked(mob_x,mob_y):
+			continue
+		chr.SelectInstance(vid)
+		if chr.GetRace() == _id:
+			return vid
+	return -1
 
 		
 def getClosestInstance(_type,is_unblocked=True):

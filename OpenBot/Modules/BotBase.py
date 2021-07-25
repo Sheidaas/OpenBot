@@ -1,6 +1,7 @@
 import Movement
 import ui,OpenLib,NPCInteraction,DmgHacks,player,Settings,chat,OpenLog
 import abc
+from .Actions import ActionRequirementsCheckers
 
 class BotBase(ui.ScriptWindow):
 	""" 
@@ -27,12 +28,19 @@ class BotBase(ui.ScriptWindow):
 			shopOnFullInv (bool, optional): If True it will go to shop when inventory full. Defaults to False.
 		"""
 		__metaclass__ = abc.ABCMeta
+
+		self.currSchema = None
+		self.currStage = 0
+		self.currAction = 0
+		self.isCurrActionDone = True
 		ui.ScriptWindow.__init__(self)
 		self.Show()
 		self.State = self.STATE_STOPPED
 		self.time_wait = time_wait
 		self.generalTimer = 0
 		self.onlyGamePhase = True
+
+
 
 		#Shop - Can be changed using callback by super class
 		self.onInvFullCallback = None #Will call this function before going to shop
@@ -128,7 +136,56 @@ class BotBase(ui.ScriptWindow):
 		self.StopBot()
 		self.__SetStateStopped()
 		NPCInteraction.StopAction()
-		
+		self.currSchema = None
+		self.currStage = 0
+		self.currAction = 0
+		self.isCurrActionDone = True
+	
+	def CheckRequirementsForCurrSchema(self):
+		for requirement in self.currSchema['requirements'].keys():
+			if requirement == 'lvl':
+				if not ActionRequirementsCheckers.isAboveLVL(self.currSchema['requirements'][requirement]):
+					chat.AppendChat(3, '[BotBase] You have ' + str(player.LEVEL) + ' lvl but you need ' + str(self.currSchema['requirements'][requirement]))
+					return False
+
+			if requirement == 'inInMap':
+				if not ActionRequirementsCheckers.isInMaps(self.currSchema['requirements'][requirement]):
+					chat.AppendChat(3, '[BotBase] You need to be atleast on this maps: ' + str(self.currSchema['requirements'][requirement]))
+					return False
+            
+			if requirement == 'isOnPosition':
+				if not ActionRequirementsCheckers.inOnPosition(self.currSchema['requirements'][requirement]):
+					chat.AppendChat(3, '[BotBase] You need to be on this position: ' + str(self.currSchema['requirements'][requirement]))
+					return False
+        
+		return True
+
+	def SetIsCurrActionDoneTrue(self):
+		self.GoToNextAction()
+		self.isCurrActionDone = True
+
+	def GoToNextAction(self):
+		if self.currAction + 1 < len(self.currSchema['stages'][self.currStage]['actions']):
+			self.currAction += 1
+		else:
+			OpenLog.DebugPrint('Stage Complete')
+			self.GoToNextStage()
+
+	def GoToNextStage(self):
+		self.currAction = 0
+		if self.currStage + 1 < len(self.currSchema['stages']):
+			if 'options' in self.currSchema['stages'][self.currStage].keys():
+				if 'stage_reapat' in self.currSchema['stages'][self.currStage]['options']:
+					return
+
+			self.currStage += 1
+		else:
+			if 'options' in self.currSchema['stages'][self.currStage].keys():
+				if 'stage_reapat' in self.currSchema['stages'][self.currStage]['options']:
+					return
+			OpenLog.DebugPrint('Dungeon Complete')
+			self.Stop()
+
 ###########################
 ####Abstract Functions######
 ###########################
