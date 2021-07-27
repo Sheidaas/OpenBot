@@ -39,6 +39,8 @@ class EnergyBot(BotBase):
             comp.EditLine(self.Board, str(self.ItemSlotToBuy), 20, 70, 20, 20, 25)
         self.text_lineItemSlotToBuy = comp.TextLine(self.Board, 'item slot to buy in Weapon shop dealer', 50, 77, comp.RGB(255, 255, 255))
 
+        self.SwitchEnableExchangeEnergyToCrystal = comp.OnOffButton(self.Board, '\t\t\t\t\t\tExchange energy?', 'If check, character will try to exchange energy to crystals',
+                                20, 90,  funcState=self.SwitchEnableExchangeEnergyToCrystal, defaultValue=False)
 
         self.enableEnergyBot = comp.OnOffButton(self.Board, '', '', 170, 140,
                                             OffUpVisual='OpenBot/Images/start_0.tga',
@@ -50,17 +52,37 @@ class EnergyBot(BotBase):
                                             funcState=self.SwitchEnableEnergyBot, defaultValue=False)       
 
 
+    def SwitchEnableExchangeEnergyToCrystal(self, val):
+        pass
+    
+    def AddExchangeEnergyToCrystalToStage(self):
+        actions_dict = {0: {'args': [20001, (62200, 51100)],
+              'function': ActionFunctions.ChangeEnergyToCrystal,
+              'requirements': {},
+              'callback': instance.SetIsCurrActionDoneTrue},
+              1: {'args': [20001, (66000, 73400)],
+              'function': ActionFunctions.ChangeEnergyToCrystal,
+              'requirements': {},
+              'callback': instance.SetIsCurrActionDoneTrue},
+              2: {'args': [20001, (29200, 81200)],
+              'function': ActionFunctions.ChangeEnergyToCrystal,
+              'requirements': {},
+              'callback': instance.SetIsCurrActionDoneTrue},
+              }
+        self.currSchema['stages'][self.currStage]['actions'].append(actions_dict[self.currStage])
 
     def SwitchEnableEnergyBot(self, val):
         if val:
             self.Start()
             self.currSchema = ENERGY_BOT_SCHEMA
             self.RecognizeStartStage()
+            if self.SwitchEnableExchangeEnergyToCrystal.isOn:
+                self.AddExchangeEnergyToCrystalToStage()
         else:
             self.Stop()
         
         DebugPrint(str(self.currSchema))
-    
+
     def RecognizeStartStage(self):
         if ActionRequirementsCheckers.isInMaps(['metin2_map_a1']):
             self.currStage = 0

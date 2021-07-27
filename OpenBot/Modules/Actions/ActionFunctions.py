@@ -2,8 +2,9 @@ from OpenBot.Modules import Movement, OpenLib
 from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
+from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, net, chr
+import player, net, chr, chat
 
 
 def ClearFloor(args):
@@ -73,11 +74,6 @@ def MoveToPosition(args):
         return True
     return False
 
-def EnterMapByNPC(args):
-    action = NPCAction(args[0], event_answer=args[1], position=args[2], _map=args[3])
-    action.GoToPosition(callback=action.DoAction)
-    return True
-
 def UsingItemOnInstance(args):
     instance = args[0]
     item_slot = args[1]
@@ -124,6 +120,7 @@ def OpenAllSeals(args): # center position of floor,
                     'on_success': [ActionBot.NEXT_ACTION],
                     'on_failed': []
                 }
+
     return action_dict
 
 def UpgradeDeamonTower(args):
@@ -153,7 +150,7 @@ def GetEnergyFromAlchemist(args):
     alchemist_id = args[1]
     npc_position_x, npc_position_y = args[2]
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'args': [(npc_position_x, npc_position_y)], # position
+        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
@@ -173,5 +170,46 @@ def GetEnergyFromAlchemist(args):
                             'on_failed': [ActionBot.NEXT_ACTION],
                             }
             return action_dict
+
     
     return True
+
+def ChangeEnergyToCrystal(args):
+    alchemist_id = args[0]
+    npc_position_x, npc_position_y = args[1]
+    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
+        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
+                        }
+        return action_dict
+    energy_crystal = OpenLib.GetItemByID(51001)
+    if player.GetItemCount(energy_crystal) >= 30:
+        answer = [0]
+        action_dict = { 'args': [alchemist_id, (npc_position_x, npc_position_y), answer], # ID, event_answer, posiiton of npc, npc's map
+                          'function': TalkWithNPC,
+                          'on_success': {ActionBot.DISCARD_PREVIOUS},
+                          'requirements': {},
+
+            }
+        return action_dict
+    return True
+
+def TalkWithNPC(args):
+    npc_id = args[0]
+    npc_position_x, npc_position_y = args[1]
+    event_answer = args[2]
+    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
+        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
+                        }
+        return action_dict
+    
+    vid = OpenLib.GetInstanceByID(npc_id)
+    chat.AppendChat(3, str(vid))
+    net.SendOnClickPacket(vid)
+    OpenLib.skipAnswers(event_answer, True)
+    return True
+    
+    

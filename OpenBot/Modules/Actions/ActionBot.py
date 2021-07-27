@@ -10,6 +10,7 @@ NEXT_ACTION = 'next_action'
 
 # ON ACTION RETURN FLAGS
 DISCARD = 'discard'
+DISCARD_PREVIOUS = 'discard_previous'
 
 # STATES
 STATE_CANCELING = -1
@@ -146,6 +147,12 @@ class ActionBot(BotBase):
             if 'on_success' in self.currActionDict.keys() and is_action_done:
                 #DebugPrint(str(action_dict['function']) + ' SUCCESS_CASE')
                 if NEXT_ACTION in self.currActionDict['on_success']:
+                    self.GoToNextAction()
+                
+                elif DISCARD_PREVIOUS in self.currActionDict['on_success']:
+                    previous = self.currActionsDictsQueue.pop()
+                    if 'callback' in previous.keys():
+                        previous['callback']()
                     self.GoToNextAction()
 
             elif 'on_failed' in self.currActionDict.keys() and not is_action_done:

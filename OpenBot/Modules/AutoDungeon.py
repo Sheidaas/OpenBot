@@ -22,8 +22,8 @@ DEAMON_TOWER = {
         'GoAboveBlacksmith': False,},
     'stages': {
         0: { # stage outside devil tower, entering dt
-            'actions': [{ 'args': [20348, [0, 0], (53200, 59600), 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
-                          'function': ActionFunctions.EnterMapByNPC,
+            'actions': [{ 'args': [20348, (53200, 59600), [0, 0]], # ID, event_answer, posiiton of npc, npc's map
+                          'function': ActionFunctions.TalkWithNPC,
                           'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_deviltower1'] }
 
             }]},
@@ -210,8 +210,8 @@ class AutoDungeon(BotBase):
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
 
         if DEAMON_TOWER['options']['GoAboveBlacksmith'] and player.LEVEL >= 75:
-            action_dict = { 'args': [20348, [0, 0, 0], (42500, 21600), 'metin2_map_deviltower1'],
-                          'function': ActionFunctions.EnterMapByNPC,
+            action_dict = { 'args': [20348, (42500, 21600), [0, 0, 0]],
+                          'function': ActionFunctions.TalkWithNPC,
                           'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
         
@@ -222,8 +222,8 @@ class AutoDungeon(BotBase):
             else:
                 answer = [0, 0, 2]
 
-            action_dict = { 'args': [20348, answer, (42500, 21600), 'metin2_map_deviltower1'],
-                          'function': ActionFunctions.EnterMapByNPC,
+            action_dict = { 'args': [20348, (42500, 21600), answer],
+                          'function': ActionFunctions.TalkWithNPC,
                           'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
 

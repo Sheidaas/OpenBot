@@ -64,10 +64,11 @@ class NPCAction:
 
 	def DoAction(self):
 		vid = self.SearchVIDClosest()
+		#OpenLog.DebugPrint(str(vid))
 		if vid:
 			OpenLog.DebugPrint("[NPC-ACTION] - Doing NPC Action")
 			net.SendOnClickPacket(vid)
-			OpenLib.skipAnswers(self.event_answer)
+			OpenLib.skipAnswers(self.event_answer, False)
 			return True
 		return False
 
