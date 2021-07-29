@@ -23,6 +23,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.minMana = 95
 		self.minHealth = 80
 		self.speedMultiplier = 0.0
+		self.lastTimeDead = OpenLib.GetTime()
 
 		self.pickUp = False
 		self.pickUpRange = 290.0
@@ -79,8 +80,10 @@ class SettingsDialog(ui.ScriptWindow):
 		self.redPotButton,self.SlideRedPot,self.redPotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideRedMove, '', 'Use Red Potions', 28, 18,image="icon/item/27002.tga",funcState=self.OnRedOnOff,defaultValue=int(self.redPotions),defaultSlider=float(self.minHealth/100.0))
 		self.bluePotButton,self.SlideBluePot,self.bluePotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideBlueMove, '', 'Use Blue Potions', 28, 50,image="icon/item/27005.tga",funcState=self.OnBlueOnOff,defaultValue=int(self.bluePotions),defaultSlider=float(self.minMana/100.0))
 		self.speedHackButton,self.SlideSpeedHack,self.speedHackLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideMovSpeedMove, '', 'Use Speed Boost', 28, 82,image="icon/item/27104.tga",funcState=self.OnSpeedHackOnOff,defaultValue=int(self.speedHack),defaultSlider=float(self.speedMultiplier/10))
-		
-		
+		self.waitTimeDeadSlotBar, self.waitTimeDeadEditLine = self.comp.EditLine(self.generalTab, '', 130, 235, 25, 15, 3)
+		self.waitTimeDeadText = self.comp.TextLine(self.generalTab, 's', 160, 235, self.comp.RGB(255, 255, 255))
+		self.waitTimeDeadText2 = self.comp.TextLine(self.generalTab, 'Time to wait after dead:', 20, 235, self.comp.RGB(255, 255, 255))
+
 		##PICKUP
 		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image="OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
 		self.rangePickupButton,self.SliderangePickup,self.rangePickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupRangeSlide, 'Range', 'Enable Range Pickup', 15, 60,funcState=self.OnRangePickupOnOff,offsetX=30,offsetY=4,defaultValue=int(self.useRangePickup),defaultSlider=float(self.pickUpRange/10000.0))
@@ -108,6 +111,8 @@ class SettingsDialog(ui.ScriptWindow):
 		for id in sorted(self.ChannelSwitcher.channels):
 			setattr(self, 'channel_' + str(id), self.ChannelSwitcher.channels[id]['btn'])
 
+
+		self.waitTimeDeadEditLine.SetText(str(FileManager.ReadConfig("timeAfterDead")))
 
 		##Init labels
 		self.UpdatePickFilterList()
@@ -159,6 +164,7 @@ class SettingsDialog(ui.ScriptWindow):
 		FileManager.WriteConfig("WallHack", str(self.wallHack))
 		FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
 		FileManager.WriteConfig("antiExp", str(self.antiExp))
+		FileManager.WriteConfig("timeAfterDead", str(self.waitTimeDeadEditLine.GetText()))
 		#chat.AppendChat(3,str(self.pickUp))
 		FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
 		FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
@@ -182,6 +188,8 @@ class SettingsDialog(ui.ScriptWindow):
 			name = item.GetItemName()
 			self.ShopFileListBox.AppendItem(OpenLib.Item(str(filterItem)+" "+name))
 
+	def GetTimeAfterDead(self):
+		return float(self.waitTimeDeadEditLine.GetText())
 
 	def UIAddPickFilterItem(self,item):
 		self.addPickFilterItem(item)
@@ -334,6 +342,7 @@ class SettingsDialog(ui.ScriptWindow):
 			return
 
 		if self.restartHere and player.GetStatus(player.HP) <= 0:
+			self.lastTimeDead = OpenLib.GetTime()
 			OpenLib.Revive()
 		
 		if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
@@ -522,6 +531,14 @@ def GetSlotItemsToSell():
 			slots.add(i)
 	return slots
 
+def GetLastTimeDead():
+	"""
+	Returns the last time the player was dead from OpenLib.GetTime and the amount of time to wait.
+	Returns:
+		tupple[float,float]: Returns the last time the player was dead and the time to wait.
+	"""
+	global instance
+	return (instance.lastTimeDead, instance.GetTimeAfterDead())
 	
 
 #SettingsDialog().Show()

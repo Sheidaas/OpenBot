@@ -31,7 +31,7 @@ class FarmingBot(BotBase):
     MINING_SLASH_TIME = 2.1
 
     def __init__(self):
-        BotBase.__init__(self, 0.1)
+        BotBase.__init__(self, 0.1,waitIsPlayerDead=True)
         self.CURRENT_STATE = WALKING_STATE
         self.is_walking = True  # if False character is using teleport, otherwise character is walking
         self.current_point = 0  # Current position index
@@ -304,6 +304,15 @@ class FarmingBot(BotBase):
 
         else:
             return WALKING_STATE
+
+    def Pause(self):
+        DmgHacks.Pause()
+    
+    def Resume(self):
+        pass
+
+    def CanPause(self):
+        return True
 
     def Frame(self):
         if self.can_change_channel:

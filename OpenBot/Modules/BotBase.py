@@ -1,5 +1,5 @@
 import Movement
-import ui,OpenLib,NPCInteraction,DmgHacks,player,Settings,chat,OpenLog
+import ui,OpenLib,NPCInteraction,DmgHacks,player,Settings,chat,OpenLog,Settings
 import abc
 from .Actions import ActionRequirementsCheckers
 
@@ -20,12 +20,14 @@ class BotBase(ui.ScriptWindow):
 	STATE_WATING = 3
 
 
-	def __init__(self,time_wait=0.1,shopOnFullInv = False,onlyGamePhase=True):
+	def __init__(self,time_wait=0.1,shopOnFullInv = False,onlyGamePhase=True,waitIsPlayerDead=False):
 		"""Constructor
 
 		Args:
 			time_wait (float, optional): Time between frame calls, in seconds. Defaults to 0.06.
 			shopOnFullInv (bool, optional): If True it will go to shop when inventory full. Defaults to False.
+			onlyGamePhase (bool,optional): The same as SetOnlyGamePhase
+			waitIsPlayerDead (bool,optional): The same as SetWaitPlayerIsDead
 		"""
 		__metaclass__ = abc.ABCMeta
 
@@ -39,6 +41,8 @@ class BotBase(ui.ScriptWindow):
 		self.time_wait = time_wait
 		self.generalTimer = 0
 		self.onlyGamePhase = True
+		self.waitIsPlayerDead = waitIsPlayerDead
+		self.isPaused = False
 
 
 
@@ -85,8 +89,18 @@ class BotBase(ui.ScriptWindow):
 	def DoChecks(self):
 		if self.allowShopOnFullInv and OpenLib.isInventoryFull() and self.CanPause():
 			self.GoToShop()
-			return True		
-		
+			return True
+
+		if self.waitIsPlayerDead:
+			last_time_dead, time_wait = Settings.GetLastTimeDead()
+			if(last_time_dead+time_wait>OpenLib.GetTime()):
+				if(self.CanPause() and not self.isPaused):
+					self.isPaused = True
+					self.Pause()
+				return True
+			if(self.isPaused):
+				self.isPaused = False
+				self.Resume()
 		return False
 	
 
@@ -119,9 +133,18 @@ class BotBase(ui.ScriptWindow):
 		Sets the frame to be run either only on game phase or on all phases.
 
 		Args:
-			this_time ([float]): If True, Frame will only be ran in Game phase otherwise will be ran in all phases.
+			onlyGame ([boolean]): If True, Frame will only be ran in Game phase otherwise will be ran in all phases.
 		"""
 		self.onlyGamePhase = onlyGame
+
+	def SetWaitPlayerIsDead(self,waitAfterDead):
+		"""
+		Sets the frame to not be run a specified time in settings after it died.
+
+		Args:
+			waitAfterDead ([boolean]): If True, Frame will not be ran on the next x seconds defined in Settings.
+		"""
+		self.waitIsPlayerDead = waitAfterDead
 
 	def Start(self):
 		"""

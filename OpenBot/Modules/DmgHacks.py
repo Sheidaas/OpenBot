@@ -157,6 +157,7 @@ class DmgHacks(ui.Window):
 					continue
 				if self.playerClose.isOn and chr.GetInstanceType(vid) == OpenLib.PLAYER_TYPE and vid != net.GetMainActorVID():
 					return
+
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
 					if self.attackPlayerBtn.isOn:	
 						lst.append(vid)
@@ -171,9 +172,9 @@ class DmgHacks(ui.Window):
 			while len(lst) > 0 and hit_counter < self.maxMonster:
 				vid = lst[0]
 				mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-				#if eXLib.IsPositionBlocked(mob_x,mob_y):
-				#	lst.remove(vid)
-				#	continue
+				if eXLib.IsPositionBlocked(mob_x,mob_y):
+					lst.remove(vid)
+					continue
 				if self.cloudBtn.isOn == True and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				elif isArch:
