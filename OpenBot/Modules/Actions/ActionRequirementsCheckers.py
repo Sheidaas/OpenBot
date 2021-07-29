@@ -1,5 +1,7 @@
 from OpenBot.Modules import OpenLib
-import player, background
+from OpenBot.Modules.OpenLog import DebugPrint
+import eXLib
+import player, background, chat
 
 # REQUIREMENTS
 IS_NEAR_POSITION = 'isNearPosition'
@@ -59,5 +61,19 @@ def isOnPosition(position):
     else:
         max_dist = position[2]
     if OpenLib.isPlayerCloseToPosition(x, y, max_dist):
+        DebugPrint('player on pos')
         return True
+    DebugPrint('player not on pos')
+    return False
+
+def isMetinNearly():
+    for vid in eXLib.InstancesList:
+        if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
+            return True
+    return False
+
+def isOreNearly():
+    for vid in eXLib.InstancesList:
+        if OpenLib.IsThisOre(vid):
+            return True
     return False

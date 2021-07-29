@@ -165,11 +165,12 @@ class BotBase(ui.ScriptWindow):
 		self.isCurrActionDone = True
 
 	def GoToNextAction(self):
-		if self.currAction + 1 < len(self.currSchema['stages'][self.currStage]['actions']):
-			self.currAction += 1
-		else:
-			OpenLog.DebugPrint('Stage Complete')
-			self.GoToNextStage()
+		if self.currSchema != None:
+			if self.currAction + 1 < len(self.currSchema['stages'][self.currStage]['actions']):
+				self.currAction += 1
+			else:
+				OpenLog.DebugPrint('Stage Complete')
+				self.GoToNextStage()
 
 	def GoToNextStage(self):
 		self.currAction = 0

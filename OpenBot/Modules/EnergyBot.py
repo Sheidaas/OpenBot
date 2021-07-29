@@ -1,8 +1,8 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Actions import ActionFunctions, ActionRequirementsCheckers, ActionBot
 from BotBase import BotBase
-import UIComponents, OpenLog
-import ui, player, background, chat
+import UIComponents
+import ui
 
 # Alchemist 20001 29200, 81200 c1
 # Weapon Dealer 9001 43000 60700
@@ -32,15 +32,15 @@ class EnergyBot(BotBase):
 
 
         self.slot_barItemCountToBuy, self.edit_lineItemCountToBuy = \
-            comp.EditLine(self.Board, str(self.ItemCountToBuy), 20, 30, 20, 20, 25)
-        self.text_lineItemCountToBuy = comp.TextLine(self.Board, 'how many items buy', 50, 37, comp.RGB(255, 255, 255))
+            comp.EditLine(self.Board, str(self.ItemCountToBuy), 20, 40, 20, 20, 25)
+        self.text_lineItemCountToBuy = comp.TextLine(self.Board, 'how many items buy', 50, 47, comp.RGB(255, 255, 255))
 
         self.slot_barItemSlotToBuy, self.edit_lineItemSlotToBuy= \
-            comp.EditLine(self.Board, str(self.ItemSlotToBuy), 20, 70, 20, 20, 25)
-        self.text_lineItemSlotToBuy = comp.TextLine(self.Board, 'item slot to buy in Weapon shop dealer', 50, 77, comp.RGB(255, 255, 255))
+            comp.EditLine(self.Board, str(self.ItemSlotToBuy), 20, 60, 20, 20, 25)
+        self.text_lineItemSlotToBuy = comp.TextLine(self.Board, 'item slot to buy in Weapon shop dealer', 50, 67, comp.RGB(255, 255, 255))
 
         self.SwitchEnableExchangeEnergyToCrystal = comp.OnOffButton(self.Board, '\t\t\t\t\t\tExchange energy?', 'If check, character will try to exchange energy to crystals',
-                                20, 90,  funcState=self.SwitchEnableExchangeEnergyToCrystal, defaultValue=False)
+                                20, 100,  funcState=self.SwitchEnableExchangeEnergyToCrystal, defaultValue=False)
 
         self.enableEnergyBot = comp.OnOffButton(self.Board, '', '', 170, 140,
                                             OffUpVisual='OpenBot/Images/start_0.tga',
@@ -56,15 +56,15 @@ class EnergyBot(BotBase):
         pass
     
     def AddExchangeEnergyToCrystalToStage(self):
-        actions_dict = {0: {'args': [20001, (62200, 51100)],
+        actions_dict = {0: {'args': [20001, (62200, 51100), 'metin2_map_a1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              1: {'args': [20001, (66000, 73400)],
+              1: {'args': [20001, (66000, 73400), 'metin2_map_b1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              2: {'args': [20001, (29200, 81200)],
+              2: {'args': [20001, (29223, 81640), 'metin2_map_c1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},

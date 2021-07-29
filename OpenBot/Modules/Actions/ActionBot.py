@@ -102,6 +102,7 @@ class ActionBot(BotBase):
             else:
                 self.currActionDict = None
         else:
+            DebugPrint('checking req')
             if self.CheckRequirementsForCurrAction():
                 if 'callback' in self.currActionDict.keys():
                     DebugPrint('Calling callback')
@@ -145,20 +146,34 @@ class ActionBot(BotBase):
         if type(is_action_done) == bool:
 
             if 'on_success' in self.currActionDict.keys() and is_action_done:
-                #DebugPrint(str(action_dict['function']) + ' SUCCESS_CASE')
-                if NEXT_ACTION in self.currActionDict['on_success']:
-                    self.GoToNextAction()
                 
-                elif DISCARD_PREVIOUS in self.currActionDict['on_success']:
-                    previous = self.currActionsDictsQueue.pop()
-                    if 'callback' in previous.keys():
-                        previous['callback']()
-                    self.GoToNextAction()
+                for key in self.currActionDict['on_success']:
+                    if callable(key):
+                        if key():
+                            self.GoToNextAction()
+                    elif type(key) == str:
+                        if key == NEXT_ACTION:
+                            self.GoToNextAction(skipRequirements=True)
+                        elif key == DISCARD_PREVIOUS:
+                            previous = self.currActionsDictsQueue.pop()
+                            if 'callback' in previous.keys():
+                                previous['callback']()
+                            self.GoToNextAction()
+
 
             elif 'on_failed' in self.currActionDict.keys() and not is_action_done:
-                #DebugPrint(str(action_dict['function']) + ' FAILED_CASE')
-                if NEXT_ACTION in self.currActionDict['on_failed']:
-                    self.GoToNextAction(skipRequirements=True)
+                
+                for key in self.currActionDict['on_failed']:
+                    if callable(key):
+                        DebugPrint('callable')
+                        if key():
+                            DebugPrint('callable is true')
+                            self.GoToNextAction(skipRequirements=True)
+                    elif type(key) == str:
+                        DebugPrint('str')
+                        if key == NEXT_ACTION:
+                            self.GoToNextAction(skipRequirements=True)
+                
             
             else:
                 #DebugPrint(str(action_dict['function']) + ' CHECKING REQ')
