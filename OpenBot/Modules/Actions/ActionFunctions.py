@@ -1,3 +1,4 @@
+from time import sleep, time
 from OpenBot.Modules import Movement, OpenLib
 from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
@@ -45,6 +46,9 @@ def Destroy(args):
                 instance_vid = vid
                 break
 
+    if eXLib.IsDead(instance_vid):
+        player.SetAttackKeyState(False)
+        return True
 
     vid_life_status = OpenLib.AttackTarget(instance_vid)
 
@@ -69,6 +73,8 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
+    if OpenLib.isPlayerCloseToPosition(position[0], position[1]):
+        return True
     error = Movement.GoToPositionAvoidingObjects(position[0], position[1])
     if error != None:
         return True
@@ -177,18 +183,20 @@ def GetEnergyFromAlchemist(args):
 def ChangeEnergyToCrystal(args):
     alchemist_id = args[0]
     npc_position_x, npc_position_y = args[1]
+    map_name = args[2]
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
         action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)},
+                        'on_success': [],
                         }
         return action_dict
     energy_crystal = OpenLib.GetItemByID(51001)
     if player.GetItemCount(energy_crystal) >= 30:
-        answer = [0]
-        action_dict = { 'args': [alchemist_id, (npc_position_x, npc_position_y), answer], # ID, event_answer, posiiton of npc, npc's map
+        answer = [5,254,254,0,254]
+        action_dict = { 'args': [alchemist_id, (npc_position_x, npc_position_y), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
                           'function': TalkWithNPC,
-                          'on_success': {ActionBot.DISCARD_PREVIOUS},
+                          'on_success': [],
                           'requirements': {},
 
             }
@@ -197,19 +205,29 @@ def ChangeEnergyToCrystal(args):
 
 def TalkWithNPC(args):
     npc_id = args[0]
-    npc_position_x, npc_position_y = args[1]
+    player_position_x, player_position_y = args[1]
     event_answer = args[2]
-    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
-        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+    map_name = args[3]
+    vid = OpenLib.GetInstanceByID(npc_id)
+    npc_position_x, npc_position_y, z = chr.GetPixelPosition(vid)
+    if not ActionRequirementsCheckers.isInMaps([map_name]):
+        return True
+    if not OpenLib.isPlayerCloseToPosition(player_position_x, player_position_y, 500):
+        action_dict = {'args': [(player_position_x, player_position_y), 250], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
         return action_dict
     
-    vid = OpenLib.GetInstanceByID(npc_id)
-    chat.AppendChat(3, str(vid))
-    net.SendOnClickPacket(vid)
-    OpenLib.skipAnswers(event_answer, True)
-    return True
+    if vid >= 0:
+        net.SendOnClickPacket(vid)
+        OpenLib.skipAnswers(event_answer, False)
+        chat.AppendChat(3, str(vid))
+        return True
+    return False
     
+def MineOre(args):
+    launched_time = args[0]
+    waiting_time = args[1]
+    hasRecivedSlash, slash_timer = args[2]()
     

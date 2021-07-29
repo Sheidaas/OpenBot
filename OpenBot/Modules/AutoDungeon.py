@@ -22,11 +22,12 @@ DEAMON_TOWER = {
         'GoAboveBlacksmith': False,},
     'stages': {
         0: { # stage outside devil tower, entering dt
-            'actions': [{ 'args': [20348, (53200, 59600), [0, 0]], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'args': [20348, (53200, 59600), [0, 0], 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.TalkWithNPC,
-                          'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_deviltower1'] }
+                          'on_success': [ActionBot.NEXT_ACTION],
+                          'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: (19004, 69011, 20000)}}]
 
-            }]},
+            },
         1: { # stage with metin
             'actions': [{'args': [(19004, 69011)], # position
                         'function': ActionFunctions.MoveToPosition,
@@ -82,16 +83,16 @@ DEAMON_TOWER = {
 
                         ],},},
         7: { # stage with metins and chests
-            'actions': [{ 'args': [(61500, 20000)],
+            'actions': [{ 'args': [(61000, 66500)],
                           'function': ActionFunctions.ClearFloor,
-                          'requirements': {}, # DONT NEED ANY
+                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 42600, 15000)}, # DONT NEED ANY
                           'on_success': [ActionBot.NEXT_ACTION],
                           'on_failed': []
                         }
 
                         ],},
         8: { # stage with keys
-            'actions': [{ 'args': [(61690, 42200)],
+            'actions': [{ 'args': [(60961, 42600)],
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (40713, 19914, 5000)}, # DONT NEED ANY
                           'on_success': [ActionBot.NEXT_ACTION],
@@ -100,7 +101,7 @@ DEAMON_TOWER = {
 
                         ],},
         9: { # stage with ripper
-            'actions': [{ 'args': [(61690, 61690)],
+            'actions': [{ 'args': [(61127, 17160)],
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {}, # DONT NEED ANY
                           'on_success': [ActionBot.NEXT_ACTION],
@@ -209,8 +210,8 @@ class AutoDungeon(BotBase):
                         
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
 
-        if DEAMON_TOWER['options']['GoAboveBlacksmith'] and player.LEVEL >= 75:
-            action_dict = { 'args': [20348, (42500, 21600), [0, 0, 0]],
+        if DEAMON_TOWER['options']['GoAboveBlacksmith']:
+            action_dict = { 'args': [20348, (42500, 21600), [0, 0, 0], 'metin2_map_deviltower1'],
                           'function': ActionFunctions.TalkWithNPC,
                           'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
@@ -222,7 +223,7 @@ class AutoDungeon(BotBase):
             else:
                 answer = [0, 0, 2]
 
-            action_dict = { 'args': [20348, (42500, 21600), answer],
+            action_dict = { 'args': [20348, (42500, 21600), answer, 'metin2_map_deviltower1' ],
                           'function': ActionFunctions.TalkWithNPC,
                           'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
             DEAMON_TOWER['stages'][6]['actions'].append(action_dict)

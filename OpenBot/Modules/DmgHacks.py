@@ -26,6 +26,8 @@ class DmgHacks(ui.Window):
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
 		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCloud exploit', 'Only on dagger ninja', 170, 50)
 		self.attackPlayerBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tAttack players', '', 170, 70)
+		self.attackBlockedMonsters = self.comp.OnOffButton(self.Board, '\t\t\t\t', '', 130, 70)
+		self.AttackBlockedMonsers = self.comp.TextLine(self.Board, 'Attack blocked monsters', 13, 70, self.comp.RGB(255, 255, 255))
 		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 92, self.comp.RGB(255, 255, 255))
 		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 126, self.comp.RGB(255, 255, 255))
 		self.MonsterLabel = self.comp.TextLine(self.Board, 'Monsters', 13, 160, self.comp.RGB(255, 255, 255))
@@ -55,6 +57,7 @@ class DmgHacks(ui.Window):
 		self.cloudBtn.SetValue(boolean(FileManager.ReadConfig("WaitHack_CloudExploit")))
 		self.attackPlayerBtn.SetValue(boolean(FileManager.ReadConfig('WaitHack_attackPlayer')))
 		self.playerClose.SetValue(boolean(FileManager.ReadConfig("WaitHack_PlayerClose")))
+	
 	def saveSettings(self):
 		FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.MonsterSlider.GetSliderPos()))
 		FileManager.WriteConfig("WaitHack_Speed", str(self.SpeedSlider.GetSliderPos()))
@@ -172,9 +175,10 @@ class DmgHacks(ui.Window):
 			while len(lst) > 0 and hit_counter < self.maxMonster:
 				vid = lst[0]
 				mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-				if eXLib.IsPositionBlocked(mob_x,mob_y):
-					lst.remove(vid)
-					continue
+				if self.attackBlockedMonsters.isOn:
+					if eXLib.IsPositionBlocked(mob_x,mob_y):
+						lst.remove(vid)
+						continue
 				if self.cloudBtn.isOn == True and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				elif isArch:
@@ -184,6 +188,7 @@ class DmgHacks(ui.Window):
 				i+=1
 			if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=300):
 				Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
+	
 	def Close(self):
 		self.Board.Hide()
 		self.saveSettings()
