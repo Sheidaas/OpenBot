@@ -1,4 +1,4 @@
-import eXLib,ui,net,chr,player,chat,item
+import eXLib,ui,net,chr,player,chat,item,skill
 import OpenLib,FileManager,Movement,UIComponents
 from FileManager import boolean
 
@@ -126,7 +126,7 @@ class DmgHacks(ui.Window):
 		for vid in lst:
 			mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
 			if OpenLib.dist(x,y,mob_x,mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
-				if not player.IsSkillCoolTime(5):
+				if not player.IsSkillCoolTime(5) and player.GetStatus(player.SP) >  OpenLib.GetSkillManaNeed(35,5):
 					#chat.AppendChat(3,"Skill Time, X:" + str(mob_x) + " Y:" + str(mob_y) + " VID: " +str(vid) + " Dist: " + str(OpenLib.dist(x,y,mob_x,mob_y)))
 					eXLib.SendUseSkillPacketBySlot(5,vid)
 				x,y,z = chr.GetPixelPosition(vid)

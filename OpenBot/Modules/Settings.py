@@ -306,7 +306,7 @@ class SettingsDialog(ui.ScriptWindow):
 			Movement.TeleportStraightLine(x,y,mob_x,mob_y)
 		_class =  OpenLib.GetClass()
 		if _class == OpenLib.SKILL_SET_DAGGER_NINJA:
-			if not player.IsSkillCoolTime(5):
+			if not player.IsSkillCoolTime(5) and player.GetStatus(player.SP) >  OpenLib.GetSkillManaNeed(35,5):
 				eXLib.SendUseSkillPacketBySlot(5,vid)
 			eXLib.SendAddFlyTarget(vid,mob_x,mob_y)
 			eXLib.SendShoot(35)

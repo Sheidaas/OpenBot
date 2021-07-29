@@ -1,7 +1,7 @@
 _chr = chr
 from OpenBot.Modules.Hooks import Hook, questHook
 import Hooks
-import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog
+import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog,skill
 from datetime import datetime
 #import pack
 
@@ -201,12 +201,15 @@ def showAnswers():
 	"""
 	Removes the quest hook, in order for quest answers to be displayed.
 	"""
-	Hook.questHook.UnhookFunction()
+	Hooks.questHook.UnhookFunction()
 
 
 def GetCurrentText(self):
 	return self.textLine.GetText()
 
+
+def GetSkillManaNeed(skill_id,skill_slot):
+	return skill.GetSkillNeedSP(skill_id,player.GetSkillCurrentEfficientPercentage(skill_slot))
 
 def OnSelectItem(self, index, name):
 	self.SetCurrentItem(name)
