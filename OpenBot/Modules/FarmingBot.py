@@ -24,8 +24,17 @@ def OnDigMotionCallback(main_vid,target_ore,n):
     global farm
     if(main_vid != net.GetMainActorVID()):
         return
-    farm.hasRecivedSlash = True
-    farm.slash_timer = OpenLib.GetTime() + n*farm.MINING_SLASH_TIME #Time for mining to end
+    if farm.enableButton.isOn and farm.showMiningButton.isOn:
+        farm.is_currently_digging = True
+        slash_time = n * farm.MINING_SLASH_TIME
+        ActionBot.instance.AddNewWaiter(slash_time, farm.IsCurrentlyDiggingDone)
+
+def returnFuncWithArgs(func, args):
+
+    def x():
+        func(args)
+    
+    return x
 
 class FarmingBot(BotBase):
 
@@ -36,8 +45,8 @@ class FarmingBot(BotBase):
         self.CURRENT_STATE = WALKING_STATE
         self.current_point = 0  # Current position index
         self.path = []  # Dict of tuples with coordinates [(0, 0), (2, 2)] etc
-
         eXLib.RegisterDigMotionCallback(OnDigMotionCallback)
+        
         self.slash_timer = OpenLib.GetTime()
         self.hasRecivedSlash = False
         self.lastTimeMine = 0   
@@ -169,6 +178,12 @@ class FarmingBot(BotBase):
         self.CURRENT_STATE = WAITING_STATE
         self.lastTimeWaitingState = OpenLib.GetTime()
 
+    def IsCurrentlyDiggingDone(self):
+        self.is_currently_digging = False
+
+    def IsCurrentlyDigging(self):
+        return self.is_currently_digging
+
     def load_path(self):
         path = FileManager.FARMBOT_WAYPOINTS_LISTS + self.edit_line.GetText()
         waypoints = FileManager.LoadListFile(path)
@@ -263,6 +278,7 @@ class FarmingBot(BotBase):
         elif self.showMiningButton.isOn and len(self.ores_vid_list) > 0:
             self.select_ore()
             self.CURRENT_STATE = MINING_STATE
+            return
         else:
             if not self.lastTimeWaitingState:
                 self.CURRENT_STATE = WALKING_STATE
@@ -351,7 +367,7 @@ class FarmingBot(BotBase):
                 if self.showFarmingMetinButton.isOn:
                     on_failed.append(ActionRequirementsCheckers.isMetinNearly)
                 if self.showMiningButton.isOn:
-                    on_failed.append(ActionRequirementsCheckers.isOreNearly)
+                    on_failed.append(returnFuncWithArgs(ActionRequirementsCheckers.isRaceNearly, self.ores_to_mine))
 
                 action_dict = {'args': [(self.path[self.current_point][0], self.path[self.current_point][1])],
                 'function': ActionFunctions.MoveToPosition, 
@@ -363,7 +379,16 @@ class FarmingBot(BotBase):
                 return
 
             elif self.CURRENT_STATE == MINING_STATE:
-                self.mineOre()
+                OpenLog.DebugPrint("[Farming-bot] MINING_STATE")
+                action_dict = {
+                    'args': [self.selectedOre, self.IsCurrentlyDigging],
+                    'requirements': {},
+                    'function': ActionFunctions.MineOre,
+                    'on_success': [ActionBot.NEXT_ACTION]
+                }
+
+                ActionBot.instance.AddNewAction(action_dict)
+                self.isCurrActionDone = False
                 return
 
             elif self.CURRENT_STATE == FARMING_STATE:
@@ -379,21 +404,10 @@ class FarmingBot(BotBase):
                 self.isCurrActionDone = False
                 return
 
-    def mineOre(self):
-
-        # Checking there is any reason to stop mining
-        if not self.is_char_ready_to_mine():
-            chat.AppendChat(3, 'Stop')
-            return
-
-        if not self.is_currently_digging:
-            net.SendOnClickPacket(self.selectedOre)
-            self.is_currently_digging = True
-
-        this_time = OpenLib.GetTime()
-        if(this_time > self.slash_timer and self.hasRecivedSlash):
-            self.is_currently_digging = False
-            self.hasRecivedSlash = False
+        #this_time = OpenLib.GetTime()
+        #if(this_time > self.slash_timer and self.hasRecivedSlash):
+        ##    self.is_currently_digging = False
+        #    self.hasRecivedSlash = False
 
 
 def switch_state():

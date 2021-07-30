@@ -1,7 +1,8 @@
-import ActionRequirementsCheckers 
+import ActionRequirementsCheckers
 from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules import UIComponents
+from OpenBot.Modules import OpenLib, UIComponents
+from OpenBot.Modules import Hooks
 import ui, chat
 
 
@@ -19,14 +20,25 @@ STATE_STOP = 0
 # STAGES OPTIONS
 STAGE_REPEAT = 'stage_reapat'
 
+def _afterLoadPhase(phase):
+    global instance
+    if phase == OpenLib.OpenLib.PHASE_LOGIN or OpenLib.PHASE_GAME:
+        instance.enableDeamonTower.SetOn()
+        instance.Start()
+
+
 class ActionBot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self, 0.2)
+
         self.currState = STATE_STOP
 
         self.currActionDict = None
         self.currActionsDictsQueue = []
+
+        self.waiters = []
+
         self.BuildWindow()
 
     def BuildWindow(self):
@@ -75,6 +87,11 @@ class ActionBot(BotBase):
             elif requirement == ActionRequirementsCheckers.IS_NEAR_POSITION:
                 if not ActionRequirementsCheckers.isNearPosition(requirements[requirement]):
                     return False
+            
+            elif requirement == ActionRequirementsCheckers.IS_NEAR_INSTANCE:
+                if not ActionRequirementsCheckers.isNearInstance(requirements[requirement]):
+                    return False
+
 
         return True
 
@@ -139,7 +156,22 @@ class ActionBot(BotBase):
         if self.currActionDict == None:
             if not self.CheckIsThereNewAction():
                 return
+        
+        for waiter in self.waiters:
+            val, waiter['last_time_waiting'] = OpenLib.timeSleep(waiter['last_time_waiting'], waiter['timeToWait'])
+            if val:
+                waiter['callback']()
 
+        self.FrameDoAction()
+
+    def AddNewWaiter(self, timeToWait, callback):
+        self.waiters.append({
+            'timeToWait': timeToWait,
+            'callback': callback,
+            'last_time_waiting': OpenLib.GetTime(),
+        })     
+
+    def FrameDoAction(self):
         self.RefreshRenderedActions()
         is_action_done = self.DoAction(self.currActionDict)
         DebugPrint(str(is_action_done))
@@ -199,4 +231,4 @@ class ActionBot(BotBase):
             self.Board.Show()
 
 instance = ActionBot()
-instance.switch_state()
+Hooks.registerPhaseCallback('actionBot', _afterLoadPhase)

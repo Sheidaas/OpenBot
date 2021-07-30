@@ -731,6 +731,18 @@ def IsWeaponArch():
 		return True
 	return False
 
+def IsWeaponPickaxe():
+	"""
+		Return true if weapon is pickaxe
+	"""
+	idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
+	if idx == 0:
+		return False
+	item.SelectItem(idx)
+	if item.GetItemType() == item.ITEM_TYPE_PICK:
+		return True
+	return False
+
 class WaitingDialog(ui.ScriptWindow):
 
 	def __init__(self):

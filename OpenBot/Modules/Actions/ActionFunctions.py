@@ -80,6 +80,10 @@ def MoveToPosition(args):
         return True
     return False
 
+def MoveToVID(args):
+    x, y, z = chr.GetPixelPosition(args[0])
+    return MoveToPosition([(x, y)])
+
 def UsingItemOnInstance(args):
     instance = args[0]
     item_slot = args[1]
@@ -227,7 +231,69 @@ def TalkWithNPC(args):
     return False
     
 def MineOre(args):
-    launched_time = args[0]
-    waiting_time = args[1]
-    hasRecivedSlash, slash_timer = args[2]()
+    selectedOre = args[0]
+    is_curr_mining = args[1]()
+    #if eXLib.IsDead(selectedOre):
+    #    return True
+    #
+    #if not OpenLib.IsWeaponPickaxe():
+    #    return True
+    if not OpenLib.isPlayerCloseToInstance(selectedOre):
+        action_dict = {'args': [selectedOre],
+                        'function': MoveToVID,
+                        'requirements': {ActionRequirementsCheckers.isNearInstance: [selectedOre]},
+                        'on_success': [ActionBot.NEXT_ACTION]}
+        return action_dict
+                    
+    if not is_curr_mining:
+        net.SendOnClickPacket(selectedOre)
     
+    return False
+    
+def LookForBlacksmithInDeamonTower(args):
+    go_above_six_stage = args[0]
+    item_index_to_upgrade = args[1]
+
+    blacksmiths_id = [20074, 20075, 20076]
+
+    for vid in eXLib.InstancesList:
+        chr.SelectInstance(vid)
+        for _id in blacksmiths_id:
+            if chr.GetRace() == _id:
+                
+                if not OpenLib.isPlayerCloseToInstance(vid):
+                    action_dict = {
+                        'args': [vid],
+                        'function': MoveToVID,
+                        'requirements': { ActionRequirementsCheckers.IS_NEAR_INSTANCE: vid},
+                        'on_failed': [ActionBot.NEXT_ACTION]
+                    }
+
+                    return action_dict
+
+                if item_index_to_upgrade >= 0:
+                    UpgradeDeamonTower(item_index_to_upgrade)
+                
+                if go_above_six_stage:
+                    if player.GetStatus(player.LEVEL) < 75:
+                        answer = [0, 0]
+                    else:
+                        answer = [0, 0, 0]
+                
+                else:
+                    if player.GetStatus(player.LEVEL) < 75:
+                        answer = [0, 0]
+                    else:
+                        answer = [2, 0, 0]
+
+                blacksmith_x, blacksmith_y, blacksmith_z = chr.GetPixelPosition(vid)
+                action_dict = {
+                    'args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
+                    'function': TalkWithNPC,
+                    'on_success': [],
+                    'requirements': {},
+                }
+                return action_dict
+
+            
+    return False

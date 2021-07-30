@@ -69,6 +69,11 @@ class Radar(BotBase):
                                                funcState=self.switch_boss_button,
                                                defaultValue=self.showBoss)
 
+        self.showDebugButton = comp.OnOffButton(self.settings_tab,
+                                               '\t\t\t\t\t\tDebug mode', '', 80, 120,
+                                               funcState=self.switch_debug_button,
+                                               defaultValue=False)                                  
+
 
         x_size = 235
         y_size = 100
@@ -137,6 +142,9 @@ class Radar(BotBase):
     def switch_boss_button(self, val):
         self.showBoss = val
 
+    def switch_debug_button(self, val):
+        return
+
     def _start(self, val):
         if val:
             self.Start()
@@ -162,8 +170,9 @@ class Radar(BotBase):
 
         for vid in self.all_vids:
             if MAIN_CHAR_VID != vid:
-                chr.SelectInstance(vid)
-                chat.AppendChat(3, str(chr.GetInstanceType(vid)) + ' ' + str(chr.GetRace()) + ' ' + str(chr.GetName(vid)) + ' ' + str(chr.GetPixelPosition(vid))   + ' ' + str(vid) )
+                if self.showDebugButton.isOn:
+                    chr.SelectInstance(vid)
+                    chat.AppendChat(3, str(chr.GetInstanceType(vid)) + ' ' + str(chr.GetRace()) + ' ' + str(chr.GetName(vid)) + ' ' + str(chr.GetPixelPosition(vid))   + ' ' + str(vid) )
 
                 if self.IsThisEntityNew(vid):
                     if self.showOre:

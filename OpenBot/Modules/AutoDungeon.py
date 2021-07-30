@@ -17,7 +17,6 @@ DEAMON_TOWER = {
         'maps': ['metin2_map_milgyo', 'metin2_map_deviltower1'],
         'lvl': 40,},
     'options': {
-        'UseBlacksmith': False,
         'SlotToUpgrade': 0,
         'GoAboveBlacksmith': False,},
     'stages': {
@@ -81,7 +80,7 @@ DEAMON_TOWER = {
                           'on_failed': []
                         }
 
-                        ],},},
+                        ],},
         7: { # stage with metins and chests
             'actions': [{ 'args': [(61000, 66500)],
                           'function': ActionFunctions.ClearFloor,
@@ -202,31 +201,13 @@ class AutoDungeon(BotBase):
             self.currSchema = None            
 
     def AddOptionalActionsToDeamonTower(self):
-
-        if DEAMON_TOWER['options']['UseBlacksmith']:
-            action_dict = { 'args': [self.currSchema['options']['SlotToUpgrade']],
-                          'function': ActionFunctions.UpgradeDeamonTower,
-                          'requirements': {} }
-                        
-            DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
-
-        if DEAMON_TOWER['options']['GoAboveBlacksmith']:
-            action_dict = { 'args': [20348, (42500, 21600), [0, 0, 0], 'metin2_map_deviltower1'],
-                          'function': ActionFunctions.TalkWithNPC,
-                          'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
-            DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
-        
-        else:
-            answer = []
-            if player.LEVEL < 75:
-                answer = [0, 0]
-            else:
-                answer = [0, 0, 2]
-
-            action_dict = { 'args': [20348, (42500, 21600), answer, 'metin2_map_deviltower1' ],
-                          'function': ActionFunctions.TalkWithNPC,
-                          'requirements': { ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_milgyo']}}
-            DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
+        action_dict = {
+            'args': [DEAMON_TOWER['options']['GoAboveBlacksmith'], DEAMON_TOWER['options']['SlotToUpgrade']],
+            'function': ActionFunctions.LookForBlacksmithInDeamonTower,
+            'requirements': {}
+            'on_failed': [ActionBot.ActionBot.DISCARD]
+        }
+        DEAMON_TOWER['stages'][6]['actions'].append(action_dict)
 
     def Frame(self):
         if self.isCurrActionDone:

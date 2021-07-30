@@ -1,13 +1,15 @@
 from OpenBot.Modules import OpenLib
 from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, background, chat
+import player, background, chat, chr
 
 # REQUIREMENTS
 IS_NEAR_POSITION = 'isNearPosition'
 IS_ON_POSITION = 'isOnPosition'
 IS_IN_MAP = 'isInMap'
 IS_ABOVE_LVL = 'isAboveLvl'
+IS_NEAR_INSTANCE = 'inNearInstance'
+IS_RACE_NEARLY = 'isRaceNearly'
 
 def isAboveLVL(lvl):
     """
@@ -18,8 +20,8 @@ def isAboveLVL(lvl):
     """
     
     
-    #if int(player.LEVEL_TYPE_BASE) < lvl:
-    #    return False
+    if player.GetStatus(player.LEVEL) < lvl:
+        return False
     return True
 
 def isInMaps(maps):
@@ -33,6 +35,9 @@ def isInMaps(maps):
         if str(background.GetCurrentMapName()) == mapName:
             return True
     return False
+
+def isNearInstance(vid):
+    return OpenLib.isPlayerCloseToInstance(vid)
 
 def isNearPosition(position):
     """
@@ -77,3 +82,27 @@ def isOreNearly():
         if OpenLib.IsThisOre(vid):
             return True
     return False
+
+def isRaceNearly(races_list):
+    for vid in eXLib.InstancesList:
+        chr.SelectInstance(vid)
+        if chr.GetRace() in races_list:
+            return True
+    return False
+
+def isCharReadyToMine(ore_vid):
+
+
+    if eXLib.IsDead(ore_vid):
+        return False
+
+    if not OpenLib.isPlayerCloseToInstance(ore_vid):
+        return False
+    
+    if not OpenLib.IsWeaponPickaxe():
+        return False
+
+    return True
+
+
+

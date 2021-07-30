@@ -1,9 +1,11 @@
+from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
 from OpenBot.Modules import FarmingBot
 from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar
+from OpenBot.Modules.Actions import ActionBot
 DEBUG = False
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
@@ -17,7 +19,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     comp = UIComponents.Component()
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
-
+    action_bot = ActionBot.instance
     energy_bot = EnergyBot.instance
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
@@ -77,6 +79,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
         self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
         self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
+        self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
@@ -169,6 +172,8 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
 
     def OnEnergyBot(self):
         self.energy_bot.switch_state()
+    def OnActionBot(self):
+        self.action_bot.switch_state()
 
     def OnRadar(self):
         self.radar.switch_state()
