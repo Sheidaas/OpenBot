@@ -92,7 +92,6 @@ def isRaceNearly(races_list):
 
 def isCharReadyToMine(ore_vid):
 
-
     if eXLib.IsDead(ore_vid):
         return False
 

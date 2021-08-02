@@ -25,6 +25,7 @@ def OnDigMotionCallback(main_vid,target_ore,n):
     if(main_vid != net.GetMainActorVID()):
         return
     if farm.enableButton.isOn and farm.showMiningButton.isOn:
+        OpenLog.DebugPrint('Digging is starting')
         farm.is_currently_digging = True
         slash_time = n * farm.MINING_SLASH_TIME
         ActionBot.instance.AddNewWaiter(slash_time, farm.IsCurrentlyDiggingDone)
@@ -180,6 +181,7 @@ class FarmingBot(BotBase):
 
     def IsCurrentlyDiggingDone(self):
         self.is_currently_digging = False
+        self.isCurrActionDone = True
 
     def IsCurrentlyDigging(self):
         return self.is_currently_digging
@@ -301,7 +303,6 @@ class FarmingBot(BotBase):
         else:
             current_channel += 1
 
-        chat.AppendChat(3, str(current_channel))
         ChannelSwitcher.instance.ChangeChannelById(current_channel)
 
     def is_text_validate(self, text):
@@ -384,7 +385,8 @@ class FarmingBot(BotBase):
                     'args': [self.selectedOre, self.IsCurrentlyDigging],
                     'requirements': {},
                     'function': ActionFunctions.MineOre,
-                    'on_success': [ActionBot.NEXT_ACTION]
+                    'on_success': [ActionBot.NEXT_ACTION],
+                    'on_failed': [ActionBot.NEXT_ACTION]
                 }
 
                 ActionBot.instance.AddNewAction(action_dict)
@@ -404,10 +406,7 @@ class FarmingBot(BotBase):
                 self.isCurrActionDone = False
                 return
 
-        #this_time = OpenLib.GetTime()
-        #if(this_time > self.slash_timer and self.hasRecivedSlash):
-        ##    self.is_currently_digging = False
-        #    self.hasRecivedSlash = False
+
 
 
 def switch_state():

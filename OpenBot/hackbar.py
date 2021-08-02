@@ -77,9 +77,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 323, self.OnRadar, 'OpenBot/Images/Hackbar/radar_0.tga', 'OpenBot/Images/Hackbar/radar_1.tga', 'OpenBot/Images/Hackbar/radar_0.tga')
         self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 358, self.OnSkillbot, 'OpenBot/Images/Hackbar/skill_0.tga', 'OpenBot/Images/Hackbar/skill_1.tga', 'OpenBot/Images/Hackbar/skill_0.tga')
         self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
-        self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
-        self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
-        self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/ch_switch_0.tga', 'OpenBot/Images/Hackbar/ch_switch_1.tga', 'OpenBot/Images/Hackbar/ch_switch_0.tga')
+        self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/dt_0.tga', 'OpenBot/Images/Hackbar/dt_1.tga', 'OpenBot/Images/Hackbar/dt_0.tga')
+        self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/energy_0.tga', 'OpenBot/Images/Hackbar/energy_1.tga', 'OpenBot/Images/Hackbar/energy_0.tga')
+        self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')

@@ -64,7 +64,7 @@ class EnergyBot(BotBase):
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              2: {'args': [20001, (29223, 81640), 'metin2_map_c1'],
+              2: {'args': [20001, (29200, 81200), 'metin2_map_c1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},

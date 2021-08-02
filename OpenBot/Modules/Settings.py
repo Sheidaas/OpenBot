@@ -6,6 +6,7 @@ from FileManager import boolean
 import ChannelSwitcher
 import UIComponents
 
+
 class SettingsDialog(ui.ScriptWindow):
 	TIME_DEAD = 5
 	TIME_POTS = 0.2
@@ -406,16 +407,18 @@ class SettingsDialog(ui.ScriptWindow):
 		self.antiExp = val
 
 	def antiExpFunc(self):
-		if self.antiExp:
+		from OpenBot.Modules.Actions import ActionBot
+		def _anti_exp():
 			status = OpenLib.getAllStatusOfMainActor()
-			exp = status['EXP']
-			if exp > 0:
-				val, self.antiExpTimerSleep = OpenLib.timeSleep(self.antiExpTimerSleep, 3)
-				if val:
-					if exp < 1000000:
-						net.SendGuildOfferPacket(exp)
-					else:
-						net.SendGuildOfferPacket(1000000)
+			exp = player.GetStatus(status['EXP'])
+			if exp < 1000000:
+				net.SendGuildOfferPacket(exp)
+			else:
+				net.SendGuildOfferPacket(1000000)
+		
+		if self.antiExp:
+			ActionBot.instance.AddNewWaiter(3, _anti_exp)
+
 
 	def OnUpdate(self):
 		self.CheckUsePotions()

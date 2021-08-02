@@ -175,7 +175,7 @@ class DmgHacks(ui.Window):
 			while len(lst) > 0 and hit_counter < self.maxMonster:
 				vid = lst[0]
 				mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-				if self.attackBlockedMonsters.isOn:
+				if not self.attackBlockedMonsters.isOn:
 					if eXLib.IsPositionBlocked(mob_x,mob_y):
 						lst.remove(vid)
 						continue

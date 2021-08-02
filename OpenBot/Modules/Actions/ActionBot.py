@@ -22,8 +22,8 @@ STAGE_REPEAT = 'stage_reapat'
 
 def _afterLoadPhase(phase):
     global instance
-    if phase == OpenLib.OpenLib.PHASE_LOGIN or OpenLib.PHASE_GAME:
-        instance.enableDeamonTower.SetOn()
+    if phase == OpenLib.PHASE_LOGIN or OpenLib.PHASE_GAME:
+        instance.enableActionBot.SetOn()
         instance.Start()
 
 
@@ -53,7 +53,7 @@ class ActionBot(BotBase):
 
         comp = UIComponents.Component()
                                 
-        self.enableDeamonTower = comp.OnOffButton(self.Board, '', '', 150, 110,
+        self.enableActionBot = comp.OnOffButton(self.Board, '', '', 150, 110,
                                                     OffUpVisual='OpenBot/Images/start_0.tga',
                                                     OffOverVisual='OpenBot/Images/start_1.tga',
                                                     OffDownVisual='OpenBot/Images/start_2.tga',
@@ -100,11 +100,7 @@ class ActionBot(BotBase):
             self.Start()
         else:
             self.Stop()
-
-    def OnShowButton(self):
-        chat.AppendChat(3, str(self.currActionDict) + ' CURR ACTION DICT')
-        chat.AppendChat(3, str(self.currActionsDictsQueue) + ' CURR ACTION DICT Queue')
-
+            
     def OnClearButton(self):
         self.currActionDict = None
         self.currActionsDictsQueue = []
@@ -153,14 +149,16 @@ class ActionBot(BotBase):
         self.OnClearButton()
 
     def Frame(self):
+      
+        for waiter in self.waiters:
+            this_time = OpenLib.GetTime()
+            if this_time > waiter['timeToWait'] + waiter['launching_time']:
+                waiter['callback']()
+                self.waiters.remove(waiter)
+
         if self.currActionDict == None:
             if not self.CheckIsThereNewAction():
                 return
-        
-        for waiter in self.waiters:
-            val, waiter['last_time_waiting'] = OpenLib.timeSleep(waiter['last_time_waiting'], waiter['timeToWait'])
-            if val:
-                waiter['callback']()
 
         self.FrameDoAction()
 
@@ -168,13 +166,12 @@ class ActionBot(BotBase):
         self.waiters.append({
             'timeToWait': timeToWait,
             'callback': callback,
-            'last_time_waiting': OpenLib.GetTime(),
+            'launching_time': OpenLib.GetTime(),
         })     
 
     def FrameDoAction(self):
         self.RefreshRenderedActions()
         is_action_done = self.DoAction(self.currActionDict)
-        DebugPrint(str(is_action_done))
         if type(is_action_done) == bool:
 
             if 'on_success' in self.currActionDict.keys() and is_action_done:
@@ -185,7 +182,7 @@ class ActionBot(BotBase):
                             self.GoToNextAction()
                     elif type(key) == str:
                         if key == NEXT_ACTION:
-                            self.GoToNextAction(skipRequirements=True)
+                            self.GoToNextAction()
                         elif key == DISCARD_PREVIOUS:
                             previous = self.currActionsDictsQueue.pop()
                             if 'callback' in previous.keys():
@@ -197,12 +194,9 @@ class ActionBot(BotBase):
                 
                 for key in self.currActionDict['on_failed']:
                     if callable(key):
-                        DebugPrint('callable')
                         if key():
-                            DebugPrint('callable is true')
                             self.GoToNextAction(skipRequirements=True)
                     elif type(key) == str:
-                        DebugPrint('str')
                         if key == NEXT_ACTION:
                             self.GoToNextAction(skipRequirements=True)
                 
