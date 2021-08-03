@@ -14,33 +14,7 @@ import ui, player, background, chat, item
 
 """
 ,
-        7: { # stage with metins and chests
-            'actions': [{ 'args': [(61017, 66483)],
-                          'function': ActionFunctions.FindMapInDT,
-                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 42600, 25000)},
-                          'on_success': [ActionBot.NEXT_ACTION],
-                          'on_failed': []
-                        }
-                
-            ],},
-        8: { # stage with key
-            'actions': [
-                { 'args': [(60961, 42600)],
-                          'function': ActionFunctions.OpenASealInMonument,
-                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (61127, 17160, 25000)},
-                          'on_success': [ActionBot.NEXT_ACTION],
-                          'on_failed': []
-                        }
-                        ],},
-        9: { # stage with ripper
-            'actions': [{ 'args': [(61127, 17160)],
-                          'function': ActionFunctions.ClearFloor,
-                          'requirements': {}, # DONT NEED ANY
-                          'on_success': [ActionBot.NEXT_ACTION],
-                          'on_failed': []
-                        }
 
-                        ],},
 
 """
 
@@ -113,7 +87,34 @@ DEAMON_TOWER = {
                           'on_failed': []
                         }
 
-                        ],}
+                        ],},
+        7: { # stage with metins and chests
+            'actions': [{ 'args': [(61017, 66483)],
+                          'function': ActionFunctions.FindMapInDT,
+                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 42600, 25000)},
+                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_failed': []
+                        }
+                
+            ],},
+        8: { # stage with key
+            'actions': [
+                { 'args': [(60961, 42600)],
+                          'function': ActionFunctions.OpenASealInMonument,
+                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (61127, 17160, 25000)},
+                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_failed': []
+                        }
+                        ],},
+        9: { # stage with ripper
+            'actions': [{ 'args': [(61127, 17160)],
+                          'function': ActionFunctions.ClearFloor,
+                          'requirements': {}, # DONT NEED ANY
+                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_failed': []
+                        }
+
+                        ],},
 
     }
 }
@@ -237,8 +238,7 @@ class AutoDungeon(BotBase):
         id = item_name.split(" ",1)
         self.itemToUpgrade.remove(int(id[0]))
         self.UpdateFilterList()
-
-    
+  
     def addPickFilterItem(self,id):
         self.itemToUpgrade.append(int(id))
         self.UpdateFilterList()
@@ -257,11 +257,6 @@ class AutoDungeon(BotBase):
 
     def StartDeamonTower(self):
         self.currSchema = DEAMON_TOWER
-        #text = self.edit_lineWaitingTime.GetText()
-        #if self.is_text_validate(text):
-        #    self.currSchema['options']['SlotToUpgrade'] = int(text)
-        #else:
-        #    return
 
         self.AddOptionalActionsToDeamonTower()
         if self.CheckRequirementsForCurrSchema():
@@ -311,9 +306,6 @@ class AutoDungeon(BotBase):
             'on_failed': [ActionBot.DISCARD]
         }
         self.currSchema['stages'][6]['actions'].append(action_dict)
-        DebugPrint(str(self.currSchema))
-
-
 
     def Frame(self):
         if self.isCurrActionDone:
@@ -333,10 +325,10 @@ class AutoDungeon(BotBase):
         try:
             int(text)
         except ValueError:
-            chat.AppendChat(3, '[Farmbot] - The value must be a digit')
+            chat.AppendChat(3, '[AutoDungeon] - The value must be a digit')
             return False
         if int(text) < -2:
-            chat.AppendChat(3, '[Farmbot] - The value must be in range -1 to infinity')
+            chat.AppendChat(3, '[AutoDungeon] - The value must be in range -1 to infinity')
             return False
         return True
 

@@ -103,5 +103,3 @@ def isCharReadyToMine(ore_vid):
 
     return True
 
-
-

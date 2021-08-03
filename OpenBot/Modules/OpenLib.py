@@ -851,4 +851,5 @@ class EterPackOperator(object):
 #LoadDictFile(CONFIG_PSHOP_AUTO_BUY,SEARCH_ITEMS_MAX_PRICE,float)
 FileManager.LoadDictFile(FileManager.CONFIG_BOSSES_ID, BOSS_IDS, int)
 FileManager.LoadDictFile(FileManager.CONFIG_ORES_ID, ORES_IDS, int)
+Hooks._debugHookFunctionArgs(event.SelectAnswer)
 import Movement

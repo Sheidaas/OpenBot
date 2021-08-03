@@ -25,6 +25,9 @@ def _afterLoadPhase(phase):
     if phase == OpenLib.PHASE_LOGIN or OpenLib.PHASE_GAME:
         instance.enableActionBot.SetOn()
         instance.Start()
+        for waiter in instance.waiters:
+            waiter['callback']()
+        instance.waiters = []
 
 
 class ActionBot(BotBase):
@@ -53,7 +56,7 @@ class ActionBot(BotBase):
 
         comp = UIComponents.Component()
                                 
-        self.enableActionBot = comp.OnOffButton(self.Board, '', '', 150, 110,
+        self.enableActionBot = comp.OnOffButton(self.Board, '', '', 170, 180,
                                                     OffUpVisual='OpenBot/Images/start_0.tga',
                                                     OffOverVisual='OpenBot/Images/start_1.tga',
                                                     OffDownVisual='OpenBot/Images/start_2.tga',
@@ -62,11 +65,11 @@ class ActionBot(BotBase):
                                                     OnDownVisual='OpenBot/Images/stop_2.tga',
                                                     funcState=self.OnEnableSwitchButton, defaultValue=False)
         
-        self.ClearButton = comp.Button(self.Board, 'Clear', '', 20, 110, self.OnClearButton,
+        self.ClearButton = comp.Button(self.Board, 'Clear', '', 20, 180, self.OnClearButton,
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
-        self.ShowButton = comp.Button(self.Board, 'Show', '', 20, 130, self.OnClearButton,
+        self.ShowButton = comp.Button(self.Board, 'Show', '', 20, 200, self.OnClearButton,
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
@@ -104,6 +107,9 @@ class ActionBot(BotBase):
     def OnClearButton(self):
         self.currActionDict = None
         self.currActionsDictsQueue = []
+        for waiter in self.waiters:
+            waiter['callback']()
+        self.waiters = []
 
     def GoToNextAction(self, skipRequirements=False):
         if skipRequirements:
@@ -149,17 +155,22 @@ class ActionBot(BotBase):
         self.OnClearButton()
 
     def Frame(self):
-      
+        self.rendered_actions = []
+        self.rendered_waiters = []
+
+        if self.Board.IsShow():
+            self.RefreshRenderedWaiters()
+
         for waiter in self.waiters:
             this_time = OpenLib.GetTime()
             if this_time > waiter['timeToWait'] + waiter['launching_time']:
                 waiter['callback']()
                 self.waiters.remove(waiter)
-
         if self.currActionDict == None:
             if not self.CheckIsThereNewAction():
                 return
 
+        
         self.FrameDoAction()
 
     def AddNewWaiter(self, timeToWait, callback):
@@ -170,7 +181,8 @@ class ActionBot(BotBase):
         })     
 
     def FrameDoAction(self):
-        self.RefreshRenderedActions()
+        if self.Board.IsShow():
+            self.RefreshRenderedActions()
         is_action_done = self.DoAction(self.currActionDict)
         if type(is_action_done) == bool:
 
@@ -209,13 +221,22 @@ class ActionBot(BotBase):
             self.NewActionReturned(is_action_done)
 
     def RefreshRenderedActions(self):
-        actions_to_render = [self.currActionDict] + self.currActionsDictsQueue
+        actions_to_render = [self.currActionDict] + self.currActionsDictsQueue[:5]
+        self.rendered_actions = []
         x = 10
         y = 30
         comp = UIComponents.Component()
         for action in actions_to_render:
-            text = comp.TextLine(self.Board, action['function'].__name__, x, y, UIComponents.RGB(255, 255, 255))
-            setattr(self, 'rendered_action_x_' + str(y), text)
+            self.rendered_actions.append(comp.TextLine(self.Board, action['function'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
+            y += 20
+    
+    def RefreshRenderedWaiters(self):
+        x = 100
+        y = 30
+        self.rendered_waiters = []
+        comp = UIComponents.Component()
+        for action in self.waiters:
+            self.rendered_waiters.append(comp.TextLine(self.Board, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
             y += 20
 
     def switch_state(self):

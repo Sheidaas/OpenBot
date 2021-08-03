@@ -179,7 +179,7 @@ class DmgHacks(ui.Window):
 					if eXLib.IsPositionBlocked(mob_x,mob_y):
 						lst.remove(vid)
 						continue
-				if self.cloudBtn.isOn == True and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
+				if self.cloudBtn.isOn and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				elif isArch:
 					hit_counter+=self.AttackArch(lst,mob_x, mob_y)

@@ -40,7 +40,7 @@ class BotBase(ui.ScriptWindow):
 		self.State = self.STATE_STOPPED
 		self.time_wait = time_wait
 		self.generalTimer = 0
-		self.onlyGamePhase = True
+		self.onlyGamePhase = onlyGamePhase
 		self.waitIsPlayerDead = waitIsPlayerDead
 		self.isPaused = False
 

@@ -12,7 +12,9 @@ def __PhaseChangeSkillCallback(phase):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkillsUI()
-        instance.startUpWait = True
+        instance.LoadSettings()
+        if instance.shouldWait:
+            instance.startUpWait = True
         if instance.enableButton.isOn:
             instance.Start()
         else:
@@ -46,10 +48,10 @@ class Skillbot(BotBase):
     def __init__(self):
         BotBase.__init__(self)
         self.startUpWaitTime = 0
+        self.shouldWait = False
         self.startUpWait = False
         self.currentSkillSet = []
 
-        self.isOn = False
         self.BuildWindow()
         self.resetSkillsUI()
 
@@ -71,16 +73,25 @@ class Skillbot(BotBase):
                                                   OnUpVisual='OpenBot/Images/stop_0.tga',
                                                   OnOverVisual='OpenBot/Images/stop_1.tga',
                                                   OnDownVisual='OpenBot/Images/stop_2.tga',
-                                                  funcState=self._start, defaultValue=self.isOn)
+                                                  funcState=self._start, defaultValue=False)
         
-        self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '40', 15, 95, 25, 15, 25)             
-        self.text_line1 = self.comp.TextLine(self.Board, 's. skill cooldown', 45, 88, self.comp.RGB(255, 255, 255))
+
+        self.showShouldWaitButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tWait after logout?', 'If check, skillbot will wait for use skill', 15, 95,
+                                                         funcState=self.switch_should_wait,
+                                                         defaultValue=self.shouldWait)
+
+        self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '5', 15, 115, 25, 15, 25)             
+        self.text_line1 = self.comp.TextLine(self.Board, 's. waiting after logout', 50, 118, self.comp.RGB(255, 255, 255))
      
+
+    def switch_should_wait(self, val):
+        self.shouldWait = val
 
     def SaveSettings(self):
         for skill in self.currentSkillSet:
             FileManager.WriteConfig(str(skill['id']), str(skill['icon'].isOn), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('IsTurnedOn', str(self.isOn), file=FileManager.CONFIG_SKILLBOT)
+        FileManager.WriteConfig('IsTurnedOn', str(self.enableButton.isOn), file=FileManager.CONFIG_SKILLBOT)
+        FileManager.WriteConfig('ShouldWaitAfterLogout', str(self.shouldWait), file=FileManager.CONFIG_SKILLBOT)
         FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
 
     def LoadSettings(self):
@@ -90,6 +101,12 @@ class Skillbot(BotBase):
         else:
             self.enableButton.SetOff()
         
+        should_wait = FileManager.boolean(FileManager.ReadConfig('ShouldWaitAfterLogout', file=FileManager.CONFIG_SKILLBOT))
+        if should_wait:
+            self.showShouldWaitButton.SetOn()
+        else:
+            self.showShouldWaitButton.SetOff()
+
         for skill in self.currentSkillSet:
             is_skill_turned_on = FileManager.boolean(FileManager.ReadConfig(str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
             if is_skill_turned_on:
@@ -106,12 +123,15 @@ class Skillbot(BotBase):
         pos_x = 0
         for i, id in enumerate(skillIds):
             if id in self.ACTIVE_SKILL_IDS:
+                slot_bar, edit_line = self.comp.EditLine(self.Board, '40', 78 + 35 * pos_x, 75, 25, 15, 25)
                 self.currentSkillSet.append({
                     "icon": self.comp.OnOffButton(self.Board, '', '', 75 + 35 * pos_x, 45, image=OpenLib.GetSkillIconPath(id)),
                     "id": id,
                     "slot": i + 1,
                     'is_turned_on': False,
                 })
+                setattr(self, 'slot_bar'+str(id), slot_bar)
+                setattr(self, 'edit_line'+str(id), edit_line)
                 pos_x += 1
         self.LoadSettings()
 
@@ -121,10 +141,13 @@ class Skillbot(BotBase):
         else:
             self.Stop()
   
+    #def StopBot(self):
+    #    self.enableButton.SetOff()
+
     def addCallbackToWaiter(self, skill):
-        def _callback():
+        def wait_to_use_skill():
             skill['is_turned_on'] = False
-        return _callback
+        return wait_to_use_skill
 
     def is_text_validate(self, text):
         try:
@@ -138,13 +161,12 @@ class Skillbot(BotBase):
         return True
 
     def Frame(self):
-        waiter_time = self.edit_lineWaitingTime.GetText()
-        if not self.is_text_validate(waiter_time):
-            self.Stop()
-            return
 
         if not self.startUpWait:
             for skill in self.currentSkillSet:
+                waiter_time = getattr(self, 'edit_line'+str(skill['id'])).GetText()
+                if not self.is_text_validate(waiter_time):
+                    continue
                 if not skill['is_turned_on'] and skill['icon'].isOn:
                     if not player.IsMountingHorse():
                         # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
@@ -157,7 +179,12 @@ class Skillbot(BotBase):
                     ActionBot.instance.AddNewWaiter(int(waiter_time), self.addCallbackToWaiter(skill))
 
         else:
-            val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, 2)
+            time_to_wait = 2
+            text = self.edit_lineWaitingTime.GetText()
+            if self.is_text_validate(text):
+                time_to_wait = int(text)
+
+            val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, time_to_wait)
             if val:
                 self.startUpWait = False
 

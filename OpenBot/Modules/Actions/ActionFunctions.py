@@ -6,7 +6,7 @@ from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import Hooks
 import eXLib
-import player, net, chr, chat
+import player, net, chr, chat, background
 
 
 def ClearFloor(args):
@@ -27,6 +27,13 @@ def ClearFloor(args):
         'on_failed': [ActionBot.NEXT_ACTION],
         }
         return action_dict
+
+    if len(args) > 1:
+        interruptors = args[1]
+        for interruptor in interruptors:
+            if interruptor():
+                return True
+
 
     vid = OpenLib.GetNearestMonsterVid()
     action_dict = {'args': [0, vid], # position
@@ -74,9 +81,13 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
+    if len(args) > 1:
+        map_name = args[1]
+    else:
+        map_name = background.GetCurrentMapName()
     if OpenLib.isPlayerCloseToPosition(position[0], position[1]):
         return True
-    error = Movement.GoToPositionAvoidingObjects(position[0], position[1])
+    error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=map_name)
     if error != None:
         return True
     return False
@@ -125,7 +136,7 @@ def OpenAllSeals(args): # center position of floor,
 
     x, y = args[0]
     #DebugPrint('Clearing the floor')
-    action_dict = { 'args': [(x, y)], # center position of area 
+    action_dict = { 'args': [(x, y), [_returnHasItemInterruptorWithArgs(50084)]], # center position of area 
                     'function': ClearFloor,
                     'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (x, y, 100)},
                     'on_success': [ActionBot.NEXT_ACTION],
@@ -276,24 +287,26 @@ def LookForBlacksmithInDeamonTower(args):
                 
                 if go_above_six_stage:
                     if player.GetStatus(player.LEVEL) < 75:
-                        answer = [0, 0]
+                        answer = []
                     else:
-                        answer = [0, 0, 0]
+                        answer = [1, 1, 1, 1]
                 
                 else:
                     if player.GetStatus(player.LEVEL) < 75:
-                        answer = [0, 0]
+                        answer = []
                     else:
-                        answer = [2, 0, 0]
-
-                blacksmith_x, blacksmith_y, blacksmith_z = chr.GetPixelPosition(vid)
-                action_dict = {
-                    'args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
-                    'function': TalkWithNPC,
-                    'on_success': [],
-                    'requirements': {},
-                }
-                return action_dict
+                        answer = [1, 1, 1, 254]
+                    
+                if answer:
+                    blacksmith_x, blacksmith_y, blacksmith_z = chr.GetPixelPosition(vid)
+                    action_dict = {
+                        'args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
+                        'function': TalkWithNPC,
+                        'on_success': [ActionBot.DISCARD],
+                        'requirements': {},
+                    }
+                    return action_dict
+                return True
 
             
     return False
@@ -322,7 +335,7 @@ def FindMapInDT(args):
                             }
             return action_dict
 
-    action_dict = { 'args': [(center_position[0], center_position[1])], # center position of area 
+    action_dict = { 'args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30300), _returnHasItemInterruptorWithArgs(30302)]], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1])},
                 'on_success': [ActionBot.NEXT_ACTION],
@@ -333,7 +346,7 @@ def FindMapInDT(args):
 
 def OpenASealInMonument(args):
     center_position = args[0]
-    correct_key = OpenLib.GetItemByID(30300)
+    correct_key = OpenLib.GetItemByID(30304)
     player_x, player_y, player_z = player.GetMainCharacterPosition()
 
     if not eXLib.FindPath(player_x, player_y, center_position[0], center_position[1]):
@@ -349,7 +362,8 @@ def OpenASealInMonument(args):
                         }
         return action_dict
         
-    action_dict = { 'args': [(center_position[0], center_position[1])], # center position of area 
+    
+    action_dict = { 'args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30304)]], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1], 100)},
                 'on_success': [ActionBot.NEXT_ACTION],
@@ -358,5 +372,9 @@ def OpenASealInMonument(args):
 
     return action_dict  
 
-
-#Hooks._debugHookFunctionArgs(TalkWithNPC)
+def _returnHasItemInterruptorWithArgs(item_id):
+    def x():
+        if OpenLib.GetItemByID(item_id) > -1:
+            return True
+        return False
+    return x
