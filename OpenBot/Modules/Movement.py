@@ -25,7 +25,7 @@ TIME_STOPPED_ALLOWED = 3
 #Tim after each loop
 TIME_WAIT = 0.2
 
-TIME_WAIT_MAP_CHANGE = 2
+TIME_WAIT_MAP_CHANGE = 5
 
 #Callback
 def _DestinationReachedCallback():
@@ -73,11 +73,17 @@ class MapMovementDialog(ui.ScriptWindow):
         self.SetStateMoving()
 
     def SetStateMoving(self):
-        self.currLink = self.leftLinkList.pop(0)
-        position = self.currLink.npc_action.GetNpcPosition()
-        OpenLog.DebugPrint("Moving to ("+str(position[0])+","+str(position[1])+")")
-        Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=None)
-        self.SetState(self.STATE_MOVING)
+        if(len(self.leftLinkList)>0):
+            self.currLink = self.leftLinkList.pop(0)
+            position = self.currLink.npc_action.GetNpcPosition()
+            OpenLog.DebugPrint("Moving to ("+str(position[0])+","+str(position[1])+")")
+            Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=_DestinationReachedCallback)
+            self.SetState(self.STATE_MOVING)
+        else:
+            OpenLog.DebugPrint("Moving to ("+str(self.finalPosition[0])+","+str(self.finalPosition[1])+")")
+            Movement.GoToPositionAvoidingObjects(self.finalPosition[0],self.finalPosition[1],maxDist=self.maxDist,callback=self.callback)
+            self.callback = None
+            self.SetState(self.STATE_NONE)
 
     
     def SetStateMapChanging(self):
@@ -89,12 +95,7 @@ class MapMovementDialog(ui.ScriptWindow):
         if self.currLink.GetDestMapName() != curr_map:
             self.currLink.CrossMap()
         else:
-            if len(self.leftLinkList):
-                self.SetStateMoving()
-            else:
-                Movement.GoToPositionAvoidingObjects(self.finalPosition[0],self.finalPosition[1],maxDist=self.maxDist,callback=self.callback)
-                self.callback = None
-                self.SetState(self.STATE_NONE)
+            self.SetStateMoving()
 
     def OnUpdate(self):
         if self.State == self.STATE_NONE or not OpenLib.IsInGamePhase():
@@ -103,9 +104,10 @@ class MapMovementDialog(ui.ScriptWindow):
         if not val:
             return
         if self.State == self.STATE_MOVING:
-            if self.currLink.GetOriginMapName() != background.GetCurrentMapName():
-                self.SetStateMapChanging()
-            return        
+            pass
+            #if self.currLink.GetOriginMapName() != background.GetCurrentMapName():
+                #self.SetStateMapChanging()
+            #return        
         if self.State == self.STATE_MAPCHANGING:
             self.StateMapChanging()
 
