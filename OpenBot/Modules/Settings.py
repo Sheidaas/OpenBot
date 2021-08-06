@@ -16,6 +16,7 @@ class SettingsDialog(ui.ScriptWindow):
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
 		self.restartHere = False
+		self.restartInCity = False
 		self.bluePotions = True
 		self.redPotions = True
 		self.speedHack = False
@@ -74,8 +75,9 @@ class SettingsDialog(ui.ScriptWindow):
 		
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
-		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart Here', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
-		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 200, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
+		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
+		self.reviveInCityBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\t in city?', '', 120, 140,funcState=self.ReviveInCityOnOff,defaultValue=int(self.restartInCity))
+		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 210, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
 		self.antiExpBtn =self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAntiExp', '', 20, 180,funcState=self.startAntiExp,defaultValue=int(self.antiExp))
 		
 		self.redPotButton,self.SlideRedPot,self.redPotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideRedMove, '', 'Use Red Potions', 28, 18,image="icon/item/27002.tga",funcState=self.OnRedOnOff,defaultValue=int(self.redPotions),defaultSlider=float(self.minHealth/100.0))
@@ -216,7 +218,7 @@ class SettingsDialog(ui.ScriptWindow):
 			return
 		item_name = _item.GetText()
 		id = item_name.split(" ",1)
-		self.sellItems.remove(int(id))
+		self.sellItems.remove(int(id[0]))
 		self.UpdateSellFilterList()
 
 	def UIPickRemoveFilterItem(self):
@@ -244,6 +246,9 @@ class SettingsDialog(ui.ScriptWindow):
 
 	def ReviveOnOff(self,val):
 		self.restartHere = val
+	
+	def ReviveInCityOnOff(self, val):
+		self.restartInCity = val
 
 	def AutoLoginOnOff(self,val):
 		self.autoLogin = val
@@ -344,7 +349,10 @@ class SettingsDialog(ui.ScriptWindow):
 
 		if self.restartHere and player.GetStatus(player.HP) <= 0:
 			self.lastTimeDead = OpenLib.GetTime()
-			OpenLib.Revive()
+			if not self.restartInCity:
+				OpenLib.Revive()
+			else:
+				OpenLib.Revive(in_city=True)
 		
 		if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
 			net.DirectEnter(0,0)

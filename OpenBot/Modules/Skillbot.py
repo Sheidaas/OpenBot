@@ -52,6 +52,7 @@ class Skillbot(BotBase):
         self.startUpWait = False
         self.currentSkillSet = []
 
+        self.isOn = False
         self.BuildWindow()
         self.resetSkillsUI()
 
@@ -73,7 +74,7 @@ class Skillbot(BotBase):
                                                   OnUpVisual='OpenBot/Images/stop_0.tga',
                                                   OnOverVisual='OpenBot/Images/stop_1.tga',
                                                   OnDownVisual='OpenBot/Images/stop_2.tga',
-                                                  funcState=self._start, defaultValue=False)
+                                                  funcState=self._start, defaultValue=self.isOn)
         
 
         self.showShouldWaitButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tWait after logout?', 'If check, skillbot will wait for use skill', 15, 95,
@@ -194,6 +195,7 @@ class Skillbot(BotBase):
             self.SaveSettings()
             self.Board.Hide()
         else:
+            self.resetSkillsUI()
             self.Board.Show()
 
 

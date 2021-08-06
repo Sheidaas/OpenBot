@@ -5,7 +5,7 @@ import DmgHacks
 import Movement
 import OpenLib, FileManager, Hooks
 import UIComponents
-import player, ui, chat, chr, net
+import player, ui, chat, chr, net, background
 import eXLib
 
 # STATES
@@ -13,6 +13,7 @@ WAITING_STATE = 0
 WALKING_STATE = 1
 MINING_STATE = 2
 FARMING_STATE = 3
+EXCHANGING_ITEMS_TO_ENERGY = 4
 
 def __PhaseTurnOnFarmbot(phase):
     global farm
@@ -141,13 +142,7 @@ class FarmingBot(BotBase):
                                              'd:/ymir work/ui/public/small_Button_02.sub',
                                              'd:/ymir work/ui/public/small_Button_03.sub')
 
-        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 80,
-                                                         funcState=self.switch_always_use_waithack,
-                                                         defaultValue=False)
 
-        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', 'If checked, farmbot wont use waithack for destroying metin', 20, 105,
-                                                      funcState=self.switch_dont_use_waithack,
-                                                      defaultValue=False)
 
         self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tSwitch channels', 'If checked, farmbot will change to next channel after complete a path', 20, 130,
                                                       funcState=self.ButtonOnOff,
@@ -183,6 +178,10 @@ class FarmingBot(BotBase):
         self.is_currently_digging = False
         self.isCurrActionDone = True
 
+    def IsExchangingItemsToEnergyFragmentsDone(self):
+        self.isCurrActionDone = True
+        self.CURRENT_STATE = WALKING_STATE
+
     def IsCurrentlyDigging(self):
         return self.is_currently_digging
 
@@ -217,17 +216,11 @@ class FarmingBot(BotBase):
 
         return function
 
-    def switch_always_use_waithack(self, val):
-        if val:
-            self.showOffWaithackButton.SetOff()
 
-    def switch_dont_use_waithack(self, val):
-        if val:
-            self.showAlwaysWaithackButton.SetOff()
 
     def add_point(self):
         x, y, z = player.GetMainCharacterPosition()
-        self.path.append((x, y))
+        self.path.append((x, y, background.GetCurrentMapName()))
         self.update_points_list()
 
     def remove_selected(self):
@@ -265,6 +258,7 @@ class FarmingBot(BotBase):
         if len(self.path) < 2:
             self.Stop()
             DmgHacks.Pause()
+            self.enableButton.SetOff()
             return
 
     def StopBot(self):
@@ -282,7 +276,7 @@ class FarmingBot(BotBase):
             self.CURRENT_STATE = MINING_STATE
             return
         else:
-            if not self.lastTimeWaitingState:
+            if not self.lastTimeWaitingState and not self.CURRENT_STATE == EXCHANGING_ITEMS_TO_ENERGY:
                 self.CURRENT_STATE = WALKING_STATE
 
 
@@ -334,11 +328,6 @@ class FarmingBot(BotBase):
                 self.metins_vid_list.append(vid)
 
     def Frame(self):
-        if self.showAlwaysWaithackButton.isOn:
-            DmgHacks.Resume()
-        else:
-            DmgHacks.Pause()
-
         self.checkForMetinsAndOres()
         self.search_for_farm()
 
@@ -364,15 +353,29 @@ class FarmingBot(BotBase):
 
             if self.CURRENT_STATE == WALKING_STATE:
                 OpenLog.DebugPrint("[Farming-bot] WALKING_STATE")
+                
+                if OpenLib.isInventoryFull():
+                    from OpenBot.Modules import Settings
+                    for item in Settings.instance.sellItems:
+                        slot=OpenLib.GetItemByID(item)
+                        if slot > -1:
+                            OpenLog.DebugPrint('changing state to exchaning items')
+                            self.CURRENT_STATE = EXCHANGING_ITEMS_TO_ENERGY
+                            return
+                else:
+                    OpenLog.DebugPrint('inventory is not full')
+                OpenLog.DebugPrint('No trash items')
+                
+
                 on_failed = []
                 if self.showFarmingMetinButton.isOn:
                     on_failed.append(ActionRequirementsCheckers.isMetinNearly)
                 if self.showMiningButton.isOn:
                     on_failed.append(returnFuncWithArgs(ActionRequirementsCheckers.isRaceNearly, self.ores_to_mine))
 
-                action_dict = {'args': [(self.path[self.current_point][0], self.path[self.current_point][1])],
+                action_dict = {'args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                 'function': ActionFunctions.MoveToPosition, 
-                'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0], self.path[self.current_point][1], 500]},
+                'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0], self.path[self.current_point][1], 500], ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
                 'on_failed': on_failed,
                 'callback': self.IsWalkingDone}
                 ActionBot.instance.AddNewAction(action_dict)
@@ -405,7 +408,16 @@ class FarmingBot(BotBase):
                 ActionBot.instance.AddNewAction(action_dict)
                 self.isCurrActionDone = False
                 return
-
+            
+            elif self.CURRENT_STATE == EXCHANGING_ITEMS_TO_ENERGY:
+                OpenLog.DebugPrint('[Farming-bot] EXCHANGING_STATE')
+                action_dict = {'args': [],
+                                'function': ActionFunctions.ExchangeTrashItemsToEnergyFragments,
+                                'on_success': [ActionBot.NEXT_ACTION],
+                                'callback': self.IsExchangingItemsToEnergyFragmentsDone}
+                ActionBot.instance.AddNewAction(action_dict)
+                self.isCurrActionDone = False
+                return
 
 
 

@@ -1,3 +1,4 @@
+from OpenBot.Modules import DmgHacks
 import ActionRequirementsCheckers
 from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.OpenLog import DebugPrint
@@ -47,7 +48,7 @@ class ActionBot(BotBase):
     def BuildWindow(self):
         self.comp = UIComponents.Component()
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(235, 235)
+        self.Board.SetSize(235, 275)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('ActionBot')
@@ -55,8 +56,13 @@ class ActionBot(BotBase):
         self.Board.Hide()
 
         comp = UIComponents.Component()
-                                
-        self.enableActionBot = comp.OnOffButton(self.Board, '', '', 170, 180,
+
+        self.TabWidget = UIComponents.TabWindow(10, 30, 215, 235, self.Board, ['General', 'Settings'])
+
+        self.general = self.TabWidget.GetTab(0)
+        self.settings_tab = self.TabWidget.GetTab(1)
+
+        self.enableActionBot = comp.OnOffButton(self.general, '', '', 170, 135,
                                                     OffUpVisual='OpenBot/Images/start_0.tga',
                                                     OffOverVisual='OpenBot/Images/start_1.tga',
                                                     OffDownVisual='OpenBot/Images/start_2.tga',
@@ -65,14 +71,30 @@ class ActionBot(BotBase):
                                                     OnDownVisual='OpenBot/Images/stop_2.tga',
                                                     funcState=self.OnEnableSwitchButton, defaultValue=False)
         
-        self.ClearButton = comp.Button(self.Board, 'Clear', '', 20, 180, self.OnClearButton,
+        self.ClearButton = comp.Button(self.general, 'Clear', '', 20, 135, self.OnClearButton,
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
-        self.ShowButton = comp.Button(self.Board, 'Show', '', 20, 200, self.OnClearButton,
+        self.ShowButton = comp.Button(self.general, 'Show', '', 20, 155, self.OnClearButton,
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
+        
+        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 20,
+                                                         funcState=self.switch_always_use_waithack,
+                                                         defaultValue=False)
+
+        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', 'If checked, farmbot wont use waithack for destroying metin', 20, 40,
+                                                      funcState=self.switch_dont_use_waithack,
+                                                      defaultValue=False)
+
+    def switch_always_use_waithack(self, val):
+        if val:
+            self.showOffWaithackButton.SetOff()
+
+    def switch_dont_use_waithack(self, val):
+        if val:
+            self.showAlwaysWaithackButton.SetOff()
 
     def CheckRequirementsForCurrAction(self):
         requirements = self.currActionDict['requirements']
@@ -170,6 +192,17 @@ class ActionBot(BotBase):
             if not self.CheckIsThereNewAction():
                 return
 
+        if not self.showOffWaithackButton.isOn:
+            if self.showAlwaysWaithackButton.isOn:
+                DmgHacks.Resume()
+            else:
+                if self.currActionDict['function'].__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                                                               'FindMapInDT', 'OpenASealInMonument']:
+                    DmgHacks.Resume()
+                else:
+                    DmgHacks.Pause()
+        else:
+            DmgHacks.Pause()
         
         self.FrameDoAction()
 
@@ -224,19 +257,19 @@ class ActionBot(BotBase):
         actions_to_render = [self.currActionDict] + self.currActionsDictsQueue[:5]
         self.rendered_actions = []
         x = 10
-        y = 30
+        y = 15
         comp = UIComponents.Component()
         for action in actions_to_render:
-            self.rendered_actions.append(comp.TextLine(self.Board, action['function'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
+            self.rendered_actions.append(comp.TextLine(self.general, action['function'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
             y += 20
     
     def RefreshRenderedWaiters(self):
         x = 100
-        y = 30
+        y = 15
         self.rendered_waiters = []
         comp = UIComponents.Component()
         for action in self.waiters:
-            self.rendered_waiters.append(comp.TextLine(self.Board, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
+            self.rendered_waiters.append(comp.TextLine(self.general, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
             y += 20
 
     def switch_state(self):

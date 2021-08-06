@@ -1,7 +1,7 @@
 _chr = chr
 from OpenBot.Modules.Hooks import Hook, questHook
 import Hooks
-import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog,skill
+import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog,skill, m2netm2g
 from datetime import datetime
 #import pack
 
@@ -89,11 +89,15 @@ skillSet_map = {
 #"ICON"
 SKILL_INFORMATION = FileManager.parseSkillDesc()
 
-def Revive():
+def Revive(in_city=False):
 	"""
 	Revive the main instance.
 	"""
-	net.SendCommandPacket(5,1)
+	player.SetAttackKeyState(False)
+	if not in_city:
+		net.SendCommandPacket(m2netm2g.PLAYER_CMD_RESTART, 1)
+	else:
+		net.SendCommandPacket(m2netm2g.PLAYER_CMD_REVIVE, 1)
 
 def ConvertPrice(price_str,item_num=1):
 	"""
@@ -120,7 +124,7 @@ def ConvertPrice(price_str,item_num=1):
 
 	return (wons,rest_yang)
 
-def GetSkillIconPath(id,grade=1):
+def GetSkillIconPath(id,grade=3):
 	"""
 	Returns the icon path of a skill image.
 	Args:
@@ -640,6 +644,26 @@ def GetTime():
 		[float]: Return the time.
 	"""
 	return time.clock()
+
+def GetPlayerEmpireFirstMap():
+	empire_id = net.GetEmpireID()
+	chat.AppendChat(empire_id)
+	empires_map_names = {
+		1: 'metin2_map_a1',
+		2: 'metin2_map_b1',
+		3: 'metin2_map_c1',
+	}
+	return empires_map_names[empire_id]
+
+def GetPlayerEmpiteSecondMap():
+	empire_id = net.GetEmpireID()
+	chat.AppendChat(empire_id)
+	empires_map_names = {
+		1: 'metin2_map_a2',
+		2: 'metin2_map_b2',
+		3: 'metin2_map_c2',
+	}
+	return empires_map_names[empire_id]	
 
 #Return a tupple, the first value is true or false according if the timer has been reached, and the second value is the current timer
 #if first value is true or the old timer if false

@@ -1,12 +1,13 @@
 from time import sleep, time
-from OpenBot.Modules import Movement, OpenLib
+from OpenBot.Modules import MapManager, Movement, OpenLib
+from OpenBot.Modules import OpenLog
 from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import Hooks
 import eXLib
-import player, net, chr, chat, background
+import player, net, chr, chat, background, item
 
 
 def ClearFloor(args):
@@ -81,13 +82,13 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
-    if len(args) > 1:
-        map_name = args[1]
-    else:
-        map_name = background.GetCurrentMapName()
     if OpenLib.isPlayerCloseToPosition(position[0], position[1]):
         return True
-    error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=map_name)
+    if len(args) > 1:
+        error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
+    else:
+        error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
+
     if error != None:
         return True
     return False
@@ -172,7 +173,7 @@ def GetEnergyFromAlchemist(args):
     alchemist_id = args[1]
     npc_position_x, npc_position_y = args[2]
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+        action_dict = {'args': [(npc_position_x, npc_position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
@@ -247,8 +248,29 @@ def MineOre(args):
     if eXLib.IsDead(selectedOre):
         return True
     
-    if not OpenLib.IsWeaponPickaxe():
-        return True
+
+    can_mine = False
+    idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
+    if idx != 0:
+        item.SelectItem(idx)
+        if item.GetItemType() == item.ITEM_TYPE_PICK:
+            can_mine = True
+    
+    if not can_mine:
+        pickaxe_slot = OpenLib.GetItemByID(29101)
+        if pickaxe_slot > -1:
+            chat.AppendChat(3, 'pickaxe slot '+str(pickaxe_slot))
+            net.SendItemUsePacket(pickaxe_slot)   
+        else:
+            can_mine = False
+
+    if not can_mine:
+        idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
+        if idx != 0:
+            item.SelectItem(idx)
+            if item.GetItemType() == item.ITEM_TYPE_PICK:
+                can_mine = True
+
     if not OpenLib.isPlayerCloseToInstance(selectedOre):
         action_dict = {'args': [selectedOre],
                         'function': MoveToVID,
@@ -256,7 +278,7 @@ def MineOre(args):
                         'on_success': [ActionBot.NEXT_ACTION]}
         return action_dict
                     
-    if not is_curr_mining:
+    if not is_curr_mining and can_mine:
         net.SendOnClickPacket(selectedOre)
         DebugPrint('Digging')
     
@@ -378,3 +400,15 @@ def _returnHasItemInterruptorWithArgs(item_id):
             return True
         return False
     return x
+
+def ExchangeTrashItemsToEnergyFragments(args):
+    from OpenBot.Modules import Settings
+    first_map = OpenLib.GetPlayerEmpireFirstMap()
+    OpenLog.DebugPrint(first_map)
+    x, y = MapManager.GetNpcFromMap(first_map, 20001)
+    return {'args': [Settings.instance.sellItems, 20001, (x, y)], # position
+            'function': GetEnergyFromAlchemist,
+            'requirements': {},
+            'on_success': [ActionBot.DISCARD_PREVIOUS]
+            }
+    
