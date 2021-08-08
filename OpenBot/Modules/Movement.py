@@ -75,7 +75,7 @@ class MapMovementDialog(ui.ScriptWindow):
     def SetStateMoving(self):
         if(len(self.leftLinkList)>0):
             self.currLink = self.leftLinkList.pop(0)
-            position = self.currLink.npc_action.GetNpcPosition()
+            position = self.currLink.position
             OpenLog.DebugPrint("Moving to ("+str(position[0])+","+str(position[1])+")")
             Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=_DestinationReachedCallback)
             self.SetState(self.STATE_MOVING)
@@ -95,6 +95,7 @@ class MapMovementDialog(ui.ScriptWindow):
         if self.currLink.GetDestMapName() != curr_map:
             self.currLink.CrossMap()
         else:
+            chat.AppendChat(3, 'asdfafsasdffdasfsasdfad')
             self.SetStateMoving()
 
     def OnUpdate(self):
