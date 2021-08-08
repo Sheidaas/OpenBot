@@ -224,12 +224,12 @@ def TalkWithNPC(args):
     npc_id = args[0]
     npc_position_x, npc_position_y = args[1]
     event_answer = args[2]
-    map_name = args[3]
+    #map_name = args[3]
 
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
         action_dict = {'args': [(npc_position_x, npc_position_y)], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
+                        'requirements': { ActionRequirementsCheckers.IS_NEAR_POSITION: (npc_position_x, npc_position_y, 1000)}
                         }
         return action_dict
     
