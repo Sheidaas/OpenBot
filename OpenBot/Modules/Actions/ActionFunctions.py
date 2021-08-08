@@ -29,11 +29,11 @@ def ClearFloor(args):
         }
         return action_dict
 
-    if len(args) > 1:
-        interruptors = args[1]
-        for interruptor in interruptors:
-            if interruptor():
-                return True
+    #if len(args) > 1:
+    #    interruptors = args[1]
+    #    for interruptor in interruptors:
+    #        if interruptor():
+    #            return False
 
 
     vid = OpenLib.GetNearestMonsterVid()
@@ -226,10 +226,8 @@ def TalkWithNPC(args):
     event_answer = args[2]
     map_name = args[3]
 
-    if not ActionRequirementsCheckers.isInMaps([map_name]):
-        return True
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
-        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+        action_dict = {'args': [(npc_position_x, npc_position_y)], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
@@ -309,13 +307,13 @@ def LookForBlacksmithInDeamonTower(args):
                 
                 if go_above_six_stage:
                     if player.GetStatus(player.LEVEL) < 75:
-                        answer = []
+                        answer = [1, 1, 1]
                     else:
                         answer = [1, 1, 1, 1]
                 
                 else:
                     if player.GetStatus(player.LEVEL) < 75:
-                        answer = []
+                        answer = [1, 1, 1]
                     else:
                         answer = [1, 1, 1, 254]
                     
@@ -394,13 +392,6 @@ def OpenASealInMonument(args):
 
     return action_dict  
 
-def _returnHasItemInterruptorWithArgs(item_id):
-    def x():
-        if OpenLib.GetItemByID(item_id) > -1:
-            return True
-        return False
-    return x
-
 def ExchangeTrashItemsToEnergyFragments(args):
     from OpenBot.Modules import Settings
     first_map = OpenLib.GetPlayerEmpireFirstMap()
@@ -412,3 +403,9 @@ def ExchangeTrashItemsToEnergyFragments(args):
             'on_success': [ActionBot.DISCARD_PREVIOUS]
             }
     
+def _returnHasItemInterruptorWithArgs(item_id):
+    def x():
+        if OpenLib.GetItemByID(item_id) > -1:
+            return True
+        return False
+    return x

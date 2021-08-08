@@ -3,19 +3,8 @@ from BotBase import BotBase
 import ui, player, app, chat
 import OpenLib, FileManager, OpenLog, Hooks
 from OpenBot.Modules.Actions import ActionBot
-
-def _afterLoadPhase(phase):
-    global instance
-    if phase == OpenLib.PHASE_LOGIN or phase == OpenLib.PHASE_GAME:
-        instance.enableButton.SetOn()
-        instance.Start()
-
-class Keybot(BotBase):
-
-    def __init__(self):
-        BotBase.__init__(self)
-        self.keys = {
-            app.DIK_0: {'function': None},
+"""
+  app.DIK_0: {'function': None},
             app.DIK_1: {'function': None},
             app.DIK_2: {'function': None},
             app.DIK_3: {'function': None},
@@ -51,12 +40,7 @@ class Keybot(BotBase):
             app.DIK_F2: {'function': None},
             app.DIK_F3: {'function': None},
             app.DIK_F4: {'function': None},
-            app.DIK_F5: {'function': self.SwitchDmgHack},
-            app.DIK_F6: {'function': self.SwitchFarmBot},
-            app.DIK_F7: {'function': self.SwitchAutoLogin},
-            app.DIK_F8: {'function': self.SwitchPickUp},
-            app.DIK_F9: {'function': self.SwitchActionBot},
-            app.DIK_F10: {'function': None},
+  app.DIK_F10: {'function': None},
             app.DIK_F11: {'function': None},
             app.DIK_F12: {'function': self.SwitchDmgHack},
             app.DIK_G: {'function': None},
@@ -129,19 +113,35 @@ class Keybot(BotBase):
             app.DIK_X: {'function': None},
             app.DIK_Y: {'function': None},
             app.DIK_Z: {'function': None},}
+"""
+def _afterLoadPhase(phase):
+    global instance
+    if phase == OpenLib.PHASE_LOGIN or phase == OpenLib.PHASE_GAME:
+        instance.enableButton.SetOn()
+        instance.Start()
+
+class Keybot(BotBase):
+
+    def __init__(self):
+        BotBase.__init__(self)
+        self.keys = {
+          
+            app.DIK_F5: {'function': self.SwitchDmgHack},
+            app.DIK_F6: {'function': self.SwitchFarmBot},
+            app.DIK_F7: {'function': self.SwitchAutoLogin},
+            app.DIK_F8: {'function': self.SwitchPickUp},
+            app.DIK_F9: {'function': self.SwitchActionBot},
+        }
         self.BuildWindow()
 
     def BuildWindow(self):
-
         self.comp = UIComponents.Component()
-        self.Board = ui.BoardWithTitleBar()
+        self.Board = ui.ThinBoard()
         self.Board.SetSize(235, 150)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
-        self.Board.SetTitleName('KeyBot')
-        self.Board.SetCloseEvent(self.switch_state)
         self.Board.Hide()
-
+        self.comp = UIComponents.Component()
         self.enableButton = self.comp.OnOffButton(self.Board, '', '', 15, 40,
                                                   OffUpVisual='OpenBot/Images/start_0.tga',
                                                   OffOverVisual='OpenBot/Images/start_1.tga',
@@ -151,11 +151,11 @@ class Keybot(BotBase):
                                                   OnDownVisual='OpenBot/Images/stop_2.tga',
                                                   funcState=self._start, defaultValue=False)
 
-        self.text_line1 = self.comp.TextLine(self.Board, 'F5 to switch WaitHack', 70, 40, self.comp.RGB(255, 255, 255))
-        self.text_line2 = self.comp.TextLine(self.Board, 'F6 to switch FarmBot', 70, 60, self.comp.RGB(255, 255, 255))
-        self.text_line3 = self.comp.TextLine(self.Board, 'F7 to switch AutoLogin', 70, 80, self.comp.RGB(255, 255, 255))
-        self.text_line4 = self.comp.TextLine(self.Board, 'F8 to switch Pickup', 70, 100, self.comp.RGB(255, 255, 255))
-        self.text_line5 = self.comp.TextLine(self.Board, 'F9 to switch ActionBot', 70, 120, self.comp.RGB(255, 255, 255))
+        self.text_line1 = self.comp.TextLine(self.Board, 'F5 to switch WaitHack', 70, 30, self.comp.RGB(255, 255, 255))
+        self.text_line2 = self.comp.TextLine(self.Board, 'F6 to switch FarmBot', 70, 50, self.comp.RGB(255, 255, 255))
+        self.text_line3 = self.comp.TextLine(self.Board, 'F7 to switch AutoLogin', 70, 70, self.comp.RGB(255, 255, 255))
+        self.text_line4 = self.comp.TextLine(self.Board, 'F8 to switch Pickup', 70, 90, self.comp.RGB(255, 255, 255))
+        self.text_line5 = self.comp.TextLine(self.Board, 'F9 to switch ActionBot', 70, 110, self.comp.RGB(255, 255, 255))
                                 
     
     def _start(self, val):

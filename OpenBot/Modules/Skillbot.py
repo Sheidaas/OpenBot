@@ -91,6 +91,8 @@ class Skillbot(BotBase):
     def SaveSettings(self):
         for skill in self.currentSkillSet:
             FileManager.WriteConfig(str(skill['id']), str(skill['icon'].isOn), file=FileManager.CONFIG_SKILLBOT)
+            skillTimer = getattr(self, 'edit_line'+str(skill['id'])).GetText()
+            FileManager.WriteConfig('skillTimer'+str(skill['id']), skillTimer, file=FileManager.CONFIG_SKILLBOT)
         FileManager.WriteConfig('IsTurnedOn', str(self.enableButton.isOn), file=FileManager.CONFIG_SKILLBOT)
         FileManager.WriteConfig('ShouldWaitAfterLogout', str(self.shouldWait), file=FileManager.CONFIG_SKILLBOT)
         FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
@@ -110,6 +112,8 @@ class Skillbot(BotBase):
 
         for skill in self.currentSkillSet:
             is_skill_turned_on = FileManager.boolean(FileManager.ReadConfig(str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
+            skill_edit_line_timer = getattr(self, 'edit_line'+str(skill['id']))
+            skill_edit_line_timer.SetText(FileManager.ReadConfig('skillTimer'+str(skill['id']), file=FileManager.CONFIG_SKILLBOT))
             if is_skill_turned_on:
                 if not skill['icon'].isOn:
                     skill['icon'].OnChange()

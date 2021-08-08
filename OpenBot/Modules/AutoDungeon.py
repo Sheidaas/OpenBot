@@ -24,6 +24,10 @@ DEAMON_TOWER = {
         'maps': ['metin2_map_milgyo', 'metin2_map_deviltower1'],
         'lvl': 40,},
     'options': {
+        'repeatDungeon': False,
+        'endingStage': 6,
+        'HowMuchRepeat': 10,
+        'CountRepeat': 0,
         'shouldUpgradeItem': False,
         'GoAboveBlacksmith': False,},
     'stages': {
@@ -31,7 +35,7 @@ DEAMON_TOWER = {
             'actions': [{ 'args': [20348, (53200, 59600), [0, 0], 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.TalkWithNPC,
                           'on_success': [ActionBot.NEXT_ACTION],
-                          'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: (19004, 69011, 20000)}}]
+                          'requirements': {}}]
 
             },
         1: { # stage with metin
@@ -158,14 +162,6 @@ class AutoDungeon(BotBase):
         self.shouldUpgradeItemButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t\t Upgrade item?', 'If u want upgrade item on blacksmith stage, check this', 10, 20,
                                                       funcState=self.switch_should_upgrade_item,
                                                       defaultValue=DEAMON_TOWER['options']['shouldUpgradeItem'])      
-
-
-
-
-        #self.slotBarSlotToUpgrade, self.edit_lineWaitingTime = comp.EditLine(self.deamon_tower_tab, '0', 20, 20, 25, 15, 25)             
-        #self.text_line1 = comp.TextLine(self.deamon_tower_tab, 'slot with item to ugprade', 50, 20, comp.RGB(255, 255, 255))
-        #
-        # self.text_line2 = comp.TextLine(self.deamon_tower_tab, 'set -1 to disable', 65, 30, comp.RGB(255, 255, 255))
         
         self.goAboveBlacksmithButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t\tGo above blacksmith?', 'Check if u want kill ripper', 10, 50,
                                                       funcState=self.switch_go_above_blacksmith_button,
@@ -197,6 +193,9 @@ class AutoDungeon(BotBase):
                                                     OnDownVisual='OpenBot/Images/stop_2.tga',
                                                     funcState=self.switch_launch_auto_dungeon, defaultValue=False)
 
+        self.showRepeatDungeon = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tRepeat dungeon', '', 20, 10, funcState=self.switch_next_channel_if_there_is_another_player, defaultValue=self.options['NextChannelIfThereIsAnotherPlayer'])
+        self.HowManyRepeatsSlotBar, self.HowManyRepeatsEditLine = comp.EditLine(self.settings_tab, '5', 20, 30, 40, 15, 20)
+        self.HowManyRepeatsText = comp.TextLine(self.settings_tab, 'number of repeats', 70, 32, comp.RGB(255, 255, 255))
         self.showNextChannelIfThereIsAnotherPlayerButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAvoid players', '', 20, 50, funcState=self.switch_next_channel_if_there_is_another_player, defaultValue=self.options['NextChannelIfThereIsAnotherPlayer'])
 
     def switch_is_curr_action_done(self):
@@ -213,6 +212,9 @@ class AutoDungeon(BotBase):
                 self.itemFilterList = ItemListDialog(self.addPickFilterItem, 290, 40)
         else:
             self.itemFilterList = None
+
+    def switch_reapeat_dungeon(self, val):
+        DEAMON_TOWER['options']['repeatDungeon'] = val
 
     def open_item_filter_dialog(self):
         if self.itemFilterList == None:
@@ -255,38 +257,53 @@ class AutoDungeon(BotBase):
         else:
             self.Stop()
 
+    def RecognizeStageBot(self):
+        if str(background.GetCurrentMapName()) == 'metin2_map_deviltower1':
+            if ActionRequirementsCheckers.isNearPosition((15800, 64400, 10000)):
+                return 1
+            elif ActionRequirementsCheckers.isNearPosition((12599, 38399, 10000)):
+                return 2
+            elif ActionRequirementsCheckers.isNearPosition((18000, 18000, 10000)):
+                return 3
+            elif ActionRequirementsCheckers.isNearPosition((37037, 62659, 10000)):
+                return 4
+            elif ActionRequirementsCheckers.isNearPosition((39539, 43607, 10000)):
+                return 5
+            elif ActionRequirementsCheckers.isNearPosition((40713, 19914, 10000)):
+                return 6
+            elif ActionRequirementsCheckers.isNearPosition((61017, 66483, 25000)):
+                return 7
+            elif ActionRequirementsCheckers.isNearPosition((60961, 42631, 25000)):
+                return 8
+            elif ActionRequirementsCheckers.isNearPosition((61127, 17162, 25000)):
+                return 9
+            else:
+                DebugPrint('Invalid stage')
+                return -1
+        else:
+             return 0
+
+    def CheckRepeatCount(self):
+        count = self.HowManyRepeatsEditLine.GetText()
+        if self.is_text_validate(count):
+            self.currSchema['options']['HowMuchRepeat'] = int(count)
+            return True
+        else:
+            chat.AppendChat(3, '[AutoDungeon] Invalid repeats number!')
+            return False
+
     def StartDeamonTower(self):
         self.currSchema = DEAMON_TOWER
-
+        if self.currSchema['options']['repeatDungeon']:
+            if not self.CheckRepeatCount():
+                return
         self.AddOptionalActionsToDeamonTower()
         if self.CheckRequirementsForCurrSchema():
-
-            if str(background.GetCurrentMapName()) == 'metin2_map_deviltower1':
-                if ActionRequirementsCheckers.isNearPosition((15800, 64400, 10000)):
-                    self.currStage = 1
-                elif ActionRequirementsCheckers.isNearPosition((12599, 38399, 10000)):
-                    self.currStage = 2
-                elif ActionRequirementsCheckers.isNearPosition((18000, 18000, 10000)):
-                    self.currStage = 3
-                elif ActionRequirementsCheckers.isNearPosition((37037, 62659, 10000)):
-                    self.currStage = 4
-                elif ActionRequirementsCheckers.isNearPosition((39539, 43607, 10000)):
-                    self.currStage = 5
-                elif ActionRequirementsCheckers.isNearPosition((40713, 19914, 10000)):
-                    self.currStage = 6
-                elif ActionRequirementsCheckers.isNearPosition((61017, 66483, 25000)):
-                    self.currStage = 7
-                elif ActionRequirementsCheckers.isNearPosition((60961, 42631, 25000)):
-                    self.currStage = 8
-                elif ActionRequirementsCheckers.isNearPosition((61127, 17162, 25000)):
-                    self.currStage = 9
-                else:
-                    DebugPrint('Invalid stage')
-                    return
+            self.currStage = self.RecognizeStageBot()
+            if self.currStage > -1:
+                self.Start()
             else:
-                self.currStage = 0
-
-            self.Start()
+                self.Stop()
         else:
             self.currSchema = None            
 
@@ -306,6 +323,10 @@ class AutoDungeon(BotBase):
             'on_failed': [ActionBot.DISCARD]
         }
         self.currSchema['stages'][6]['actions'].append(action_dict)
+        if self.currSchema['options']['repeatDungeon']:
+            self.currSchema['options']['endingStage'] = 6
+        else:
+            self.currSchema['options']['endingStage'] = 9
 
     def Frame(self):
         if self.isCurrActionDone:

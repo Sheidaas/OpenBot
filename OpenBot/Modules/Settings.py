@@ -39,6 +39,9 @@ class SettingsDialog(ui.ScriptWindow):
 		self.timerDmg = OpenLib.GetTime()
 
 		self.wallHack = False
+		self.canFarmbotExchangeBool = False
+		self.canFarmbotExchangeEnergyBool = False
+		self.canFarmbotSellBool = False
 
 		self.sellItems = set()
 
@@ -54,7 +57,6 @@ class SettingsDialog(ui.ScriptWindow):
 		self.Board.SetPosition(52, 40)
 		self.Board.SetSize(300, 370) 
 		self.Board.SetTitleName("Settings")
-	#	self.Board.AddFlag("float") 
 		self.Board.AddFlag("movable")
 		self.Board.SetCloseEvent(self.Close)
 		self.Board.Hide()
@@ -86,7 +88,10 @@ class SettingsDialog(ui.ScriptWindow):
 		self.waitTimeDeadSlotBar, self.waitTimeDeadEditLine = self.comp.EditLine(self.generalTab, '', 130, 235, 25, 15, 3)
 		self.waitTimeDeadText = self.comp.TextLine(self.generalTab, 's', 160, 235, self.comp.RGB(255, 255, 255))
 		self.waitTimeDeadText2 = self.comp.TextLine(self.generalTab, 'Time to wait after dead:', 20, 235, self.comp.RGB(255, 255, 255))
-
+		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Load path by name of file', 210, 235, self.OnShowKeyBindsButton,
+                                             'd:/ymir work/ui/public/small_Button_01.sub',
+                                             'd:/ymir work/ui/public/small_Button_02.sub',
+                                             'd:/ymir work/ui/public/small_Button_03.sub')
 		##PICKUP
 		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image="OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
 		self.rangePickupButton,self.SliderangePickup,self.rangePickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupRangeSlide, 'Range', 'Enable Range Pickup', 15, 60,funcState=self.OnRangePickupOnOff,offsetX=30,offsetY=4,defaultValue=int(self.useRangePickup),defaultSlider=float(self.pickUpRange/10000.0))
@@ -105,6 +110,9 @@ class SettingsDialog(ui.ScriptWindow):
 		self.ShopbarItems, self.ShopFileListBox, self.ShopScrollBar = self.comp.ListBoxEx2(self.shopTab, 60, 30, 140, 150)
 		self.AddSellItemBtn = self.comp.Button(self.shopTab, 'Add', '', 65, 185, self.OpenSellItemDialog, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
 		self.SellRemoveBtn = self.comp.Button(self.shopTab, 'Remove', '', 140, 185, self.UISellRemoveFilterItem, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
+		self.labelFarmbotOptions = self.comp.TextLine(self.shopTab, 'Farmbot Options', 95, 210, self.comp.RGB(255, 255, 0))
+		#self.CanFarmbotExchangeToShop = self.comp.OnOffButton(self.shopTab, '\t\tSell items', '', 60, 225 ,funcState=self.OnCanFarmbotExchangeToShop, defaultValue=self.canFarmbotSellBool)
+		self.CanFarmbotExchangeToEnergy = self.comp.OnOffButton(self.shopTab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', '', 60, 245,funcState=self.OnCanFarmbotExchangeToEnergy, defaultValue=self.canFarmbotExchangeEnergyBool)
 		#self.BtnRedBuy = self.comp.OnOffButton(self.generalTab, '', 'Buy Red Pots', 200, 130, image='icon/item/27002.tga',funcState=self.OnRedBuy,defaultValue=int(self.wallHack))
 
 		## CHANNELS
@@ -173,8 +181,17 @@ class SettingsDialog(ui.ScriptWindow):
 		FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
 		FileManager.Save()
 
-
 #UI STUFF
+	def OnShowKeyBindsButton(self):
+		from OpenBot.Modules import KeyBot
+		KeyBot.instance.switch_state()
+
+	def OnCanFarmbotExchangeToShop(self, val):
+		self.canFarmbotSellBool = val
+
+	def OnCanFarmbotExchangeToEnergy(self, val):
+		self.canFarmbotExchangeEnergyBool = val
+
 	def UpdatePickFilterList(self):	
 		searchValue = self.PickSearchItemEditLine.GetText()
 		self.PickfileListBox.RemoveAllItems()
@@ -207,7 +224,6 @@ class SettingsDialog(ui.ScriptWindow):
 		ItemListDialog(self.UIAddPickFilterItem,pos[0]+self.Board.GetWidth(),pos[1])
 		#ItemListDialog(self.AddFilterItem,pos[0],pos[1])
 
-	
 	def OpenSellItemDialog(self):
 		pos = self.Board.GetGlobalPosition()
 		ItemListDialog(self.UIAddSellFilterItem,pos[0]+self.Board.GetWidth(),pos[1])
@@ -420,7 +436,7 @@ class SettingsDialog(ui.ScriptWindow):
 			self.can_add_waiter = True
 			status = OpenLib.getAllStatusOfMainActor()
 			exp = status['EXP']
-			if exp < 1000000:
+			if exp < 1000000 and exp != 0:
 				net.SendGuildOfferPacket(exp)
 			else:
 				net.SendGuildOfferPacket(1000000)
@@ -519,7 +535,6 @@ class ItemListDialog(ui.Window):
 	def __RefreshFileList(self):
 		self.PickfileListBox.RemoveAllItems()
 		
-
 def GetIDsItemsToSell():
 	global instance
 	"""

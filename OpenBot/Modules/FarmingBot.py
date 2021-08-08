@@ -356,17 +356,17 @@ class FarmingBot(BotBase):
                 
                 if OpenLib.isInventoryFull():
                     from OpenBot.Modules import Settings
-                    for item in Settings.instance.sellItems:
-                        slot=OpenLib.GetItemByID(item)
-                        if slot > -1:
-                            OpenLog.DebugPrint('changing state to exchaning items')
-                            self.CURRENT_STATE = EXCHANGING_ITEMS_TO_ENERGY
-                            return
+                    if Settings.instance.CanFarmbotExchangeToEnergy.isOn:
+                        for item in Settings.instance.sellItems:
+                            slot=OpenLib.GetItemByID(item)
+                            if slot > -1:
+                                OpenLog.DebugPrint('changing state to exchaning items')
+                                self.CURRENT_STATE = EXCHANGING_ITEMS_TO_ENERGY
+                                return
                 else:
                     OpenLog.DebugPrint('inventory is not full')
                 OpenLog.DebugPrint('No trash items')
                 
-
                 on_failed = []
                 if self.showFarmingMetinButton.isOn:
                     on_failed.append(ActionRequirementsCheckers.isMetinNearly)

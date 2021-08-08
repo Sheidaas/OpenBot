@@ -192,6 +192,10 @@ class BotBase(ui.ScriptWindow):
 			if self.currAction + 1 < len(self.currSchema['stages'][self.currStage]['actions']):
 				self.currAction += 1
 			else:
+				if 'options' in self.currSchema['stages'][self.currStage].keys():
+					if 'stage_reapat' in self.currSchema['stages'][self.currStage]['options']:
+						self.currAction = 0
+						return
 				OpenLog.DebugPrint('Stage Complete')
 				self.GoToNextStage()
 
@@ -205,11 +209,17 @@ class BotBase(ui.ScriptWindow):
 			self.currStage += 1
 		else:
 			if 'options' in self.currSchema['stages'][self.currStage].keys():
-				if 'stage_reapat' in self.currSchema['stages'][self.currStage]['options']:
-					return
+				if 'repeatDungeon' in self.currSchema['stages'][self.currStage]['options']:
+					if self.currSchema['stages'][self.currStage]['options']['repeatDungeon']:
+						self.currSchema['stages'][self.currStage]['options']['CountRepeat'] += 1
+						if self.currSchema['stages'][self.currStage]['options']['CountRepeat'] > self.currSchema['stages'][self.currStage]['options']['HowMuchRepeat']:
+							OpenLog.DebugPrint('Dungeon Complete')
+							self.Stop()
+						else:
+							self.currStage = self.RecognizeStageBot()
 			OpenLog.DebugPrint('Dungeon Complete')
-			self.Stop()
-
+			self.Stop()			
+			
 ###########################
 ####Abstract Functions######
 ###########################
@@ -246,6 +256,9 @@ class BotBase(ui.ScriptWindow):
 		"""Function called when the bot is stopped.
 		"""
 		return
+	
+	def RecognizeStageBot(self):
+		return 0
 #########################
 
 
