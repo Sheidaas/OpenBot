@@ -2,6 +2,7 @@ from OpenBot.Modules.NPCInteraction import NPCAction
 import eXLib,OpenLib,os,net,FileManager,player,chat,background,NPCInteraction,OpenLog
 
 
+
 #list of MapLink found in module FileManager
 map_links = list()
 
@@ -29,20 +30,13 @@ CDD_2_KINDOMS = {
 #And contains the action requires to got to the desired map
 class MapLink():
 	def __init__(self,x,y,map_origin,map_dest,race=0,event_answer = []):
-		self.position = (x, y)
-		self.npc_race = race
-		self.event_answer = event_answer
+		self.npc_action = NPCInteraction.NPCAction(race,(x,y),event_answer,map_origin)
 		self.map_origin = map_origin
 		self.map_dest = map_dest
 		#chat.AppendChat(3,"Origin: " + str(map_origin) + " Dest: " + str(map_dest))
 
 	def CrossMap(self):
-		from OpenBot.Modules.Actions import ActionBot, ActionFunctions
-		chat.AppendChat(3, 'sdafafs')
-		action = {'args': [self.race, self.position, self.event_answer, str(self.map_origin)],
-					'function': ActionFunctions.TalkWithNPC,
-					'requirements': {}}
-		ActionBot.instance.NewActionReturned(action)
+		return self.npc_action.DoAction()
 
 	def GetOriginMapName(self):
 		return self.map_origin.map_name
@@ -301,5 +295,4 @@ def GetNpcFromMap(map_name,npc_race,position=None):
 
 setMaps()
 	
-
 

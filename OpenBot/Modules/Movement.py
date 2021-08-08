@@ -75,7 +75,7 @@ class MapMovementDialog(ui.ScriptWindow):
     def SetStateMoving(self):
         if(len(self.leftLinkList)>0):
             self.currLink = self.leftLinkList.pop(0)
-            position = self.currLink.position
+            position = self.currLink.npc_action.GetNpcPosition()
             OpenLog.DebugPrint("Moving to ("+str(position[0])+","+str(position[1])+")")
             Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=_DestinationReachedCallback)
             self.SetState(self.STATE_MOVING)
@@ -95,7 +95,6 @@ class MapMovementDialog(ui.ScriptWindow):
         if self.currLink.GetDestMapName() != curr_map:
             self.currLink.CrossMap()
         else:
-            chat.AppendChat(3, 'asdfafsasdffdasfsasdfad')
             self.SetStateMoving()
 
     def OnUpdate(self):
@@ -242,7 +241,6 @@ def GoToPositionAvoidingObjects(x,y,maxDist=250,callback=None,mapName=None,mapLi
         callback ([function], optional): Function callback called after reach destination. Defaults to None.
         mapName ([str], optional): The name of the map of the final destination, if is None it will use the current map. Defaults to None.
         mapLinks (list, optional): Reserved.
-
     Returns:
         [object]: Returns None on error.
     """
@@ -252,7 +250,6 @@ def GoToPositionAvoidingObjects(x,y,maxDist=250,callback=None,mapName=None,mapLi
 def GoToPosition(x,y):
     """
     Move to (x,y) position without using pathfinding.
-
     Args:
         x ([float]): x
         y ([float]): y
@@ -273,12 +270,10 @@ def TeleportToPosition(dst_x,dst_y,max_packets=MAX_TELEPORT_PACKETS):
     """
     Teleport to a position by using pathfinding and telporting in multiple small steps.
     max_packets allows to avoid spamming the server and crash by putting a limit on maximum number of packets sent. 
-
     Args:
         dst_x ([float]): Destination X
         dst_y ([float]): Destination Y
         max_packets ([int], optional): Number maximum of positions packets to send. Defaults to MAX_TELEPORT_PACKETS.
-
     Returns:
         [int]: Returns the number of State packets sent.
     """
@@ -318,10 +313,3 @@ def TeleportToPosition(dst_x,dst_y,max_packets=MAX_TELEPORT_PACKETS):
 
 Movement = MovementDialog()
 mapMovement = MapMovementDialog()
-    
-          
-        
-            
-        
-
-        
