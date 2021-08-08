@@ -1,9 +1,9 @@
 from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
-from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot
+from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot
 from OpenBot.Modules import FarmingBot
-from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher, AutoDungeon, KeyBot
+from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Actions import ActionBot
 DEBUG = False
@@ -21,7 +21,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     spam = Spambot.SpamDialog()
     action_bot = ActionBot.instance
     energy_bot = EnergyBot.instance
-    key_bot = KeyBot.instance
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
@@ -81,7 +80,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/dt_0.tga', 'OpenBot/Images/Hackbar/dt_1.tga', 'OpenBot/Images/Hackbar/dt_0.tga')
         self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/energy_0.tga', 'OpenBot/Images/Hackbar/energy_1.tga', 'OpenBot/Images/Hackbar/energy_0.tga')
         self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
-        self.KeyBotButton = self.comp.Button(self.OpenBotBoard, '', 'KeyBot', 8, 543, self.OnKeyBot, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
@@ -176,9 +174,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.energy_bot.switch_state()
     def OnActionBot(self):
         self.action_bot.switch_state()
-    
-    def OnKeyBot(self):
-        self.key_bot.switch_state()
 
     def OnRadar(self):
         self.radar.switch_state()
@@ -203,6 +198,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.QuestionDialog.SetAcceptEvent(ui.__mem_func__(self.Close))
         self.QuestionDialog.SetCancelEvent(ui.__mem_func__(self.CancelQuestionDialog))
         self.QuestionDialog.Open()
+        
     def Close(self):
         app.Abort()
     def CancelQuestionDialog(self):
@@ -252,3 +248,5 @@ try:
 except:
     pass
 app.Shop = OpenBotHackbarDialog()
+KeyBot.instance.enableButton.SetOn()
+KeyBot.instance.Start()

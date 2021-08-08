@@ -380,6 +380,7 @@ class FarmingBot(BotBase):
                 'callback': self.IsWalkingDone}
                 ActionBot.instance.AddNewAction(action_dict)
                 self.isCurrActionDone = False
+                
                 return
 
             elif self.CURRENT_STATE == MINING_STATE:

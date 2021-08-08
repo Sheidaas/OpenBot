@@ -22,22 +22,23 @@ class DmgHacks(ui.Window):
 		self.Board.Hide()
 		self.comp = UIComponents.Component()
 
-		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 200, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState=self.OnOffBtnState )
+		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 210, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState=self.OnOffBtnState )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
+		self.wallBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCheck is wall ', 'Check is there wall between player and mob', 170, 30)
 		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCloud exploit', 'Only on dagger ninja', 170, 50)
 		self.attackPlayerBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tAttack players', '', 170, 70)
 		self.attackBlockedMonsters = self.comp.OnOffButton(self.Board, '\t\t\t\t', '', 130, 70)
 		self.AttackBlockedMonsers = self.comp.TextLine(self.Board, 'Attack blocked monsters', 13, 70, self.comp.RGB(255, 255, 255))
-		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 92, self.comp.RGB(255, 255, 255))
-		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 126, self.comp.RGB(255, 255, 255))
-		self.MonsterLabel = self.comp.TextLine(self.Board, 'Monsters', 13, 160, self.comp.RGB(255, 255, 255))
+		self.RangeLabel = self.comp.TextLine(self.Board, 'Range', 13, 102, self.comp.RGB(255, 255, 255))
+		self.SpeedLabel = self.comp.TextLine(self.Board, 'Speed', 13, 136, self.comp.RGB(255, 255, 255))
+		self.MonsterLabel = self.comp.TextLine(self.Board, 'Monsters', 13, 170, self.comp.RGB(255, 255, 255))
 		self.PlayerLabel = self.comp.TextLine(self.Board, 'Stop when player close', 12, 51, self.comp.RGB(255, 255, 255))
-  		self.rangeNum = self.comp.TextLine(self.Board, '100', 254, 92, self.comp.RGB(255, 255, 255))
-		self.speedNum = self.comp.TextLine(self.Board, '100 ms', 254, 125, self.comp.RGB(255, 255, 255))
-		self.monsterNum = self.comp.TextLine(self.Board, '100', 254, 160, self.comp.RGB(255, 255, 255))
-		self.RangeSlider = self.comp.SliderBar(self.Board, 0.0, self.Range_func, 73, 94)
-		self.SpeedSlider = self.comp.SliderBar(self.Board, 0.0, self.Speed_func, 73, 127)
-		self.MonsterSlider = self.comp.SliderBar(self.Board, 0.0, self.Monster_func, 73, 161)
+  		self.rangeNum = self.comp.TextLine(self.Board, '100', 254, 102, self.comp.RGB(255, 255, 255))
+		self.speedNum = self.comp.TextLine(self.Board, '100 ms', 254, 136, self.comp.RGB(255, 255, 255))
+		self.monsterNum = self.comp.TextLine(self.Board, '100', 254, 170, self.comp.RGB(255, 255, 255))
+		self.RangeSlider = self.comp.SliderBar(self.Board, 0.0, self.Range_func, 73, 104)
+		self.SpeedSlider = self.comp.SliderBar(self.Board, 0.0, self.Speed_func, 73, 137)
+		self.MonsterSlider = self.comp.SliderBar(self.Board, 0.0, self.Monster_func, 73, 171)
 		self.enableButton.SetOff()
 
 		self.loadSettings()
@@ -163,9 +164,6 @@ class DmgHacks(ui.Window):
 					return
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
-					mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-					if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
-						continue
 					if self.attackPlayerBtn.isOn:	
 						lst.append(vid)
 					else:
@@ -183,6 +181,9 @@ class DmgHacks(ui.Window):
 					if eXLib.IsPositionBlocked(mob_x,mob_y):
 						lst.remove(vid)
 						continue
+				if self.wallBtn.isOn:
+					if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
+						continue
 				if self.cloudBtn.isOn and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)
 				elif isArch:
@@ -190,8 +191,8 @@ class DmgHacks(ui.Window):
 				else:
 					hit_counter+=self.TeleportAttack(lst,mob_x, mob_y)
 				i+=1
-			if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=300):
-				Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
+			#if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=50):
+			Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
 	
 	def Close(self):
 		self.Board.Hide()

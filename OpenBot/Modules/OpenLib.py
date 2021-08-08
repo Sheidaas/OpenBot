@@ -198,7 +198,7 @@ def skipAnswers(event_answers, hook=False):
 	if hook:
 		questHook.HookFunction()
 	for index,answer in enumerate(event_answers,start=1):
-		event.SelectAnswer(1,answer)
+		event.SelectAnswer(index,answer)
 
 
 def showAnswers():
