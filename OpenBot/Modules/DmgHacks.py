@@ -159,14 +159,13 @@ class DmgHacks(ui.Window):
 				if not chr.HasInstance(vid):
 					continue
 
-				#mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-				#if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
-				#	continue
-
 				if self.playerClose.isOn and chr.GetInstanceType(vid) == OpenLib.PLAYER_TYPE and vid != net.GetMainActorVID():
 					return
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
+					mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
+					if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
+						continue
 					if self.attackPlayerBtn.isOn:	
 						lst.append(vid)
 					else:
