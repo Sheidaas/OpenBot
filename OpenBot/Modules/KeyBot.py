@@ -120,10 +120,13 @@ def _afterLoadPhase(phase):
         instance.enableButton.SetOn()
         instance.Start()
 
+timerrBlock = 0
+
 class Keybot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self)
+        self.canPress = True
         self.keys = {
           
             app.DIK_F5: {'function': self.SwitchDmgHack},
@@ -135,6 +138,7 @@ class Keybot(BotBase):
         self.BuildWindow()
 
     def BuildWindow(self):
+
         self.comp = UIComponents.Component()
         self.Board = ui.ThinBoard()
         self.Board.SetSize(235, 150)
@@ -165,10 +169,21 @@ class Keybot(BotBase):
             self.Stop()
 
     def Frame(self):
-        for key in self.keys.keys():
-            if app.IsPressed(key):
-                if self.keys[key]['function'] != None:
-                    self.keys[key]['function']()
+        if self.canPress:
+            for key in self.keys.keys():
+                if app.IsPressed(key):
+                    if self.keys[key]['function'] != None:
+                        self.keys[key]['function']()
+                        self.canPress = False
+        else:
+            global timerrBlock
+            val, timerrBlock = OpenLib.timeSleep(timerrBlock,2) #Avoid multiple calls on same keypress
+            if val:
+                self.canPress = True
+
+
+
+
     
     def switch_state(self):
         if self.Board.IsShow():
