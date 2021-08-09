@@ -12,6 +12,12 @@ import player, net, chr, chat, background, item
 
 def ClearFloor(args):
     player.SetAttackKeyState(False)
+    if len(args) > 1:
+        interruptors = args[1]
+        for interruptor in interruptors:
+            if interruptor():
+                return True
+
     x, y = args[0]
     my_x,my_y, z = player.GetMainCharacterPosition()
     path = eXLib.FindPath(my_x,my_y,x,y)
@@ -28,13 +34,6 @@ def ClearFloor(args):
         'on_failed': [ActionBot.NEXT_ACTION],
         }
         return action_dict
-
-    #if len(args) > 1:
-    #    interruptors = args[1]
-    #    for interruptor in interruptors:
-    #        if interruptor():
-    #            return False
-
 
     vid = OpenLib.GetNearestMonsterVid()
     action_dict = {'args': [0, vid], # position
@@ -224,19 +223,23 @@ def TalkWithNPC(args):
     npc_id = args[0]
     npc_position_x, npc_position_y = args[1]
     event_answer = args[2]
-    #map_name = args[3]
+    if len(args) > 3:
+        map_name = args[3]
+    else:
+        map_name = background.GetCurrentMapName()
 
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
-        action_dict = {'args': [(npc_position_x, npc_position_y)], # position
+        action_dict = {'args': [(npc_position_x, npc_position_y), map_name], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_NEAR_POSITION: (npc_position_x, npc_position_y, 1000)}
+                        'requirements': { ActionRequirementsCheckers.IS_NEAR_POSITION: (npc_position_x, npc_position_y, 1000),
+                                          ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
                         }
         return action_dict
     
     vid = OpenLib.GetInstanceByID(npc_id)
     if vid >= 0:
         net.SendOnClickPacket(vid)
-        OpenLib.skipAnswers(event_answer, False)
+        OpenLib.skipAnswers(event_answer, True)
         return True
     return False
     
@@ -297,7 +300,7 @@ def LookForBlacksmithInDeamonTower(args):
                         'args': [vid],
                         'function': MoveToVID,
                         'requirements': { ActionRequirementsCheckers.IS_NEAR_INSTANCE: vid},
-                        'on_failed': [ActionBot.NEXT_ACTION]
+                        'on_success': [ActionBot.NEXT_ACTION]
                     }
 
                     return action_dict

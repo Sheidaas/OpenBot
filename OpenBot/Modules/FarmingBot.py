@@ -193,7 +193,9 @@ class FarmingBot(BotBase):
             points = point.split(',')
             x = points[0][1:-1]
             y = points[1][1:-1]
-            self.path.append((float(x), float(y)))
+            name = points[2][2:-2]
+            OpenLog.DebugPrint(str(points))
+            self.path.append((float(x), float(y), str(name)))
         self.update_points_list()
 
     def save_path(self):
@@ -216,8 +218,6 @@ class FarmingBot(BotBase):
 
         return function
 
-
-
     def add_point(self):
         x, y, z = player.GetMainCharacterPosition()
         self.path.append((x, y, background.GetCurrentMapName()))
@@ -235,7 +235,8 @@ class FarmingBot(BotBase):
     def update_points_list(self):
         self.fileListBox.RemoveAllItems()
         for position in self.path:
-            self.fileListBox.AppendItem(OpenLib.Item(str(position[0]) + ':' + str(position[1])))
+            x, y = int(position[0]), int(position[1])
+            self.fileListBox.AppendItem(OpenLib.Item(str(x) + ':' + str(y) + ':' + position[2]))
 
     def next_point(self):
         if self.current_point + 1 < len(self.path):
