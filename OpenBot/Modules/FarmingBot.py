@@ -1,4 +1,4 @@
-from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
+from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules import ChannelSwitcher, OpenLog
 from BotBase import BotBase
 import DmgHacks
@@ -374,7 +374,7 @@ class FarmingBot(BotBase):
                 if self.showMiningButton.isOn:
                     on_failed.append(returnFuncWithArgs(ActionRequirementsCheckers.isRaceNearly, self.ores_to_mine))
 
-                action_dict = {'args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
+                action_dict = {'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                 'function': ActionFunctions.MoveToPosition, 
                 'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0], self.path[self.current_point][1], 500], ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
                 'on_failed': on_failed,
@@ -387,11 +387,11 @@ class FarmingBot(BotBase):
             elif self.CURRENT_STATE == MINING_STATE:
                 OpenLog.DebugPrint("[Farming-bot] MINING_STATE")
                 action_dict = {
-                    'args': [self.selectedOre, self.IsCurrentlyDigging],
+                    'function_args': [self.selectedOre, self.IsCurrentlyDigging],
                     'requirements': {},
                     'function': ActionFunctions.MineOre,
-                    'on_success': [ActionBot.NEXT_ACTION],
-                    'on_failed': [ActionBot.NEXT_ACTION]
+                    'on_success': [Action.NEXT_ACTION],
+                    'on_failed': [Action.NEXT_ACTION]
                 }
 
                 ActionBot.instance.AddNewAction(action_dict)
@@ -400,10 +400,10 @@ class FarmingBot(BotBase):
 
             elif self.CURRENT_STATE == FARMING_STATE:
                 OpenLog.DebugPrint("[Farming-bot] FARMING_STATE")
-                action_dict = {'args': [0, self.selectedMetin],
+                action_dict = {'function_args': [0, self.selectedMetin],
                             'function': ActionFunctions.Destroy,
                             'requirements': {},
-                            'on_success': [ActionBot.NEXT_ACTION],
+                            'on_success': [Action.NEXT_ACTION],
                             'on_failed': [],
                             'callback': self.IsDestroyingMetinDone
                             }
@@ -413,9 +413,9 @@ class FarmingBot(BotBase):
             
             elif self.CURRENT_STATE == EXCHANGING_ITEMS_TO_ENERGY:
                 OpenLog.DebugPrint('[Farming-bot] EXCHANGING_STATE')
-                action_dict = {'args': [],
+                action_dict = {'function_args': [],
                                 'function': ActionFunctions.ExchangeTrashItemsToEnergyFragments,
-                                'on_success': [ActionBot.NEXT_ACTION],
+                                'on_success': [Action.NEXT_ACTION],
                                 'callback': self.IsExchangingItemsToEnergyFragmentsDone}
                 ActionBot.instance.AddNewAction(action_dict)
                 self.isCurrActionDone = False

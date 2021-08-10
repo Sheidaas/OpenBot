@@ -1,18 +1,10 @@
 from OpenBot.Modules import DmgHacks
-import ActionRequirementsCheckers
+import ActionRequirementsCheckers, Action
 from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import OpenLib, UIComponents
 from OpenBot.Modules import Hooks
 import ui, chat
-
-
-# ON_SUCCESS FLAGS
-NEXT_ACTION = 'next_action'
-
-# ON ACTION RETURN FLAGS
-DISCARD = 'discard'
-DISCARD_PREVIOUS = 'discard_previous'
 
 # STATES
 STATE_CANCELING = -1
@@ -35,11 +27,11 @@ class ActionBot(BotBase):
 
     def __init__(self):
         BotBase.__init__(self, 0.2)
-
+        
         self.currState = STATE_STOP
 
-        self.currActionDict = None
-        self.currActionsDictsQueue = []
+        self.currActionObject = None
+        self.currActionsQueue = []
 
         self.waiters = []
 
@@ -96,30 +88,6 @@ class ActionBot(BotBase):
         if val:
             self.showAlwaysWaithackButton.SetOff()
 
-    def CheckRequirementsForCurrAction(self):
-        requirements = self.currActionDict['requirements']
-
-        for requirement in requirements:
-
-            if requirement == ActionRequirementsCheckers.IS_IN_MAP:
-                if not ActionRequirementsCheckers.isInMaps(requirements[requirement]):
-                    return False
-            
-            elif requirement == ActionRequirementsCheckers.IS_ON_POSITION:
-                if not ActionRequirementsCheckers.isOnPosition(requirements[requirement]):
-                    return False
-            
-            elif requirement == ActionRequirementsCheckers.IS_NEAR_POSITION:
-                if not ActionRequirementsCheckers.isNearPosition(requirements[requirement]):
-                    return False
-            
-            elif requirement == ActionRequirementsCheckers.IS_NEAR_INSTANCE:
-                if not ActionRequirementsCheckers.isNearInstance(requirements[requirement]):
-                    return False
-
-
-        return True
-
     def OnEnableSwitchButton(self, val):
         if val:
             self.Start()
@@ -127,50 +95,62 @@ class ActionBot(BotBase):
             self.Stop()
             
     def OnClearButton(self):
-        self.currActionDict = None
-        self.currActionsDictsQueue = []
+        self.currActionObject = None
+        self.currActionsQueue = []
         for waiter in self.waiters:
             waiter['callback']()
         self.waiters = []
 
-    def GoToNextAction(self, skipRequirements=False):
-        if skipRequirements:
-            if 'callback' in self.currActionDict.keys():
-                DebugPrint('Calling callback')
-                self.currActionDict['callback']()
-            if self.currActionsDictsQueue:
-                self.currActionDict = self.currActionsDictsQueue.pop()
-            else:
-                self.currActionDict = None
+    def GetNewId(self):
+        return 0
+
+    def GoToNextAction(self):
+        if self.currActionObject.callback is not None:
+            DebugPrint('Calling callback')
+            self.currActionObject.CallCallback()
+
+        if self.currActionsQueue:
+            self.currActionObject = self.currActionsQueue.pop()
         else:
-            DebugPrint('checking req')
-            if self.CheckRequirementsForCurrAction():
-                if 'callback' in self.currActionDict.keys():
-                    DebugPrint('Calling callback')
-                    self.currActionDict['callback']()
-                if self.currActionsDictsQueue:
-                    self.currActionDict = self.currActionsDictsQueue.pop()
-                else:
-                    self.currActionDict = None
+            self.currActionObject = None
 
-    def DoAction(self, action_dict):
-        args = action_dict['args']
-        action = action_dict['function']
-        return action(args)
+    def ConvertDictActionToObjectAction(self, action_dict):
+        action_dict_keys = action_dict.keys()
+        if 'function' not in action_dict_keys and 'function_args' not in action_dict_keys:
+            DebugPrint('Action dict dont have function or function_args!')
+            return
+        new_action = Action.Action(id=self.GetNewId,
+                            function=action_dict['function'])
 
-    def NewActionReturned(self, action_dict):
-        if not self.currActionDict in self.currActionsDictsQueue:
-            self.currActionsDictsQueue.append(self.currActionDict)
-        self.currActionDict = action_dict
+        for key in action_dict_keys:
+            if key is not 'function':
+                setattr(new_action, key, action_dict[key])
+        
+        return new_action
+        
+    def NewActionReturned(self, action):
+        if not self.currActionObject in self.currActionsQueue:
+            self.currActionsQueue.append(self.currActionObject)
 
-    def AddNewAction(self, action_dict):
-        self.currActionsDictsQueue.append(action_dict)
+        if type(action) == Action.Action:
+            self.currActionObject = action
+        else:
+            new_action = self.ConvertDictActionToObjectAction(action)
+            self.currActionObject = new_action
+
+    def AddNewAction(self, action):
+        if type(action) == Action.Action:
+            self.currActionsQueue.append(action)
+        else:
+            new_action = self.ConvertDictActionToObjectAction(action)
+            DebugPrint('Converted Dict action to object action')
+            self.currActionsQueue.append(new_action)          
 
     def CheckIsThereNewAction(self):
-        if not len(self.currActionsDictsQueue):
+        if not len(self.currActionsQueue):
             return False
         else:
-            self.currActionDict = self.currActionsDictsQueue.pop()
+            self.currActionObject = self.currActionsQueue.pop()
             return True
 
     def StopBot(self):
@@ -188,7 +168,8 @@ class ActionBot(BotBase):
             if this_time > waiter['timeToWait'] + waiter['launching_time']:
                 waiter['callback']()
                 self.waiters.remove(waiter)
-        if self.currActionDict == None:
+
+        if self.currActionObject == None:
             if not self.CheckIsThereNewAction():
                 return
 
@@ -196,7 +177,7 @@ class ActionBot(BotBase):
             if self.showAlwaysWaithackButton.isOn:
                 DmgHacks.Resume()
             else:
-                if self.currActionDict['function'].__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
                                                                'FindMapInDT', 'OpenASealInMonument']:
                     DmgHacks.Resume()
                 else:
@@ -216,51 +197,43 @@ class ActionBot(BotBase):
     def FrameDoAction(self):
         if self.Board.IsShow():
             self.RefreshRenderedActions()
-        is_action_done = self.DoAction(self.currActionDict)
-        if type(is_action_done) == bool:
 
-            if 'on_success' in self.currActionDict.keys() and is_action_done:
-                
-                for key in self.currActionDict['on_success']:
-                    if callable(key):
-                        if key():
-                            self.GoToNextAction()
-                    elif type(key) == str:
-                        if key == NEXT_ACTION:
-                            self.GoToNextAction()
-                        elif key == DISCARD_PREVIOUS:
-                            previous = self.currActionsDictsQueue.pop()
-                            if 'callback' in previous.keys():
-                                previous['callback']()
-                            self.GoToNextAction()
+        action_result = self.currActionObject.CallFunction()
 
-
-            elif 'on_failed' in self.currActionDict.keys() and not is_action_done:
-                
-                for key in self.currActionDict['on_failed']:
-                    if callable(key):
-                        if key():
-                            self.GoToNextAction(skipRequirements=True)
-                    elif type(key) == str:
-                        if key == NEXT_ACTION:
-                            self.GoToNextAction(skipRequirements=True)
-                
+        if type(action_result) == str:
             
-            else:
-                #DebugPrint(str(action_dict['function']) + ' CHECKING REQ')
+            if action_result == Action.NEXT_ACTION:
                 self.GoToNextAction()
+                DebugPrint('Action do NEXT_ACTION')
 
-        else:
-            self.NewActionReturned(is_action_done)
+            elif action_result == Action.DISCARD_PREVIOUS:
+                self.GoToNextAction()
+                self.GoToNextAction()
+                DebugPrint('Action do DISCARD_PREVIOUS')
+            
+            elif action_result == Action.REQUIREMENTS_NOT_DONE:
+                DebugPrint('Action do REQUIREMENTS_NOT_DONE')
+
+            elif action_result == Action.NOTHING:
+                DebugPrint('Action do nothing')
+                
+            elif action_result == Action.ERROR:
+                DebugPrint('Action has some error')
+        
+        elif type(action_result) == Action.Action or type(action_result) == dict:
+            DebugPrint('New action returned')
+            self.NewActionReturned(action_result)
+
+
 
     def RefreshRenderedActions(self):
-        actions_to_render = [self.currActionDict] + self.currActionsDictsQueue[:5]
+        actions_to_render = [self.currActionObject] + self.currActionsQueue[:5:-1]
         self.rendered_actions = []
         x = 10
         y = 15
         comp = UIComponents.Component()
         for action in actions_to_render:
-            self.rendered_actions.append(comp.TextLine(self.general, action['function'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
+            self.rendered_actions.append(comp.TextLine(self.general, action.function.__name__, x, y, UIComponents.RGB(255, 255, 255)))
             y += 20
     
     def RefreshRenderedWaiters(self):

@@ -56,15 +56,15 @@ class EnergyBot(BotBase):
         pass
     
     def AddExchangeEnergyToCrystalToStage(self):
-        actions_dict = {0: {'args': [20001, (62200, 51100), 'metin2_map_a1'],
+        actions_dict = {0: {'function_args': [20001, (62200, 51100), 'metin2_map_a1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              1: {'args': [20001, (66000, 73400), 'metin2_map_b1'],
+              1: {'function_args': [20001, (66000, 73400), 'metin2_map_b1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              2: {'args': [20001, (29200, 81200), 'metin2_map_c1'],
+              2: {'function_args': [20001, (29200, 81200), 'metin2_map_c1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
@@ -106,7 +106,7 @@ class EnergyBot(BotBase):
             if ActionFunctions.GoBuyItemsFromNPC.__name__ == self.currSchema['stages'][self.currStage]['actions'][self.currAction]['function'].__name__:
                 item_count = int(self.edit_lineItemCountToBuy.GetText())
                 item_slot = int(self.edit_lineItemSlotToBuy.GetText())
-                self.currSchema['stages'][self.currStage]['actions'][self.currAction]['args'][0] = [item_slot for x in range(item_count)]
+                self.currSchema['stages'][self.currStage]['actions'][self.currAction]['function_args'][0] = [item_slot for x in range(item_count)]
             ActionBot.instance.AddNewAction(action_dict)
             DebugPrint(str(action_dict))
 
@@ -121,33 +121,33 @@ ENERGY_BOT_SCHEMA = {
         'CountItemToBuy': 10,},
     'stages': {
         0: {'options': [ActionBot.STAGE_REPEAT],
-            'actions': [{'args': [[], 9001, (59600, 55700), instance.SetIsCurrActionDoneTrue], # position
+            'actions': [{'function_args': [[], 9001, (59600, 55700), instance.SetIsCurrActionDoneTrue], # position
                         'function': ActionFunctions.GoBuyItemsFromNPC,
                         'requirements': {}
                         },
-                        {'args': [[1040], 20001, (62200, 51100)], # position
+                        {'function_args': [[1040], 20001, (62200, 51100)], # position
                         'function': ActionFunctions.GetEnergyFromAlchemist,
                         'requirements': {},
                         'callback': instance.SetIsCurrActionDoneTrue
                         },
                         ]},
         1: {'options': [ActionBot.STAGE_REPEAT],
-            'actions': [{'args': [[], 9001, (67600, 66200), instance.SetIsCurrActionDoneTrue], # position
+            'actions': [{'function_args': [[], 9001, (67600, 66200), instance.SetIsCurrActionDoneTrue], # position
                         'function': ActionFunctions.GoBuyItemsFromNPC,
                         'requirements': {}
                         },
-                        {'args': [[1040], 20001, (66000, 73400)], # position
+                        {'function_args': [[1040], 20001, (66000, 73400)], # position
                         'function': ActionFunctions.GetEnergyFromAlchemist,
                         'requirements': {},
                         'callback': instance.SetIsCurrActionDoneTrue
                         },
                         ]},
         2: {'options': [ActionBot.STAGE_REPEAT],
-            'actions': [{'args': [[], 9001, (43000, 60700), instance.SetIsCurrActionDoneTrue], # position
+            'actions': [{'function_args': [[], 9001, (43000, 60700), instance.SetIsCurrActionDoneTrue], # position
                         'function': ActionFunctions.GoBuyItemsFromNPC,
                         'requirements': {}
                         },
-                        {'args': [[1040], 20001, (29200, 81200)], # position
+                        {'function_args': [[1040], 20001, (29200, 81200)], # position
                         'function': ActionFunctions.GetEnergyFromAlchemist,
                         'requirements': {},
                         'callback': instance.SetIsCurrActionDoneTrue

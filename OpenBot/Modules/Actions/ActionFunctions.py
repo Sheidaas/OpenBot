@@ -1,7 +1,7 @@
 from time import sleep, time
 from OpenBot.Modules import MapManager, Movement, OpenLib
 from OpenBot.Modules import OpenLog
-from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
+from OpenBot.Modules.Actions import Action, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
@@ -12,12 +12,6 @@ import player, net, chr, chat, background, item
 
 def ClearFloor(args):
     player.SetAttackKeyState(False)
-    if len(args) > 1:
-        interruptors = args[1]
-        for interruptor in interruptors:
-            if interruptor():
-                return True
-
     x, y = args[0]
     my_x,my_y, z = player.GetMainCharacterPosition()
     path = eXLib.FindPath(my_x,my_y,x,y)
@@ -28,18 +22,18 @@ def ClearFloor(args):
         return True
 
     if not is_monster_nearby:
-        action_dict = {'args': [(x, y)], # position
+        action_dict = {'function_args': [(x, y)], # position
         'function': MoveToPosition,
         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (x, y)},
-        'on_failed': [ActionBot.NEXT_ACTION],
+        'on_failed': [Action.NEXT_ACTION],
         }
         return action_dict
 
     vid = OpenLib.GetNearestMonsterVid()
-    action_dict = {'args': [0, vid], # position
+    action_dict = {'function_args': [0, vid], # position
     'function': Destroy,
     'requirements': {},
-    'on_success': [ActionBot.NEXT_ACTION],
+    'on_success': [Action.NEXT_ACTION],
     }
     return action_dict
 
@@ -89,8 +83,8 @@ def MoveToPosition(args):
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
     if error != None:
-        return True
-    return False
+        return Action.ERROR
+    return Action.NOTHING
 
 def MoveToVID(args):
     x, y, z = chr.GetPixelPosition(args[0])
@@ -105,10 +99,10 @@ def UsingItemOnInstance(args):
         return True
 
     x, y, z = chr.GetPixelPosition(instance)
-    action_dict = {'args': [(x, y)], # position
+    action_dict = {'function_args': [(x, y)], # position
                     'function': MoveToPosition,
                     'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (x, y)},
-                    'on_failed': [ActionBot.NEXT_ACTION],
+                    'on_failed': [Action.NEXT_ACTION],
                     }
     return action_dict
 
@@ -124,11 +118,12 @@ def OpenAllSeals(args): # center position of floor,
     if slot_with_key >= 0:
         #DebugPrint('Char has an stone key')
         #DebugPrint('Using item on seal')
-        action_dict = {'args': [closest_seal, slot_with_key], # position
+        action_dict = {'function_args': [closest_seal, slot_with_key], # position
                         'function': UsingItemOnInstance,
                         'requirements': {},
-                        'on_success': [ActionBot.NEXT_ACTION],
-                        'on_failed': [ActionBot.NEXT_ACTION],
+                        'on_success': [Action.NEXT_ACTION],
+                        'on_failed': [Action.NEXT_ACTION],
+
                         }
         return action_dict
         
@@ -136,11 +131,13 @@ def OpenAllSeals(args): # center position of floor,
 
     x, y = args[0]
     #DebugPrint('Clearing the floor')
-    action_dict = { 'args': [(x, y), [_returnHasItemInterruptorWithArgs(50084)]], # center position of area 
+    action_dict = { 'function_args': [(x, y)], # center position of area 
                     'function': ClearFloor,
                     'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (x, y, 100)},
-                    'on_success': [ActionBot.NEXT_ACTION],
-                    'on_failed': []
+                    'on_success': [Action.NEXT_ACTION],
+                    'interrupt_function': Action.NEXT_ACTION,
+                    'interruptors': [ActionRequirementsCheckers.HasItem],
+                    'interruptors_args': [50084]
                 }
 
     return action_dict
@@ -157,7 +154,7 @@ def GoBuyItemsFromNPC(args):
     callback = args[3]
 
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'args': [(npc_position_x, npc_position_y)], # position
+        action_dict = {'function_args': [(npc_position_x, npc_position_y)], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
@@ -172,7 +169,7 @@ def GetEnergyFromAlchemist(args):
     alchemist_id = args[1]
     npc_position_x, npc_position_y = args[2]
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'args': [(npc_position_x, npc_position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
+        action_dict = {'function_args': [(npc_position_x, npc_position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
@@ -185,11 +182,11 @@ def GetEnergyFromAlchemist(args):
             continue
         alchemist_vid = OpenLib.GetInstanceByID(alchemist_id)
         if alchemist_vid != -1:
-            action_dict = {'args': [alchemist_vid, item_slot], # position
+            action_dict = {'function_args': [alchemist_vid, item_slot], # position
                             'function': UsingItemOnInstance,
                             'requirements': {},
-                            'on_success': [ActionBot.NEXT_ACTION],
-                            'on_failed': [ActionBot.NEXT_ACTION],
+                            'on_success': [Action.NEXT_ACTION],
+                            'on_failed': [Action.NEXT_ACTION],
                             }
             return action_dict
 
@@ -201,18 +198,18 @@ def ChangeEnergyToCrystal(args):
     npc_position_x, npc_position_y = args[1]
     map_name = args[2]
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'args': [(npc_position_x, npc_position_y), 250], # position
+        action_dict = {'function_args': [(npc_position_x, npc_position_y), 250], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)},
-                        'on_success': [ActionBot.NEXT_ACTION],
+                        'on_success': [Action.NEXT_ACTION],
                         }
         return action_dict
     energy_crystal = OpenLib.GetItemByID(51001)
     if player.GetItemCount(energy_crystal) >= 30:
         answer = [5,254,254,0,254]
-        action_dict = { 'args': [alchemist_id, (npc_position_x, npc_position_y), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
+        action_dict = { 'function_args': [alchemist_id, (npc_position_x, npc_position_y), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
                           'function': TalkWithNPC,
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'requirements': {},
 
             }
@@ -229,7 +226,7 @@ def TalkWithNPC(args):
         map_name = background.GetCurrentMapName()
 
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
-        action_dict = {'args': [(npc_position_x, npc_position_y), map_name], # position
+        action_dict = {'function_args': [(npc_position_x, npc_position_y), map_name], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_NEAR_POSITION: (npc_position_x, npc_position_y, 1000),
                                           ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
@@ -273,10 +270,10 @@ def MineOre(args):
                 can_mine = True
 
     if not OpenLib.isPlayerCloseToInstance(selectedOre):
-        action_dict = {'args': [selectedOre],
+        action_dict = {'function_args': [selectedOre],
                         'function': MoveToVID,
                         'requirements': {ActionRequirementsCheckers.isNearInstance: [selectedOre]},
-                        'on_success': [ActionBot.NEXT_ACTION]}
+                        'on_success': [Action.NEXT_ACTION]}
         return action_dict
                     
     if not is_curr_mining and can_mine:
@@ -297,10 +294,10 @@ def LookForBlacksmithInDeamonTower(args):
             if chr.GetRace() == _id:
                 if not OpenLib.isPlayerCloseToInstance(vid):
                     action_dict = {
-                        'args': [vid],
+                        'function_args': [vid],
                         'function': MoveToVID,
                         'requirements': { ActionRequirementsCheckers.IS_NEAR_INSTANCE: vid},
-                        'on_success': [ActionBot.NEXT_ACTION]
+                        'on_success': [Action.NEXT_ACTION]
                     }
 
                     return action_dict
@@ -323,9 +320,9 @@ def LookForBlacksmithInDeamonTower(args):
                 if answer:
                     blacksmith_x, blacksmith_y, blacksmith_z = chr.GetPixelPosition(vid)
                     action_dict = {
-                        'args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
+                        'function_args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
                         'function': TalkWithNPC,
-                        'on_success': [ActionBot.DISCARD],
+                        'on_success': [Action.NEXT_ACTION],
                         'requirements': {},
                     }
                     return action_dict
@@ -351,17 +348,17 @@ def FindMapInDT(args):
         if OpenLib.isPlayerCloseToPosition(center_position[0], center_position[1], 300):
             return False
         else:
-            action_dict = {'args': [(center_position[0], center_position[1]), 250], # position
+            action_dict = {'function_args': [(center_position[0], center_position[1]), 250], # position
                             'function': MoveToPosition,
                             'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (center_position[0], center_position[1])},
-                            'on_success': [ActionBot.NEXT_ACTION],
+                            'on_success': [Action.NEXT_ACTION],
                             }
             return action_dict
 
-    action_dict = { 'args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30300), _returnHasItemInterruptorWithArgs(30302)]], # center position of area 
+    action_dict = { 'function_args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30300), _returnHasItemInterruptorWithArgs(30302)]], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1])},
-                'on_success': [ActionBot.NEXT_ACTION],
+                'on_success': [Action.NEXT_ACTION],
                 'on_failed': []
             }
 
@@ -377,20 +374,21 @@ def OpenASealInMonument(args):
 
     if correct_key >=0:
         monument = OpenLib.getClosestInstance([OpenLib.OBJECT_TYPE])
-        action_dict = {'args': [monument, correct_key], # position
+        action_dict = {'function_args': [monument, correct_key], # position
                         'function': UsingItemOnInstance,
-                        'requirements': {},
-                        'on_success': [ActionBot.NEXT_ACTION],
-                        'on_failed': [ActionBot.NEXT_ACTION],
+                        'on_success': [Action.NEXT_ACTION],
+                        'on_failed': [Action.NEXT_ACTION],
                         }
         return action_dict
         
     
-    action_dict = { 'args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30304)]], # center position of area 
+    action_dict = { 'function_args': [(center_position[0], center_position[1])], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1], 100)},
-                'on_success': [ActionBot.NEXT_ACTION],
-                'on_failed': []
+                'on_success': [Action.NEXT_ACTION],
+                'interrupt_function': Action.NEXT_ACTION,
+                'interruptors': [ActionRequirementsCheckers.HasItem],
+                'interruptors_args': [30304]
             }
 
     return action_dict  
@@ -398,17 +396,9 @@ def OpenASealInMonument(args):
 def ExchangeTrashItemsToEnergyFragments(args):
     from OpenBot.Modules import Settings
     first_map = OpenLib.GetPlayerEmpireFirstMap()
-    OpenLog.DebugPrint(first_map)
+
     x, y = MapManager.GetNpcFromMap(first_map, 20001)
-    return {'args': [Settings.instance.sellItems, 20001, (x, y)], # position
+    return {'function_args': [Settings.instance.sellItems, 20001, (x, y)], # position
             'function': GetEnergyFromAlchemist,
-            'requirements': {},
-            'on_success': [ActionBot.DISCARD_PREVIOUS]
+            'on_success': [Action.NEXT_ACTION],
             }
-    
-def _returnHasItemInterruptorWithArgs(item_id):
-    def x():
-        if OpenLib.GetItemByID(item_id) > -1:
-            return True
-        return False
-    return x

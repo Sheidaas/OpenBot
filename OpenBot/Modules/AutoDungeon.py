@@ -1,6 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Settings import ItemListDialog
-from OpenBot.Modules.Actions import ActionFunctions, ActionRequirementsCheckers, ActionBot
+from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers, ActionBot
 from BotBase import BotBase
 import UIComponents, OpenLib
 import ui, player, background, chat, item
@@ -32,89 +32,89 @@ DEAMON_TOWER = {
         'GoAboveBlacksmith': False,},
     'stages': {
         0: { # stage outside devil tower, entering dt
-            'actions': [{ 'args': [20348, (53200, 59600), [0, 0], 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'function_args': [20348, (53200, 59600), [0, 0], 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.TalkWithNPC,
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'requirements': {}}]
 
             },
         1: { # stage with metin
-            'actions': [{'args': [(19004, 69011)], # position
+            'actions': [{'function_args': [(19004, 69011)], # position
                         'function': ActionFunctions.MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (19004, 69011)}
                         },
-                        {'args': [8015],
+                        {'function_args': [8015],
                         'function': ActionFunctions.Find,
                         'requirements': {},
-                        'on_success': [ActionBot.NEXT_ACTION],
+                        'on_success': [Action.NEXT_ACTION],
                         'on_failed': []
                         },
-                        {'args': [8015, 0],
+                        {'function_args': [8015, 0],
                         'function': ActionFunctions.Destroy,
                         'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (12599, 38399, 1000)},
-                        'on_success': [ActionBot.NEXT_ACTION],
+                        'on_success': [Action.NEXT_ACTION],
                         'on_failed': []
                         }]},
         2: { # stage with only deamons
-            'actions': [{ 'args': [(15003, 40961)], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'function_args': [(15003, 40961)], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (13400, 14700, 1000)}, #
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }],},
         3: { # stage with king
-            'actions': [{ 'args': [(17688, 19619)], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'function_args': [(17688, 19619)], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (37037, 62659, 2000)}, # 
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }],},
         4: { # stage with metins
-            'actions': [{ 'args': [(39123, 65131)], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'function_args': [(39123, 65131)], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (39539, 43607, 5000)}, # IS_NEAR_POSITION: (37722, 63632, 1000)
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }],},
         5: { # stage with keys
-            'actions': [{ 'args': [(40000, 44000)], # ID, event_answer, posiiton of npc, npc's map
+            'actions': [{ 'function_args': [(40000, 44000)], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.OpenAllSeals,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (40713, 19914, 5000)},
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }],},
         6: { # stage with blacksmith
-            'actions': [{ 'args': [(41000, 20000)],
+            'actions': [{ 'function_args': [(41000, 20000)],
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {},
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }
 
                         ],},
         7: { # stage with metins and chests
-            'actions': [{ 'args': [(61017, 66483)],
+            'actions': [{ 'function_args': [(61017, 66483)],
                           'function': ActionFunctions.FindMapInDT,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 42600, 25000)},
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }
                 
             ],},
         8: { # stage with key
             'actions': [
-                { 'args': [(60961, 42600)],
+                { 'function_args': [(60961, 42600)],
                           'function': ActionFunctions.OpenASealInMonument,
                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (61127, 17160, 25000)},
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }
                         ],},
         9: { # stage with ripper
-            'actions': [{ 'args': [(61127, 17160)],
+            'actions': [{ 'function_args': [(61127, 17160)],
                           'function': ActionFunctions.ClearFloor,
                           'requirements': {}, # DONT NEED ANY
-                          'on_success': [ActionBot.NEXT_ACTION],
+                          'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }
 
@@ -317,10 +317,10 @@ class AutoDungeon(BotBase):
                     break
 
         action_dict = {
-            'args': [self.currSchema['options']['GoAboveBlacksmith'], slot_to_upgrade],
+            'function_args': [self.currSchema['options']['GoAboveBlacksmith'], slot_to_upgrade],
             'function': ActionFunctions.LookForBlacksmithInDeamonTower,
             'requirements':  {},
-            'on_failed': [ActionBot.DISCARD]
+            'on_failed': [Action.NEXT_ACTION]
         }
         self.currSchema['stages'][6]['actions'].append(action_dict)
         if self.currSchema['options']['repeatDungeon']:

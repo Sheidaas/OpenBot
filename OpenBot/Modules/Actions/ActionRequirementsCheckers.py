@@ -103,3 +103,7 @@ def isCharReadyToMine(ore_vid):
 
     return True
 
+def HasItem(item_id):
+    if OpenLib.GetItemByID(item_id) > -1:
+        return True
+    return False

@@ -180,10 +180,6 @@ class Keybot(BotBase):
             val, timerrBlock = OpenLib.timeSleep(timerrBlock,2) #Avoid multiple calls on same keypress
             if val:
                 self.canPress = True
-
-
-
-
     
     def switch_state(self):
         if self.Board.IsShow():
