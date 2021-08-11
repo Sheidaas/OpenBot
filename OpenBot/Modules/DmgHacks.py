@@ -191,8 +191,8 @@ class DmgHacks(ui.Window):
 				else:
 					hit_counter+=self.TeleportAttack(lst,mob_x, mob_y)
 				i+=1
-			#if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=50):
-			Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
+			if(OpenLib.dist(x,y,self.lastPos[0],self.lastPos[1]) >=50):
+				Movement.TeleportStraightLine(self.lastPos[0],self.lastPos[1],x,y)
 	
 	def Close(self):
 		self.Board.Hide()
