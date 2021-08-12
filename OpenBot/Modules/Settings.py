@@ -436,7 +436,7 @@ class SettingsDialog(ui.ScriptWindow):
 			self.can_add_waiter = True
 			status = OpenLib.getAllStatusOfMainActor()
 			exp = status['EXP']
-			if exp < 1000000 and exp != 0:
+			if exp > 0 and exp < 1000000:
 				net.SendGuildOfferPacket(exp)
 			else:
 				net.SendGuildOfferPacket(1000000)
