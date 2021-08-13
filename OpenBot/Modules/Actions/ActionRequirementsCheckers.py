@@ -71,13 +71,14 @@ def isOnPosition(position):
     DebugPrint('player not on pos')
     return False
 
-def isMetinNearly():
+def isMetinNearly(args=0):
     for vid in eXLib.InstancesList:
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
+            DebugPrint('there is metin!')
             return True
     return False
 
-def isOreNearly():
+def isOreNearly(args=0):
     for vid in eXLib.InstancesList:
         if OpenLib.IsThisOre(vid):
             return True

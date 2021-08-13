@@ -367,21 +367,17 @@ class FarmingBot(BotBase):
                 else:
                     OpenLog.DebugPrint('inventory is not full')
                 OpenLog.DebugPrint('No trash items')
-                
-                on_failed = []
-                if self.showFarmingMetinButton.isOn:
-                    on_failed.append(ActionRequirementsCheckers.isMetinNearly)
-                if self.showMiningButton.isOn:
-                    on_failed.append(returnFuncWithArgs(ActionRequirementsCheckers.isRaceNearly, self.ores_to_mine))
 
-                action_dict = {'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
+                action_dict = {
+                'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                 'function': ActionFunctions.MoveToPosition, 
                 'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0], self.path[self.current_point][1], 500], ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
-                'on_failed': on_failed,
-                'callback': self.IsWalkingDone}
+                'callback': self.IsWalkingDone,
+                'interruptors_args': [0, self.ores_to_mine],
+                'interruptors': [ActionRequirementsCheckers.isMetinNearly, ActionRequirementsCheckers.isRaceNearly],
+                'interrupt_function': lambda: Action.NEXT_ACTION}
                 ActionBot.instance.AddNewAction(action_dict)
                 self.isCurrActionDone = False
-                
                 return
 
             elif self.CURRENT_STATE == MINING_STATE:

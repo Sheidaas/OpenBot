@@ -47,9 +47,9 @@ class Action:
     def Interrupt(self):
         if self.interrupt_function is not None:
             if self.interrupt_function_args:
-                self.interrupt_function(self.interrupt_function_args)
+                return self.interrupt_function(self.interrupt_function_args)
             else:
-                self.interrupt_function()
+                return self.interrupt_function()
         else:
             OpenLog.DebugPrint('There is no Interruptor function, but there are interruptors!')
 

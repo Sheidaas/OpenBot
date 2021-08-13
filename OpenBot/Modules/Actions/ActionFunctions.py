@@ -16,9 +16,11 @@ def ClearFloor(args):
     my_x,my_y, z = player.GetMainCharacterPosition()
     path = eXLib.FindPath(my_x,my_y,x,y)
     if not path:
+        Movement.StopMovement()
         return True
     is_monster_nearby = OpenLib.IsMonsterNearby()
     if OpenLib.isPlayerCloseToPosition(x, y) and not is_monster_nearby:
+        Movement.StopMovement()
         return True
 
     if not is_monster_nearby:
@@ -50,19 +52,19 @@ def Destroy(args):
 
     if eXLib.IsDead(instance_vid):
         player.SetAttackKeyState(False)
-        return True
+        return Action.NEXT_ACTION
 
     vid_life_status = OpenLib.AttackTarget(instance_vid)
 
     if vid_life_status == OpenLib.TARGET_IS_DEAD:
         player.SetAttackKeyState(False)
-        return True
+        return Action.NEXT_ACTION
 
     elif vid_life_status == OpenLib.ATTACKING_TARGET:
-        return False
+        return Action.NOTHING
 
     elif vid_life_status == OpenLib.MOVING_TO_TARGET:
-        return False
+        return Action.NOTHING
     
     return False
 
@@ -120,7 +122,6 @@ def OpenAllSeals(args): # center position of floor,
         #DebugPrint('Using item on seal')
         action_dict = {'function_args': [closest_seal, slot_with_key], # position
                         'function': UsingItemOnInstance,
-                        'requirements': {},
                         'on_success': [Action.NEXT_ACTION],
                         'on_failed': [Action.NEXT_ACTION],
 
@@ -135,7 +136,7 @@ def OpenAllSeals(args): # center position of floor,
                     'function': ClearFloor,
                     'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (x, y, 100)},
                     'on_success': [Action.NEXT_ACTION],
-                    'interrupt_function': Action.NEXT_ACTION,
+                    'interrupt_function': lambda: Action.NEXT_ACTION,
                     'interruptors': [ActionRequirementsCheckers.HasItem],
                     'interruptors_args': [50084]
                 }
@@ -184,7 +185,6 @@ def GetEnergyFromAlchemist(args):
         if alchemist_vid != -1:
             action_dict = {'function_args': [alchemist_vid, item_slot], # position
                             'function': UsingItemOnInstance,
-                            'requirements': {},
                             'on_success': [Action.NEXT_ACTION],
                             'on_failed': [Action.NEXT_ACTION],
                             }
@@ -355,11 +355,13 @@ def FindMapInDT(args):
                             }
             return action_dict
 
-    action_dict = { 'function_args': [(center_position[0], center_position[1]), [_returnHasItemInterruptorWithArgs(30300), _returnHasItemInterruptorWithArgs(30302)]], # center position of area 
+    action_dict = { 'function_args': [(center_position[0], center_position[1])], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1])},
                 'on_success': [Action.NEXT_ACTION],
-                'on_failed': []
+                'interruptors_args': [30302, 30300],
+                'interruptors': [ActionRequirementsCheckers.HasItem, ActionRequirementsCheckers.HasItem],
+                'interrupt_function': lambda: Action.NEXT_ACTION
             }
 
     return action_dict    
