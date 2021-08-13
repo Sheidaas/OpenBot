@@ -108,18 +108,13 @@ def UsingItemOnInstance(args):
                     }
     return action_dict
 
-def OpenAllSeals(args): # center position of floor, 
-    #DebugPrint('Launch OpenAllSeals')
+def OpenAllSeals(args):
     closest_seal = OpenLib.getClosestInstance([OpenLib.OBJECT_TYPE])
-    #DebugPrint('Closest seal ' + str(closest_seal))
     if closest_seal < 0:
-        #DebugPrint('There is no seal to open')
-        return True
+        return Action.NEXT_ACTION
 
     slot_with_key = OpenLib.GetItemByID(50084)
     if slot_with_key >= 0:
-        #DebugPrint('Char has an stone key')
-        #DebugPrint('Using item on seal')
         action_dict = {'function_args': [closest_seal, slot_with_key], # position
                         'function': UsingItemOnInstance,
                         'on_success': [Action.NEXT_ACTION],
@@ -129,19 +124,20 @@ def OpenAllSeals(args): # center position of floor,
         return action_dict
         
 
+    if OpenLib.IsMonsterNearby():
+        x, y = args[0]
+        #DebugPrint('Clearing the floor')
+        action_dict = { 'function_args': [(x, y)], # center position of area 
+                        'function': ClearFloor,
+                        'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (x, y, 100)},
+                        'on_success': [Action.NEXT_ACTION],
+                        'interrupt_function': lambda: Action.NEXT_ACTION,
+                        'interruptors': [ActionRequirementsCheckers.HasItem],
+                        'interruptors_args': [50084]
+                    }
 
-    x, y = args[0]
-    #DebugPrint('Clearing the floor')
-    action_dict = { 'function_args': [(x, y)], # center position of area 
-                    'function': ClearFloor,
-                    'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (x, y, 100)},
-                    'on_success': [Action.NEXT_ACTION],
-                    'interrupt_function': lambda: Action.NEXT_ACTION,
-                    'interruptors': [ActionRequirementsCheckers.HasItem],
-                    'interruptors_args': [50084]
-                }
-
-    return action_dict
+        return action_dict
+    return Action.NOTHING
 
 def UpgradeDeamonTower(args):
     item_slot = args
@@ -292,11 +288,12 @@ def LookForBlacksmithInDeamonTower(args):
         chr.SelectInstance(vid)
         for _id in blacksmiths_id:
             if chr.GetRace() == _id:
-                if not OpenLib.isPlayerCloseToInstance(vid):
+                x, y, z = chr.GetPixelPosition(vid)
+                if not OpenLib.isPlayerCloseToPosition(x, y, 500):
                     action_dict = {
-                        'function_args': [vid],
-                        'function': MoveToVID,
-                        'requirements': { ActionRequirementsCheckers.IS_NEAR_INSTANCE: vid},
+                        'function_args': [(x, y)],
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (x, y)},
                         'on_success': [Action.NEXT_ACTION]
                     }
 
@@ -337,16 +334,16 @@ def FindMapInDT(args):
     unknow_old_chest = OpenLib.GetItemByID(30300)
     
     if correct_map >=0:
-        net.SendItemUsePacket(player.EQUIPMENT, correct_map)
-        return True
+        net.SendItemUsePacket(correct_map)
+        return Action.NEXT_ACTION
 
     if unknow_old_chest >=0:
-        net.SendItemUsePacket(player.EQUIPMENT, unknow_old_chest)
+        net.SendItemUsePacket(unknow_old_chest)
 
 
     if not OpenLib.IsMonsterNearby():
         if OpenLib.isPlayerCloseToPosition(center_position[0], center_position[1], 300):
-            return False
+            return Action.NOTHING
         else:
             action_dict = {'function_args': [(center_position[0], center_position[1]), 250], # position
                             'function': MoveToPosition,
@@ -388,7 +385,7 @@ def OpenASealInMonument(args):
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1], 100)},
                 'on_success': [Action.NEXT_ACTION],
-                'interrupt_function': Action.NEXT_ACTION,
+                'interrupt_function': lambda: Action.NEXT_ACTION,
                 'interruptors': [ActionRequirementsCheckers.HasItem],
                 'interruptors_args': [30304]
             }
