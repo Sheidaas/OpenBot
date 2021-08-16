@@ -1,11 +1,9 @@
 from time import sleep, time
 from OpenBot.Modules import MapManager, Movement, OpenLib
-from OpenBot.Modules import OpenLog
 from OpenBot.Modules.Actions import Action, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules import Hooks
 import eXLib
 import player, net, chr, chat, background, item
 
@@ -25,6 +23,7 @@ def ClearFloor(args):
 
     if not is_monster_nearby:
         action_dict = {'function_args': [(x, y)], # position
+        'name': 'Go to center of floor',
         'function': MoveToPosition,
         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (x, y)},
         'on_failed': [Action.NEXT_ACTION],
@@ -34,6 +33,7 @@ def ClearFloor(args):
     vid = OpenLib.GetNearestMonsterVid()
     action_dict = {'function_args': [0, vid], # position
     'function': Destroy,
+    'name': 'Kill mob',
     'requirements': {},
     'on_success': [Action.NEXT_ACTION],
     }
@@ -53,6 +53,19 @@ def Destroy(args):
     if eXLib.IsDead(instance_vid):
         player.SetAttackKeyState(False)
         return Action.NEXT_ACTION
+
+    if not OpenLib.isPlayerCloseToInstance(instance_vid):
+        x, y, z = chr.GetPixelPosition(instance_vid)
+        action_dict = {
+            'function': MoveToPosition,
+            'function_args': [(x, y)],
+            'name': 'Going to enemy',
+            'on_success': [Action.NEXT_ACTION],
+            'interruptors_args': [instance_vid],
+            'interruptors': [ActionRequirementsCheckers.IsDead],
+            'interrupt_function': lambda: Action.NEXT_ACTION
+        }
+        return action_dict
 
     vid_life_status = OpenLib.AttackTarget(instance_vid)
 
@@ -78,7 +91,7 @@ def Find(args):
 def MoveToPosition(args):
     position = args[0]
     if OpenLib.isPlayerCloseToPosition(position[0], position[1]):
-        return True
+        return Action.NEXT_ACTION
     if len(args) > 1:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
     else:
@@ -86,16 +99,20 @@ def MoveToPosition(args):
 
     if error != None:
         return Action.ERROR
+
+    DebugPrint('Going to ' + str(position))
     return Action.NOTHING
 
 def MoveToVID(args):
+    if eXLib.IsDead(args[0]):
+        return Action.NEXT_ACTION
     x, y, z = chr.GetPixelPosition(args[0])
     return MoveToPosition([(x, y)])
 
 def UsingItemOnInstance(args):
     instance = args[0]
     item_slot = args[1]
-    if OpenLib.isPlayerCloseToInstance(instance):
+    if OpenLib.isPlayerCloseToInstance(instance, max_dist=500):
         net.SendGiveItemPacket(instance, player.SLOT_TYPE_INVENTORY, item_slot, player.GetItemCount(item_slot))
         OpenLib.skipAnswers([0, 0], True)
         return True
@@ -111,7 +128,7 @@ def UsingItemOnInstance(args):
 def OpenAllSeals(args):
     closest_seal = OpenLib.getClosestInstance([OpenLib.OBJECT_TYPE])
     if closest_seal < 0:
-        return Action.NEXT_ACTION
+        return True
 
     slot_with_key = OpenLib.GetItemByID(50084)
     if slot_with_key >= 0:
@@ -164,11 +181,11 @@ def GoBuyItemsFromNPC(args):
 def GetEnergyFromAlchemist(args):
     items_id_to_use = args[0]
     alchemist_id = args[1]
-    npc_position_x, npc_position_y = args[2]
-    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'function_args': [(npc_position_x, npc_position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
+    position_x, position_y = args[2]
+    if not OpenLib.isPlayerCloseToPosition(position_x, position_y):
+        action_dict = {'function_args': [(position_x, position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (position_x, position_y)}
                         }
         return action_dict
     
@@ -185,31 +202,37 @@ def GetEnergyFromAlchemist(args):
                             'on_failed': [Action.NEXT_ACTION],
                             }
             return action_dict
-
-    
     return True
 
 def ChangeEnergyToCrystal(args):
     alchemist_id = args[0]
     npc_position_x, npc_position_y = args[1]
     map_name = args[2]
-    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
+    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 1000):
         action_dict = {'function_args': [(npc_position_x, npc_position_y), 250], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)},
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x-50, npc_position_y-50)},
                         'on_success': [Action.NEXT_ACTION],
                         }
         return action_dict
-    energy_crystal = OpenLib.GetItemByID(51001)
-    if player.GetItemCount(energy_crystal) >= 30:
-        answer = [5,254,254,0,254]
-        action_dict = { 'function_args': [alchemist_id, (npc_position_x, npc_position_y), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
-                          'function': TalkWithNPC,
-                          'on_success': [Action.NEXT_ACTION],
-                          'requirements': {},
+    energy_crystals = OpenLib.GetItemsSlotsByID([51001])
+    DebugPrint(str(energy_crystals))
 
-            }
-        return action_dict
+    if not energy_crystals:
+        return True
+
+    #energy_crystal = OpenLib.GetItemByID(51001)
+    for energy_crystal in energy_crystals[51001]:
+        DebugPrint(str(energy_crystal))
+        if player.GetItemCount(energy_crystal) >= 30:
+            answer = [5,254,254,0,254]
+            action_dict = { 'function_args': [alchemist_id, (npc_position_x, npc_position_y), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
+                            'function': TalkWithNPC,
+                            'on_success': [Action.NEXT_ACTION],
+                            'requirements': {},
+
+                }
+            return action_dict
     return True
 
 def TalkWithNPC(args):
@@ -221,7 +244,15 @@ def TalkWithNPC(args):
     else:
         map_name = background.GetCurrentMapName()
 
-    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 500):
+    if npc_position_x == 0 and npc_position_y == 0:
+        current_map = background.GetCurrentMapName()
+        result = MapManager.GetNpcFromMap(current_map, npc_id)
+        if result is None:
+           return Action.NEXT_ACTION
+        else:
+            npc_position_x, npc_position_y = result
+
+    if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y, 1000):
         action_dict = {'function_args': [(npc_position_x, npc_position_y), map_name], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_NEAR_POSITION: (npc_position_x, npc_position_y, 1000),
@@ -233,7 +264,7 @@ def TalkWithNPC(args):
     if vid >= 0:
         net.SendOnClickPacket(vid)
         OpenLib.skipAnswers(event_answer, True)
-        return True
+        return Action.NEXT_ACTION
     return False
     
 def MineOre(args):
@@ -315,18 +346,17 @@ def LookForBlacksmithInDeamonTower(args):
                         answer = [1, 1, 1, 254]
                     
                 if answer:
-                    blacksmith_x, blacksmith_y, blacksmith_z = chr.GetPixelPosition(vid)
                     action_dict = {
-                        'function_args': [_id, (blacksmith_x, blacksmith_y), answer, 'metin2_map_deviltower1'],
+                        'function_args': [_id, (x, y), answer, 'metin2_map_deviltower1'],
                         'function': TalkWithNPC,
                         'on_success': [Action.NEXT_ACTION],
                         'requirements': {},
                     }
                     return action_dict
-                return True
+                return Action.NEXT_ACTION
 
             
-    return False
+    return Action.NEXT_ACTION
 
 def FindMapInDT(args):
     center_position = args[0]
@@ -401,3 +431,39 @@ def ExchangeTrashItemsToEnergyFragments(args):
             'function': GetEnergyFromAlchemist,
             'on_success': [Action.NEXT_ACTION],
             }
+
+def ChangeMap(args):
+    move_position_x, move_position_y = args[0]
+    map_name = args[1]
+    npc_id = args[2]
+    event_answer = args[3]
+    map_destination_name = args[4]
+
+    if map_destination_name == map_name:
+        return Action.NEXT_ACTION
+
+    DebugPrint('Changing the map')
+    if map_name == background.GetCurrentMapName() and not npc_id and not event_answer:
+        DebugPrint('Going go position')
+        if not OpenLib.isPlayerCloseToPosition(move_position_x, move_position_y):
+            DebugPrint('Returning move to position action')
+            return {
+                'function_args': [(move_position_x, move_position_y), map_name],
+                'name': 'Going to teleport point',
+                'function': MoveToPosition,
+                #'on_success': [Action.NEXT_ACTION],
+                #'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [move_position_x, move_position_y]}
+            }
+        DebugPrint('going to next actions')
+        return Action.NEXT_ACTION
+
+    if map_destination_name != background.GetCurrentMapName():
+        DebugPrint('Returning talk with npc')
+        return {
+            'function_args': [npc_id,(0, 0), event_answer],
+            'name': 'Talking to teleport',
+            'function': TalkWithNPC,
+            'on_success': [Action.NEXT_ACTION],
+        }
+    return Action.NEXT_ACTION
+    

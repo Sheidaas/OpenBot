@@ -1,7 +1,7 @@
 from OpenBot.Modules import OpenLib
 from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, background, chat, chr
+import player, background, chat, chr, net
 
 # REQUIREMENTS
 IS_NEAR_POSITION = 'isNearPosition'
@@ -74,13 +74,17 @@ def isOnPosition(position):
 def isMetinNearly(args=0):
     for vid in eXLib.InstancesList:
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
+            if not OpenLib.isPathToVID(vid):
+                continue
             DebugPrint('there is metin!')
             return True
     return False
 
 def isOreNearly(args=0):
     for vid in eXLib.InstancesList:
-        if OpenLib.IsThisOre(vid):
+        if OpenLib.IsThisOre(vid) and not eXLib.IsDead(vid):
+            if not OpenLib.isPathToVID(vid):
+                continue
             return True
     return False
 
@@ -108,3 +112,6 @@ def HasItem(item_id):
     if OpenLib.GetItemByID(item_id) > -1:
         return True
     return False
+
+def IsDead(vid):
+    return eXLib.IsDead(vid)

@@ -16,6 +16,7 @@ class Radar(BotBase):
         self.showMetins = True
         self.showPlayers = True
         self.showBoss = True
+        self.showNPC = True
 
         self.entities = []
 
@@ -50,7 +51,10 @@ class Radar(BotBase):
                                              OnOverVisual='OpenBot/Images/stop_1.tga',
                                              OnDownVisual='OpenBot/Images/stop_2.tga',
                                              funcState=self._start, defaultValue=False)
-
+        self.showNPCButton = comp.OnOffButton(self.settings_tab,
+                                              '\t\t\t\t\t\tShow npc',
+                                              '', 80, 20, funcState=self.switch_npc_button,
+                                              defaultValue=self.showNPC)
         self.showOreButton = comp.OnOffButton(self.settings_tab,
                                               '\t\t\t\t\t\tShow ore',
                                               '', 80, 40, funcState=self.switch_ore_button,
@@ -110,6 +114,8 @@ class Radar(BotBase):
             return '[ BOSS ] '
         elif instance_type == OpenLib.PLAYER_TYPE:
             return '[ PLAYER ] '
+        elif instance_type == OpenLib.OBJECT_TYPE:
+            return '[ NPC ] '
 
     def updateFileListBoxEntities(self):
         self.fileListBoxEntities.RemoveAllItems()
@@ -129,6 +135,9 @@ class Radar(BotBase):
         for entity in self.entities:
             if entity['name'] == str(name[1]):
                 Movement.TeleportToPosition(entity['x'], entity['y'])
+
+    def switch_npc_button(self, val):
+        self.showNPC = val
 
     def switch_ore_button(self, val):
         self.showOre = val
@@ -187,6 +196,9 @@ class Radar(BotBase):
                     if self.showBoss:
                         if OpenLib.IsThisBoss(vid):
                             self.AddNewEntity(vid, OpenLib.BOSS_TYPE)
+                    if self.showNPC:
+                        if OpenLib.IsThisNPC(vid):
+                            self.AddNewEntity(vid, OpenLib.OBJECT_TYPE)
 
     def clear_lists(self):
         self.fileListBoxEntities.RemoveAllItems()

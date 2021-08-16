@@ -168,7 +168,7 @@ class BotBase(ui.ScriptWindow):
 		for requirement in self.currSchema['requirements'].keys():
 			if requirement == 'lvl':
 				if not ActionRequirementsCheckers.isAboveLVL(self.currSchema['requirements'][requirement]):
-					chat.AppendChat(3, '[BotBase] You have ' + str(player.LEVEL) + ' lvl but you need ' + str(self.currSchema['requirements'][requirement]))
+					chat.AppendChat(3, '[BotBase] You have ' + str(player.GetStatus(player.LEVEL)) + ' lvl but you need ' + str(self.currSchema['requirements'][requirement]))
 					return False
 
 			if requirement == 'inInMap':

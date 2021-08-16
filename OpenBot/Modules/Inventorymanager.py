@@ -199,7 +199,6 @@ class InventoryDialog(ui.ScriptWindow):
 				self.toDropSlots.append(i)
 		self.CancelQuestionDialog()
 		self.UpdateFileList()
-
 		
 	def CancelQuestionDialog(self):
 		self.QuestionDialog.Close()
@@ -238,7 +237,6 @@ class InventoryDialog(ui.ScriptWindow):
 			idx = player.GetItemIndex(i)
 			if idx != 0 and idx == selIdx:
 				self.toSellSlots.append(i)
-
 
 	def StackItems(self):
 		items_arr = dict()

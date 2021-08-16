@@ -95,10 +95,18 @@ class ActionBot(BotBase):
             self.Stop()
             
     def OnClearButton(self):
-        self.currActionObject = None
-        self.currActionsQueue = []
+
+        if self.currActionObject is not None:
+            self.currActionObject.CallCallback()
+
+        for action in self.currActionsQueue:
+            action.CallCallback()
+
         for waiter in self.waiters:
             waiter['callback']()
+        
+        self.currActionObject = None
+        self.currActionsQueue = []
         self.waiters = []
 
     def GetNewId(self):
@@ -132,7 +140,7 @@ class ActionBot(BotBase):
         if not self.currActionObject in self.currActionsQueue:
             self.currActionsQueue.append(self.currActionObject)
 
-        if type(action) == Action.Action:
+        if isinstance(action, Action.Action):
             self.currActionObject = action
         else:
             new_action = self.ConvertDictActionToObjectAction(action)
@@ -219,21 +227,22 @@ class ActionBot(BotBase):
                 
             elif action_result == Action.ERROR:
                 DebugPrint('Action has some error')
+                #self.GoToNextAction()
         
-        elif type(action_result) == Action.Action or type(action_result) == dict:
+        elif isinstance(action_result, Action.Action) or type(action_result) == dict:
             DebugPrint('New action returned')
             self.NewActionReturned(action_result)
 
 
 
     def RefreshRenderedActions(self):
-        actions_to_render = [self.currActionObject] + self.currActionsQueue[:5:-1]
+        actions_to_render = [self.currActionObject] + self.currActionsQueue
         self.rendered_actions = []
         x = 10
         y = 15
         comp = UIComponents.Component()
         for action in actions_to_render:
-            self.rendered_actions.append(comp.TextLine(self.general, action.function.__name__, x, y, UIComponents.RGB(255, 255, 255)))
+            self.rendered_actions.append(comp.TextLine(self.general, action.name, x, y, UIComponents.RGB(255, 255, 255)))
             y += 20
     
     def RefreshRenderedWaiters(self):

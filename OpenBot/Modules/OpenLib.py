@@ -223,6 +223,11 @@ def OnSelectItem(self, index, name):
 def GetSelectedIndex(self):
 	return self.listBox.GetSelectedItem()
 
+def IsThisNPC(vid):
+	if chr.GetInstanceType(vid) == OBJECT_TYPE:
+		return True
+	return False
+
 def IsThisPlayer(vid):
 	if chr.GetInstanceType(vid) == PLAYER_TYPE:
 		return True
@@ -279,7 +284,26 @@ def isInventoryFull():
 		return True
 	else:
 		return False
+
+def GetNumberOfFreeSlots():
+	global player
+	INV_FULL_MIN_EMPTY = 10
+	MAX_INVENTORY_SIZE = 90
+	numItems = MAX_INVENTORY_SIZE
+	for i in range(0,MAX_INVENTORY_SIZE):
+		curr_id = player.GetItemIndex(i)
+		if curr_id != 0:
+			item.SelectItem(curr_id)
+			s = item.GetItemSize()
+			numItems-=s[0]*s[1]
 	
+	if numItems < INV_FULL_MIN_EMPTY:
+		return 0
+	else:
+		return numItems - INV_FULL_MIN_EMPTY
+
+
+
 def GetItemByType(_id):
 	"""
 	Return the slot index of the first item with the specified type in the inventory.
@@ -498,7 +522,14 @@ def GetNearestMonsterVid():
 		
 	return closest_vid
 
-def isPlayerCloseToInstance(vid_target):
+def isPathToVID(vid_target):
+	x, y, z = chr.GetPixelPosition(vid_target)
+	my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
+	if eXLib.FindPath(my_x, my_y, x, y):
+		return True
+	return False
+
+def isPlayerCloseToInstance(vid_target, max_dist=150):
 	"""
 	Check if an instance is close to another instance.
 
@@ -515,7 +546,7 @@ def isPlayerCloseToInstance(vid_target):
 	target_x, target_y, target_z = chr.GetPixelPosition(vid_target)
 	distance = dist(target_x, target_y, player_x, player_y)
 
-	if distance < 150:
+	if distance < max_dist:
 		return True
 	
 	return False

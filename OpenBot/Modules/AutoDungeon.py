@@ -34,6 +34,7 @@ DEAMON_TOWER = {
         0: { # stage outside devil tower, entering dt
             'actions': [{ 'function_args': [20348, (53200, 59600), [0, 0], 'metin2_map_milgyo'], # ID, event_answer, posiiton of npc, npc's map
                           'function': ActionFunctions.TalkWithNPC,
+                          'requirements': {ActionRequirementsCheckers.IS_IN_MAP: ['metin2_map_deviltower1']},
                           'on_success': [Action.NEXT_ACTION]}]},
         1: { # stage with metin
             'actions': [{'function_args': [(19004, 69011)], # position
@@ -92,7 +93,7 @@ DEAMON_TOWER = {
         7: { # stage with metins and chests
             'actions': [{ 'function_args': [(61017, 66483)],
                           'function': ActionFunctions.FindMapInDT,
-                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 66483, 25000)},
+                          'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (60961, 42600, 25000)},
                           'on_success': [Action.NEXT_ACTION],
                           'on_failed': []
                         }

@@ -15,7 +15,7 @@ REQUIREMENTS_NOT_DONE = 'requirements_not_done'
 
 class Action:
 
-    def __init__(self, id, function, callback=None, callback_on_failed=None, interrupt_function=None, name='None', function_args=[],
+    def __init__(self, function, id=0, callback=None, callback_on_failed=None, interrupt_function=None, name='None', function_args=[],
      callback_args=[], interruptors_args=[], interrupt_function_args=[], requirements=[], on_success=[], on_failed=[], interruptors=[]):
         self.id = id
 
@@ -42,7 +42,8 @@ class Action:
         if self.callback_args:
             self.callback(self.callback_args)
         else:
-            self.callback()
+            if callable(self.callback):
+                self.callback()
 
     def Interrupt(self):
         if self.interrupt_function is not None:
@@ -134,10 +135,4 @@ class Action:
                 if failed_key == NEXT_ACTION:
                     return NEXT_ACTION
         return NEXT_ACTION
-
-            
-
-
-
-
 
