@@ -60,11 +60,11 @@ class EnergyBot(BotBase):
         pass
     
     def AddExchangeEnergyToCrystalToStage(self):
-        actions_dict = {0: {'function_args': [20001, (62200, 51100), 'metin2_map_a1'],
+        actions_dict = {0: {'function_args': [20001, (62350, 51180), 'metin2_map_a1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
-              1: {'function_args': [20001, (66000, 73400), 'metin2_map_b1'],
+              1: {'function_args': [20001, (66150, 73450), 'metin2_map_b1'],
               'function': ActionFunctions.ChangeEnergyToCrystal,
               'requirements': {},
               'callback': instance.SetIsCurrActionDoneTrue},
