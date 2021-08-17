@@ -292,14 +292,14 @@ class FarmingBot(BotBase):
         return True
 
     def go_to_next_channel(self):
-        current_channel = OpenLib.GetCurrentChannel()
-        ChannelSwitcher.instance.GetChannels()
-        if current_channel + 1 > len(ChannelSwitcher.instance.channels):
-            current_channel = 1
-        else:
-            current_channel += 1
-
-        ChannelSwitcher.instance.ChangeChannelById(current_channel)
+        action_dict = {
+            'function_args': [OpenLib.GetNextChannel()],
+            'function': ActionFunctions.ChangeChannel,
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [OpenLib.GetNextChannel()]},
+            'on_success': [Action.NEXT_ACTION],
+            'callback': self.SetIsCurrActionDoneTrue,
+        }
+        ActionBot.instance.AddNewAction(action_dict)
 
     def is_text_validate(self, text):
         try:
@@ -337,6 +337,7 @@ class FarmingBot(BotBase):
 
             if self.isReadyToSwitchChannel:
                 self.isReadyToSwitchChannel = False
+                self.isCurrActionDone = False
                 self.go_to_next_channel()
                 return
 

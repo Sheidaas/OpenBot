@@ -112,6 +112,11 @@ class Action:
             elif requirement == ActionRequirementsCheckers.IS_NEAR_INSTANCE:
                 if not ActionRequirementsCheckers.isNearInstance(self.requirements[requirement]):
                     return False
+            
+            elif requirement == ActionRequirementsCheckers.IS_IN_CHANNEL:
+                if not ActionRequirementsCheckers.IsInChannel(self.requirements[requirement]):
+                    return False
+
         return True
 
     def CheckOnSuccesList(self):

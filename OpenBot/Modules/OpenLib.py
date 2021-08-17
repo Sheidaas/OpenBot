@@ -753,6 +753,32 @@ def dist(x1,y1,x2,y2):
 	"""
 	return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
+def GetNextChannel():
+	from OpenBot.Modules import ChannelSwitcher
+	current_channel = GetCurrentChannel()
+	if not current_channel:
+		return 0
+	ChannelSwitcher.instance.GetChannels()
+	if current_channel + 1 > len(ChannelSwitcher.instance.channels):
+		current_channel = 1
+	else:
+		current_channel += 1
+	
+	return current_channel
+
+def GetPreviousChannel():
+	from OpenBot.Modules import ChannelSwitcher
+	current_channel = GetCurrentChannel()
+	if not current_channel:
+		return 0
+	ChannelSwitcher.instance.GetChannels()	
+	if current_channel - 1 < 1:
+		current_channel = len(ChannelSwitcher.instance.channels)
+	else:
+		current_channel -= 1
+	
+	return current_channel
+	
 def GetCurrentChannel():
 	"""
 	Returns the current channel based on the string under the minimap.

@@ -10,6 +10,7 @@ IS_IN_MAP = 'isInMap'
 IS_ABOVE_LVL = 'isAboveLvl'
 IS_NEAR_INSTANCE = 'inNearInstance'
 IS_RACE_NEARLY = 'isRaceNearly'
+IS_IN_CHANNEL = 'isInChannel'
 
 def isAboveLVL(lvl):
     """
@@ -66,9 +67,7 @@ def isOnPosition(position):
     else:
         max_dist = position[2]
     if OpenLib.isPlayerCloseToPosition(x, y, max_dist):
-        DebugPrint('player on pos')
         return True
-    DebugPrint('player not on pos')
     return False
 
 def isMetinNearly(args=0):
@@ -76,7 +75,6 @@ def isMetinNearly(args=0):
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
             if not OpenLib.isPathToVID(vid):
                 continue
-            DebugPrint('there is metin!')
             return True
     return False
 
@@ -115,3 +113,8 @@ def HasItem(item_id):
 
 def IsDead(vid):
     return eXLib.IsDead(vid)
+
+def IsInChannel(channel):
+    if OpenLib.GetCurrentChannel() == channel:
+        return True
+    return False

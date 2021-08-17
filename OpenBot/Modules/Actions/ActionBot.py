@@ -167,6 +167,7 @@ class ActionBot(BotBase):
     def Frame(self):
         self.rendered_actions = []
         self.rendered_waiters = []
+        names = ['Going to enemy']
 
         if self.Board.IsShow():
             self.RefreshRenderedWaiters()
@@ -186,7 +187,8 @@ class ActionBot(BotBase):
                 DmgHacks.Resume()
             else:
                 if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
-                                                               'FindMapInDT', 'OpenASealInMonument']:
+                                                               'FindMapInDT', 'OpenASealInMonument'] or \
+                    self.currActionObject.name in names:
                     DmgHacks.Resume()
                 else:
                     DmgHacks.Pause()
