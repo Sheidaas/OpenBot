@@ -233,6 +233,13 @@ def IsThisPlayer(vid):
 		return True
 	return False
 
+def IsAnyPlayerHere():
+	for vid in eXLib.InstancesList:
+		if net.GetMainActorVID() != vid:
+			if IsThisPlayer(vid):
+				return True
+	return False
+
 def IsThisMetin(vid):
 	if chr.GetInstanceType(vid) == METIN_TYPE:
 		return True

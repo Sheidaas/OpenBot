@@ -470,19 +470,20 @@ def ChangeMap(args):
 def ChangeChannel(args):
     channel_id = args[0]
 
+    from OpenBot.Modules import ChannelSwitcher
+    ChannelSwitcher.instance.GetChannels()
+
     if not channel_id:
         DebugPrint('Channel id is ' + str(channel_id))
         return Action.ERROR
 
     if OpenLib.GetCurrentChannel() == channel_id:
-        return True
-    
-    from OpenBot.Modules import ChannelSwitcher
-    ChannelSwitcher.instance.GetChannels()
+        return Action.NEXT_ACTION
 
     if 0 < channel_id > len(ChannelSwitcher.instance.channels):
         return Action.ERROR
     
-    DebugPrint('Changing channel to ' +str(channel_id))
-    ChannelSwitcher.instance.ChangeChannelById(channel_id)
-    return True
+    if ChannelSwitcher.instance.currState != ChannelSwitcher.STATE_CHANGING_CHANNEL:
+        DebugPrint('Changing channel to ' +str(channel_id))
+        ChannelSwitcher.instance.ChangeChannelById(channel_id)
+        return True

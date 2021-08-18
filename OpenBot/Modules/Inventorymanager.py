@@ -266,7 +266,6 @@ class InventoryDialog(ui.ScriptWindow):
 		self.toSortMoveActions = algo.sort()
 		OpenLog.DebugPrint("[SORT] - Number of actions to be processed: "+str(len(self.toSortMoveActions)))
 
-
 	def OnUpdate(self):
 		val, self.lastTime = OpenLib.timeSleep(self.lastTime,self.TIME_WAIT)
 		if val:
@@ -300,7 +299,11 @@ class InventoryDialog(ui.ScriptWindow):
 				self.callback()
 				self.callback = None
 
-
+	def unStackItem(self, item_slot, item_slot_destination, item_count):
+		if OpenLib.isInventoryFull():
+			net.SendItemMovePacket(item_slot, item_slot_destination, item_count)
+		else:
+			chat.AppendChat(3, '[InventoryManager] You have less than 10 free spaces in inventory, unstackin cannot be done')
 
 ###################SORT SCRIPT#######################
 # It has some bugs
