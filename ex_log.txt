@@ -1,0 +1,177 @@
+Loaded Objects
+Api key is set and accepted
+Authentication was sucessfull
+Module start address: 400000
+Module Size:21a1000
+Requesting offsets from server
+Address set by the server
+Address ID:21 with address -> 0x5eaafa
+Address ID:13 with address -> 0x833430
+Address ID:14 with address -> 0x8334a0
+Address ID:15 with address -> 0x8c7300
+Address ID:20 with address -> 0x5fbe60
+Address ID:16 with address -> 0x5214f8
+Address ID:17 with address -> 0x50b3c7
+Address ID:4 with address -> 0x5fb6b3
+Address ID:5 with address -> 0x472a60
+Address ID:2 with address -> 0x4764a0
+Address ID:3 with address -> 0x4654c0
+Address ID:8 with address -> 0x85b720
+Address ID:9 with address -> 0x85b6b0
+Address ID:6 with address -> 0x507bd0
+Address ID:1 with address -> 0x5c6cd0
+Address ID:22 with address -> 0x5eaa60
+Address ID:18 with address -> 0x601fc0
+Address ID:7 with address -> 0x5215a0
+Address ID:11 with address -> 0x61f0d0
+Address ID:10 with address -> 0x62158a
+Address ID:23 with address -> 0x5eaad6
+Peek relative final address: 0x833470
+globalToLocal relative final address: 0x61f0a0
+recv relative final address: 0x833480
+pythonNetwork->0x25a0040
+pythonPlayer->0x259cb58
+pythonChrMgr->0x259cb64
+Process Hook sucessfull
+Executing Python file: C:\Users\miguel\ownCloud2\SideProjects\MetinCurrentProject\MetinPythonBotDev\OpenBot\init.py
+Python script execution complete!
+Net module loaded
+Main Objects loaded!
+Hook SendPacket called header = 253 return size=525
+Hook SendPacket called header = 251 return size=261
+Hook SendPacket called header = 97 return size=1049
+Hook SendPacket called header = 175 return size=1
+Could not parse phase packet!
+Hook SendPacket called header = 253 return size=525
+Hook SendPacket called header = 251 return size=261
+Could not parse phase packet!
+Hook SendPacket called header = 68 return size=53
+Hook SendPacket called header = 175 return size=1
+Could not parse phase packet!
+Hook SendPacket called header = 6 return size=9
+Hook SendPacket called header = 8 return size=1
+Hook SendPacket called header = 22 return size=322
+Hook SendPacket called header = 6 return size=9
+Could not parse phase packet!
+Hook SendPacket called header = 253 return size=525
+Hook SendPacket called header = 251 return size=261
+Hook SendPacket called header = 68 return size=53
+Hook SendPacket called header = 175 return size=1
+Phased changed to: 3
+Hook SendPacket called header = 15 return size=1
+Hook SendPacket called header = 202 return size=1
+Phased changed to: 4
+Instances Cleared
+Executing Python file: C:\Users\miguel\ownCloud2\SideProjects\MetinCurrentProject\MetinPythonBotDev\OpenBot\script.py
+Pickup Filter Add=1
+Pickup Filter Add=50084
+Pickup Filter Add=30006
+Pickup Filter Add=50279
+Pickup Filter Add=30056
+Pickup Filter Add=30057
+Pickup Filter Add=30059
+Pickup Filter Add=28430
+Pickup Filter Add=28431
+Pickup Filter Add=28437
+Pickup Filter Add=28438
+Pickup Filter Add=50300
+RegisterNewShopCallback function set sucessfully
+StartFishCallback function set sucessfully
+RecvDigMotionCallback function set sucessfully
+Python script execution complete!
+MAIN VID: 6570614
+Hook SendPacket called header = 250 return size=67
+Hook SendPacket called header = 138 return size=1
+Hook SendPacket called header = 81 return size=1
+Hook SendPacket called header = 207 return size=1
+Success Adding instance vid=6570614
+On adding instance with vid=6570614, already exists, ignoring packet
+Success Adding instance vid=2238295
+Success Adding instance vid=4532813
+Success Adding instance vid=49001
+Success Adding instance vid=2238293
+Success Adding instance vid=6263607
+Success Adding instance vid=6514452
+Success Adding instance vid=49053
+Success Adding instance vid=4532814
+Success Adding instance vid=13306
+Success Adding instance vid=49002
+Success Adding instance vid=6514453
+Success Adding instance vid=49000
+Success Adding instance vid=13307
+Success Adding instance vid=2238294
+Success Adding instance vid=49003
+Success Adding instance vid=13305
+Success Adding instance vid=6263608
+Success Adding instance vid=4532812
+Success Adding instance vid=6514451
+Success Adding instance vid=4532811
+Success Adding instance vid=6263606
+Success Adding instance vid=1461462
+Success Adding instance vid=37801
+Success Adding instance vid=37802
+Success Adding instance vid=2238296
+Success Adding instance vid=47162
+Success Adding instance vid=47163
+Success Adding instance vid=47164
+Success Adding instance vid=1461463
+Success Adding instance vid=47161
+Success Adding instance vid=37800
+Success Adding instance vid=4507017
+Success Adding instance vid=49054
+Success Adding instance vid=4507018
+Success Adding instance vid=4507019
+Success Adding instance vid=48832
+Success Adding instance vid=4484675
+Success Adding instance vid=4497911
+Success Adding instance vid=4548397
+Success Adding instance vid=4497909
+Success Adding instance vid=4484676
+Success Adding instance vid=4548399
+Success Adding instance vid=4548400
+Success Adding instance vid=4497910
+Success Adding instance vid=49055
+Success Adding instance vid=4484674
+Success Adding instance vid=4548398
+Success Adding instance vid=2415046
+Success Adding instance vid=15085
+Success Adding instance vid=15086
+Success Adding instance vid=39056
+Success Adding instance vid=39054
+Success Adding instance vid=15088
+Success Adding instance vid=1461464
+Success Adding instance vid=39055
+Success Adding instance vid=4463399
+Success Adding instance vid=4463398
+Success Adding instance vid=48831
+Success Adding instance vid=6277298
+Success Adding instance vid=6277297
+Success Adding instance vid=48830
+Success Adding instance vid=4463396
+Success Adding instance vid=6277299
+Success Adding instance vid=4463397
+Success Adding instance vid=6277296
+Success Adding instance vid=39491
+Success Adding instance vid=39490
+Success Adding instance vid=39489
+Success Adding instance vid=39492
+Success Adding instance vid=2209793
+Success Adding instance vid=2209792
+Success Adding instance vid=2209791
+Success Adding instance vid=2415047
+Success Adding instance vid=2415045
+Phased changed to: 5
+Setting collision map name=metin2_map_n_desert_01
+Map metin2_map_n_desert_01 in disk loaded from C:\Users\miguel\ownCloud2\SideProjects\MetinCurrentProject\MetinPythonBotDev\OpenBot\Resources\Maps\metin2_map_n_desert_01.dat with X:1536 ,Y:1536 loaded with success!
+Current map metin2_map_n_desert_01 loaded with success! Max-X: 1536  Max-Y: 1536
+
+Websocket to ws://localhost:3003 created with ID 0
+Websocket on_open recived
+Message This Message has been sent sucessfully
+Websocket on_message recived
+Websocket on_message recived
+Websocket on_close recived
+Websocket poping message from buffer 
+Websocket with id=0 recived message: Data recieved as:  This Message!
+Websocket poping message from buffer 
+Websocket with id=0 recived message: Data recieved as:  This Message!
