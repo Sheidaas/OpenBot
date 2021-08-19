@@ -7,7 +7,7 @@ from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
 import player, net, chr, chat, background, item
 
-
+# This actions is used for clearing all visible monsters untill there is something to kill
 def ClearFloor(args):
     player.SetAttackKeyState(False)
     x, y = args[0]
@@ -39,6 +39,7 @@ def ClearFloor(args):
     }
     return action_dict
 
+# This action is attacking choosed mob by race or id
 def Destroy(args):
     if args[1]:
         instance_vid = args[1]
@@ -81,6 +82,7 @@ def Destroy(args):
     
     return False
 
+# This action returing true if mob of giving id is in sight
 def Find(args):
     for vid in eXLib.InstancesList:
         chr.SelectInstance(vid)
@@ -484,6 +486,6 @@ def ChangeChannel(args):
         return Action.ERROR
     
     if ChannelSwitcher.instance.currState != ChannelSwitcher.STATE_CHANGING_CHANNEL:
-        DebugPrint('Changing channel to ' +str(channel_id))
+        DebugPrint('Changing channel to ' + str(channel_id) )
         ChannelSwitcher.instance.ChangeChannelById(channel_id)
         return True

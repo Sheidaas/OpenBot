@@ -5,13 +5,15 @@ import ActionRequirementsCheckers
 
 FARMING_BOT = 'farming_bot'
 
-# RETURNINGS
-NOTHING = 'nothing'
-NEXT_ACTION = 'next_action'
-ERROR = 'error'
 
-DISCARD_PREVIOUS = 'discard_previous'
-REQUIREMENTS_NOT_DONE = 'requirements_not_done'
+# RETURNINGS
+NOTHING = 'NOTHING'
+NEXT_ACTION = 'NEXT_ACTION'
+ERROR = 'ERROR'
+
+DISCARD_PREVIOUS = 'DISCARD_PREVIOUS'
+REQUIREMENTS_NOT_DONE = 'REQUIREMENTS_NOT_DONE'
+on_success_keys = [NOTHING, NEXT_ACTION, ERROR, DISCARD_PREVIOUS, REQUIREMENTS_NOT_DONE]
 
 class Action:
 
