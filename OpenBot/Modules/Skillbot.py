@@ -85,7 +85,7 @@ class Skillbot(BotBase):
         self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '5', 15, 115, 25, 15, 25)             
         self.text_line1 = self.comp.TextLine(self.Board, 's. waiting after logout', 50, 118, self.comp.RGB(255, 255, 255))
      
-        self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tCast skills instant?', 'Not working with every class', 80, 95,
+        self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\tCast instant?', 'Not working with every class', 120, 95,
                                                          defaultValue=self.mode)
 
     def switch_should_wait(self, val):
