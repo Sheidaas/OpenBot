@@ -33,6 +33,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.pickFilter = set()
 		self.excludeInFilter = True
 		self.useRangePickup = False
+		self.doNotPickupIfPlayerHere = False
 
 		self.useOnClickDmg = False
 		self.onClickDmgSpeed = 0.0
@@ -78,7 +79,7 @@ class SettingsDialog(ui.ScriptWindow):
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
 		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
-		self.reviveInCityBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\t in city?', '', 120, 140,funcState=self.ReviveInCityOnOff,defaultValue=int(self.restartInCity))
+		#self.reviveInCityBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\t in city?', '', 120, 140,funcState=self.ReviveInCityOnOff,defaultValue=int(self.restartInCity))
 		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 210, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
 		self.antiExpBtn =self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAntiExp', '', 20, 180,funcState=self.startAntiExp,defaultValue=int(self.antiExp))
 		
@@ -88,10 +89,10 @@ class SettingsDialog(ui.ScriptWindow):
 		self.waitTimeDeadSlotBar, self.waitTimeDeadEditLine = self.comp.EditLine(self.generalTab, '', 130, 235, 25, 15, 3)
 		self.waitTimeDeadText = self.comp.TextLine(self.generalTab, 's', 160, 235, self.comp.RGB(255, 255, 255))
 		self.waitTimeDeadText2 = self.comp.TextLine(self.generalTab, 'Time to wait after dead:', 20, 235, self.comp.RGB(255, 255, 255))
-		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Load path by name of file', 210, 235, self.OnShowKeyBindsButton,
-                                             'd:/ymir work/ui/public/small_Button_01.sub',
-                                             'd:/ymir work/ui/public/small_Button_02.sub',
-                                             'd:/ymir work/ui/public/small_Button_03.sub')
+		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Show key binds', 210, 235, self.OnShowKeyBindsButton,
+                                             'd:/ymir work/ui/public/medium_Button_01.sub',
+                                             'd:/ymir work/ui/public/medium_Button_02.sub',
+                                             'd:/ymir work/ui/public/medium_Button_03.sub')
 		##PICKUP
 		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image="OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
 		self.rangePickupButton,self.SliderangePickup,self.rangePickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupRangeSlide, 'Range', 'Enable Range Pickup', 15, 60,funcState=self.OnRangePickupOnOff,offsetX=30,offsetY=4,defaultValue=int(self.useRangePickup),defaultSlider=float(self.pickUpRange/10000.0))
@@ -102,6 +103,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.PickSearchItemSlotBar, self.PickSearchItemEditLine = self.comp.EditLine(self.pickupTab, '', 85, 270, 110, 15, 20)
 		self.labelFilter = self.comp.TextLine(self.pickupTab, 'Pickup Filter', 115, 90, self.comp.RGB(255, 255, 0))
 		self.PickfilterModeBtn = self.comp.OnOffButton(self.pickupTab, '\t\t\tExclude Items', 'If not selected will only pick items in the list', 190, 130,funcState=self.OnChangePickMode,defaultValue=int(self.excludeInFilter))
+		self.doNotPickupIfPlayerNear = self.comp.OnOffButton(self.pickupTab, '\t\t\tStop when is player near', 'If you select this option, pickup will work only when there are not any player', 190, 110,funcState=self.OnDoNotPickupIfPlayerNear,defaultValue=int(self.doNotPickupIfPlayerHere))
 		self.PickbarItems, self.PickfileListBox, self.PickScrollBar = self.comp.ListBoxEx2(self.pickupTab, 15, 117, 140, 150)
 
 
@@ -153,6 +155,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.wallHack = boolean(FileManager.ReadConfig("WallHack"))
 		self.onClickDmgSpeed  = boolean(FileManager.ReadConfig("OnClickDamageSpeed"))
 		self.antiExp = boolean(FileManager.ReadConfig("antiExp"))
+		self.doNotPickupIfPlayerHere = boolean(FileManager.ReadConfig("doNotPickupIfPlayerHere"))
 		for i in FileManager.LoadListFile(FileManager.CONFIG_PICKUP_FILTER):
 			self.addPickFilterItem(int(i))
 		self.sellItems = {int(i) for i in FileManager.LoadListFile(FileManager.CONFIG_SELL_INVENTORY)}
@@ -176,6 +179,8 @@ class SettingsDialog(ui.ScriptWindow):
 		FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
 		FileManager.WriteConfig("antiExp", str(self.antiExp))
 		FileManager.WriteConfig("timeAfterDead", str(self.waitTimeDeadEditLine.GetText()))
+		FileManager.WriteConfig("doNotPickupIfPlayerHere", str(self.doNotPickupIfPlayerHere))
+		
 		#chat.AppendChat(3,str(self.pickUp))
 		FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
 		FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
@@ -185,6 +190,9 @@ class SettingsDialog(ui.ScriptWindow):
 	def OnShowKeyBindsButton(self):
 		from OpenBot.Modules import KeyBot
 		KeyBot.instance.switch_state()
+
+	def OnDoNotPickupIfPlayerNear(self, val):
+		self.doNotPickupIfPlayerHere = val
 
 	def OnCanFarmbotExchangeToShop(self, val):
 		self.canFarmbotSellBool = val
@@ -400,6 +408,11 @@ class SettingsDialog(ui.ScriptWindow):
 		
 	def PickUp(self):
 		if self.pickUp:
+
+			if self.doNotPickupIfPlayerNear:
+				if OpenLib.IsAnyPlayerHere():
+					return
+
 			val, self.pickUpTimer = OpenLib.timeSleep(self.pickUpTimer,self.pickUpSpeed)
 			if not val:
 				return

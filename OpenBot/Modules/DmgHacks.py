@@ -160,7 +160,10 @@ class DmgHacks(ui.Window):
 				if not chr.HasInstance(vid):
 					continue
 
-				if self.playerClose.isOn and chr.GetInstanceType(vid) == OpenLib.PLAYER_TYPE and vid != net.GetMainActorVID():
+				if OpenLib.IsThisNPC(vid):
+					continue
+
+				if self.playerClose.isOn and OpenLib.IsThisPlayer(vid) and vid != net.GetMainActorVID():
 					return
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):

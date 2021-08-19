@@ -144,15 +144,16 @@ class FarmingBot(BotBase):
 
 
 
-        self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tSwitch channels', 'If checked, farmbot will change to next channel after complete a path', 20, 130,
+        self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tSwitch channels',
+         'If checked, farmbot will change to next channel after complete a path', 20, 80,
                                                       funcState=self.ButtonOnOff,
                                                       defaultValue=False)
 
         self.slot_barWaitingTime, self.edit_lineWaitingTime = \
-            comp.EditLine(self.settings_tab, '5', 20, 150, 40, 20, 25)
+            comp.EditLine(self.settings_tab, '5', 20, 110, 40, 20, 25)
 
-        self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after moving', 70, 155, comp.RGB(255, 255, 255))
-        self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, ' or destorying metin',  85, 170, comp.RGB(255, 255, 255))
+        self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after ', 70, 115, comp.RGB(255, 255, 255))
+        self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, 'destorying metin',  75, 125, comp.RGB(255, 255, 255))
 
     def OnEnableSwitchButton(self, val):
         if val:
@@ -243,7 +244,7 @@ class FarmingBot(BotBase):
             self.current_point += 1
         else:
             self.path.reverse()
-            self.current_point = 1
+            self.current_point = 0
             if self.showChannelSwitchingButton.isOn:
                 self.isReadyToSwitchChannel = True
 
@@ -291,14 +292,14 @@ class FarmingBot(BotBase):
         return True
 
     def go_to_next_channel(self):
-        current_channel = OpenLib.GetCurrentChannel()
-        ChannelSwitcher.instance.GetChannels()
-        if current_channel + 1 > len(ChannelSwitcher.instance.channels):
-            current_channel = 1
-        else:
-            current_channel += 1
-
-        ChannelSwitcher.instance.ChangeChannelById(current_channel)
+        action_dict = {
+            'function_args': [OpenLib.GetNextChannel()],
+            'function': ActionFunctions.ChangeChannel,
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [OpenLib.GetNextChannel()]},
+            'on_success': [Action.NEXT_ACTION],
+            'callback': self.SetIsCurrActionDoneTrue,
+        }
+        ActionBot.instance.AddNewAction(action_dict)
 
     def is_text_validate(self, text):
         try:
@@ -329,13 +330,14 @@ class FarmingBot(BotBase):
                 self.metins_vid_list.append(vid)
 
     def Frame(self):
-        self.checkForMetinsAndOres()
-        self.search_for_farm()
 
         if self.isCurrActionDone:
+            self.checkForMetinsAndOres()
+            self.search_for_farm()
 
             if self.isReadyToSwitchChannel:
                 self.isReadyToSwitchChannel = False
+                self.isCurrActionDone = False
                 self.go_to_next_channel()
                 return
 
@@ -367,21 +369,35 @@ class FarmingBot(BotBase):
                 else:
                     OpenLog.DebugPrint('inventory is not full')
                 OpenLog.DebugPrint('No trash items')
-                
-                on_failed = []
-                if self.showFarmingMetinButton.isOn:
-                    on_failed.append(ActionRequirementsCheckers.isMetinNearly)
-                if self.showMiningButton.isOn:
-                    on_failed.append(returnFuncWithArgs(ActionRequirementsCheckers.isRaceNearly, self.ores_to_mine))
 
-                action_dict = {'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
+                interruptors_args = []
+                interruptors = []
+
+                if self.showFarmingMetinButton.isOn:
+                    interruptors_args.append(0)
+                    interruptors.append(ActionRequirementsCheckers.isMetinNearly)
+
+                if self.showMiningButton.isOn:
+                    interruptors_args.append(self.ores_to_mine)
+                    interruptors.append(ActionRequirementsCheckers.isRaceNearly)
+
+                if interruptors:
+                    interrupt_function = lambda: Action.NEXT_ACTION
+                else:
+                    interrupt_function = None
+
+                action_dict = {
+                'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                 'function': ActionFunctions.MoveToPosition, 
-                'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0], self.path[self.current_point][1], 500], ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
-                'on_failed': on_failed,
-                'callback': self.IsWalkingDone}
+                'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0],
+                                                                            self.path[self.current_point][1], 500],
+                                                                             ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
+                'callback': self.IsWalkingDone,
+                'interruptors_args': interruptors_args,
+                'interruptors': interruptors,
+                'interrupt_function': interrupt_function}
                 ActionBot.instance.AddNewAction(action_dict)
                 self.isCurrActionDone = False
-                
                 return
 
             elif self.CURRENT_STATE == MINING_STATE:

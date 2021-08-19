@@ -50,6 +50,7 @@ class Skillbot(BotBase):
         self.startUpWaitTime = 0
         self.shouldWait = False
         self.startUpWait = False
+        self.mode = False
         self.currentSkillSet = []
 
         self.isOn = False
@@ -84,6 +85,8 @@ class Skillbot(BotBase):
         self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '5', 15, 115, 25, 15, 25)             
         self.text_line1 = self.comp.TextLine(self.Board, 's. waiting after logout', 50, 118, self.comp.RGB(255, 255, 255))
      
+        self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tCast skills instant?', 'Not working with every class', 80, 95,
+                                                         defaultValue=self.mode)
 
     def switch_should_wait(self, val):
         self.shouldWait = val
@@ -169,25 +172,40 @@ class Skillbot(BotBase):
 
         if not self.startUpWait:
             for skill in self.currentSkillSet:
-                waiter_time = getattr(self, 'edit_line'+str(skill['id'])).GetText()
-                if not self.is_text_validate(waiter_time):
-                    continue
-                if not skill['is_turned_on'] and skill['icon'].isOn:
-                    if not player.IsMountingHorse():
-                        # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
-                        eXLib.SendUseSkillPacket(skill['slot'], net.GetMainActorVID())
-                    else:
-                        net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-                        eXLib.SendUseSkillPacket(skill['slot'], net.GetMainActorVID())
-                        net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-                    skill['is_turned_on'] = True
-                    ActionBot.instance.AddNewWaiter(int(waiter_time), self.addCallbackToWaiter(skill))
+                if self.showModeButton.isOn:
+                    waiter_time = getattr(self, 'edit_line'+str(skill['id'])).GetText()
+                    if not self.is_text_validate(waiter_time):
+                        continue
+                    if not skill['is_turned_on'] and skill['icon'].isOn \
+                         and not player.IsSkillCoolTime(skill['slot']):
+                        if not player.IsMountingHorse():
+                            # chat.AppendChat(3, "[Skill-Bot] Using skill at slot "+str(skill['slot']))
+                            
+                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                        else:
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                            eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+                        skill['is_turned_on'] = True
+                        ActionBot.instance.AddNewWaiter(int(waiter_time), self.addCallbackToWaiter(skill))
+                else:
+                    if not skill['is_turned_on'] and skill['icon'].isOn \
+                        and not player.IsSkillCoolTime(skill['slot']):
+                        if not player.IsMountingHorse():
+                            eXLib.SendUseSkillPacketBySlot(skill['slot'])
+                        else:
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                            eXLib.SendUseSkillPacketBySlot(skill['slot'])
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
 
         else:
             time_to_wait = 2
             text = self.edit_lineWaitingTime.GetText()
             if self.is_text_validate(text):
                 time_to_wait = int(text)
+            else:
+                self.startUpWait = False
+                return
 
             val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, time_to_wait)
             if val:

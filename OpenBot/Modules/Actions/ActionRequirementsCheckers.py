@@ -1,7 +1,7 @@
 from OpenBot.Modules import OpenLib
 from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, background, chat, chr
+import player, background, chat, chr, net
 
 # REQUIREMENTS
 IS_NEAR_POSITION = 'isNearPosition'
@@ -10,6 +10,7 @@ IS_IN_MAP = 'isInMap'
 IS_ABOVE_LVL = 'isAboveLvl'
 IS_NEAR_INSTANCE = 'inNearInstance'
 IS_RACE_NEARLY = 'isRaceNearly'
+IS_IN_CHANNEL = 'isInChannel'
 
 def isAboveLVL(lvl):
     """
@@ -66,20 +67,22 @@ def isOnPosition(position):
     else:
         max_dist = position[2]
     if OpenLib.isPlayerCloseToPosition(x, y, max_dist):
-        DebugPrint('player on pos')
         return True
-    DebugPrint('player not on pos')
     return False
 
-def isMetinNearly():
+def isMetinNearly(args=0):
     for vid in eXLib.InstancesList:
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
+            if not OpenLib.isPathToVID(vid):
+                continue
             return True
     return False
 
-def isOreNearly():
+def isOreNearly(args=0):
     for vid in eXLib.InstancesList:
-        if OpenLib.IsThisOre(vid):
+        if OpenLib.IsThisOre(vid) and not eXLib.IsDead(vid):
+            if not OpenLib.isPathToVID(vid):
+                continue
             return True
     return False
 
@@ -105,5 +108,13 @@ def isCharReadyToMine(ore_vid):
 
 def HasItem(item_id):
     if OpenLib.GetItemByID(item_id) > -1:
+        return True
+    return False
+
+def IsDead(vid):
+    return eXLib.IsDead(vid)
+
+def IsInChannel(channel):
+    if OpenLib.GetCurrentChannel() == channel:
         return True
     return False
