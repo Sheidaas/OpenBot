@@ -31,7 +31,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         if DEBUG:
             self.OpenBotBoard.SetSize(51, 500)
         else:
-            self.OpenBotBoard.SetSize(51, 585)
+            self.OpenBotBoard.SetSize(51, 550)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()

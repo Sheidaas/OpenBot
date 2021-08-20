@@ -90,9 +90,9 @@ class SettingsDialog(ui.ScriptWindow):
 		self.waitTimeDeadText = self.comp.TextLine(self.generalTab, 's', 160, 235, self.comp.RGB(255, 255, 255))
 		self.waitTimeDeadText2 = self.comp.TextLine(self.generalTab, 'Time to wait after dead:', 20, 235, self.comp.RGB(255, 255, 255))
 		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Show key binds', 210, 235, self.OnShowKeyBindsButton,
-                                             'd:/ymir work/ui/public/medium_Button_01.sub',
-                                             'd:/ymir work/ui/public/medium_Button_02.sub',
-                                             'd:/ymir work/ui/public/medium_Button_03.sub')
+                                             'd:/ymir work/ui/public/Middle_Button_01.sub',
+                                             'd:/ymir work/ui/public/Middle_Button_02.sub',
+                                             'd:/ymir work/ui/public/Middle_Button_03.sub')
 		##PICKUP
 		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image="OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
 		self.rangePickupButton,self.SliderangePickup,self.rangePickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupRangeSlide, 'Range', 'Enable Range Pickup', 15, 60,funcState=self.OnRangePickupOnOff,offsetX=30,offsetY=4,defaultValue=int(self.useRangePickup),defaultSlider=float(self.pickUpRange/10000.0))
