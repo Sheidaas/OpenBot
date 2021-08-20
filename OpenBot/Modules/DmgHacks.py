@@ -83,7 +83,10 @@ class DmgHacks(ui.Window):
 		self.speedNum.SetText(str(int(self.speed*1000)) + ' ms')
 
 	def OnOffBtnState(self,val):
-		pass
+		if(val):
+			eXLib.BlockAttackPackets()
+		else:
+			eXLib.UnblockAttackPackets()
 	
 	
 	def OpenWindow(self):
