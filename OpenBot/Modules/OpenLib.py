@@ -685,7 +685,7 @@ def GetTime():
 
 def GetPlayerEmpireFirstMap():
 	empire_id = net.GetEmpireID()
-	chat.AppendChat(empire_id)
+	#chat.AppendChat(empire_id)
 	empires_map_names = {
 		1: 'metin2_map_a1',
 		2: 'metin2_map_b1',
@@ -693,13 +693,13 @@ def GetPlayerEmpireFirstMap():
 	}
 	return empires_map_names[empire_id]
 
-def GetPlayerEmpiteSecondMap():
+def GetPlayerEmpireSecondMap():
 	empire_id = net.GetEmpireID()
-	chat.AppendChat(empire_id)
+	#chat.AppendChat(empire_id)
 	empires_map_names = {
-		1: 'metin2_map_a2',
-		2: 'metin2_map_b2',
-		3: 'metin2_map_c2',
+		1: 'metin2_map_a3',
+		2: 'metin2_map_b3',
+		3: 'metin2_map_c3',
 	}
 	return empires_map_names[empire_id]	
 
