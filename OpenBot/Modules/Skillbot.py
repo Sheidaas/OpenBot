@@ -61,7 +61,7 @@ class Skillbot(BotBase):
 
         self.comp = UIComponents.Component()
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(235, 150)
+        self.Board.SetSize(235, 170)
         self.Board.SetPosition(52, 40)
         self.Board.AddFlag('movable')
         self.Board.SetTitleName('Skillbot')
@@ -78,14 +78,14 @@ class Skillbot(BotBase):
                                                   funcState=self._start, defaultValue=self.isOn)
         
 
-        self.showShouldWaitButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tWait after logout?', 'If check, skillbot will wait for use skill', 15, 95,
+        self.showShouldWaitButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tWait after logout?', 'If check, skillbot will wait to use skill', 15, 95,
                                                          funcState=self.switch_should_wait,
                                                          defaultValue=self.shouldWait)
 
-        self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '5', 15, 115, 25, 15, 25)             
-        self.text_line1 = self.comp.TextLine(self.Board, 's. waiting after logout', 50, 118, self.comp.RGB(255, 255, 255))
+        self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board, '5', 15, 137, 25, 15, 25)             
+        self.text_line1 = self.comp.TextLine(self.Board, 's. waiting after logout', 50, 138, self.comp.RGB(255, 255, 255))
      
-        self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tCast skills instant?', 'Not working with every class', 80, 95,
+        self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\t\t\t\t\tCast skill without animation', 'Not working with every class', 15, 117,
                                                          defaultValue=self.mode)
 
     def switch_should_wait(self, val):

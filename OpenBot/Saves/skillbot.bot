@@ -17,3 +17,5 @@ IsTurnedOn=False
 34=True
 35=False
 36=False
+ShouldWaitAfterLogout=False
+skillTimer34=0

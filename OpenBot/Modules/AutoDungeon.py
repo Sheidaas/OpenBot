@@ -157,11 +157,11 @@ class AutoDungeon(BotBase):
         self.settings_tab = self.TabWidget.GetTab(1)
 
         
-        self.shouldUpgradeItemButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t\t Upgrade item?', 'If u want upgrade item on blacksmith stage, check this', 10, 20,
+        self.shouldUpgradeItemButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t Upgrade item?', 'If u want upgrade item on blacksmith stage, check this', 10, 20,
                                                       funcState=self.switch_should_upgrade_item,
                                                       defaultValue=DEAMON_TOWER['options']['shouldUpgradeItem'])      
         
-        self.goAboveBlacksmithButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t\tGo above blacksmith?', 'Check if u want kill ripper', 10, 50,
+        self.goAboveBlacksmithButton = comp.OnOffButton(self.deamon_tower_tab, '\t\t\t\t\t\t\t\tGo above blacksmith?', 'Check if u want kill ripper', 10, 50,
                                                       funcState=self.switch_go_above_blacksmith_button,
                                                       defaultValue=DEAMON_TOWER['options']['GoAboveBlacksmith'])
         

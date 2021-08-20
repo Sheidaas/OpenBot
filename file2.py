@@ -49,5 +49,5 @@ from OpenBot.Modules.Actions import ActionFunctions
 #chat.AppendChat(3,str(background.GetCurrentMapName()))
 
 
-val = eXLib.SendWebsocket(0,"This Message")
+val = eXLib.SendWebsocket(2,"frontend_client")
 chat.AppendChat(3,str(val))

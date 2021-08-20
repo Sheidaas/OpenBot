@@ -24,7 +24,7 @@ class DmgHacks(ui.Window):
 
 		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 130, 210, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState=self.OnOffBtnState )
   		self.playerClose = self.comp.OnOffButton(self.Board, '', '', 130, 50)
-		self.wallBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCheck is wall ', 'Check is there wall between player and mob', 170, 30)
+		self.wallBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCheck is wall', 'Dont attack mobs with wall in between', 170, 30)
 		self.cloudBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tCloud exploit', 'Only on dagger ninja', 170, 50)
 		self.attackPlayerBtn = self.comp.OnOffButton(self.Board, '\t\t\t\tAttack players', '', 170, 70)
 		self.attackBlockedMonsters = self.comp.OnOffButton(self.Board, '\t\t\t\t', '', 130, 70)
@@ -132,7 +132,7 @@ class DmgHacks(ui.Window):
 			if OpenLib.dist(x,y,mob_x,mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
 				if not player.IsSkillCoolTime(5) and player.GetStatus(player.SP) >  OpenLib.GetSkillManaNeed(35,5):
 					#chat.AppendChat(3,"Skill Time, X:" + str(mob_x) + " Y:" + str(mob_y) + " VID: " +str(vid) + " Dist: " + str(OpenLib.dist(x,y,mob_x,mob_y)))
-					eXLib.SendUseSkillPacketBySlot(5,vid)
+					OpenLib.SetTimerFunction(1,eXLib.SendUseSkillPacketBySlot(5,vid))
 				x,y,z = chr.GetPixelPosition(vid)
 				eXLib.SendAddFlyTarget(vid,x,y)
 				eXLib.SendShoot(35)

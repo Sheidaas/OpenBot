@@ -831,6 +831,35 @@ def IsWeaponPickaxe():
 		return True
 	return False
 
+def SetTimerFunction(time,function):
+	"""
+	Executes a function after a specified period of time in seconds. 
+	"""
+	function_handler.RegisterOnEventExit(time,function)
+
+
+class TimeFunctionHandler(ui.ScriptWindow):
+
+	def __init__(self):
+		ui.ScriptWindow.__init__(self)
+		self.function_list = []
+
+
+	def RegisterOnEventExit(self,time,function):
+		self.function_list.append({"time":GetTime()+time,"function":function})
+
+	def OnUpdate(self):
+		curTime = GetTime()
+		to_del = []
+		for i,func in enumerate(self.function_list):
+			if curTime >= func["time"]:
+				self.function_list["function"]()
+				to_del.append(i)
+		
+		for i in to_del:
+			del self.function_list[i]
+
+
 class WaitingDialog(ui.ScriptWindow):
 
 	def __init__(self):
@@ -940,4 +969,6 @@ class EterPackOperator(object):
 FileManager.LoadDictFile(FileManager.CONFIG_BOSSES_ID, BOSS_IDS, int)
 FileManager.LoadDictFile(FileManager.CONFIG_ORES_ID, ORES_IDS, int)
 Hooks._debugHookFunctionArgs(event.SelectAnswer)
+function_handler = TimeFunctionHandler()
+function_handler.Show()
 import Movement

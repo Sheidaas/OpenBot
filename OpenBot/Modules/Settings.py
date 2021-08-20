@@ -103,7 +103,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.PickSearchItemSlotBar, self.PickSearchItemEditLine = self.comp.EditLine(self.pickupTab, '', 85, 270, 110, 15, 20)
 		self.labelFilter = self.comp.TextLine(self.pickupTab, 'Pickup Filter', 115, 90, self.comp.RGB(255, 255, 0))
 		self.PickfilterModeBtn = self.comp.OnOffButton(self.pickupTab, '\t\t\tExclude Items', 'If not selected will only pick items in the list', 190, 130,funcState=self.OnChangePickMode,defaultValue=int(self.excludeInFilter))
-		self.doNotPickupIfPlayerNear = self.comp.OnOffButton(self.pickupTab, '\t\t\tStop when is player near', 'If you select this option, pickup will work only when there are not any player', 190, 110,funcState=self.OnDoNotPickupIfPlayerNear,defaultValue=int(self.doNotPickupIfPlayerHere))
+		self.doNotPickupIfPlayerNear = self.comp.OnOffButton(self.pickupTab, '\t\t\t\t\t\t\t\t\tStop when is player near', 'If you select this option, pickup will work only when there are not any player', 120, 8,funcState=self.OnDoNotPickupIfPlayerNear,defaultValue=int(self.doNotPickupIfPlayerHere))
 		self.PickbarItems, self.PickfileListBox, self.PickScrollBar = self.comp.ListBoxEx2(self.pickupTab, 15, 117, 140, 150)
 
 
