@@ -35,6 +35,9 @@ class ActionBot(BotBase):
 
         self.waiters = []
 
+
+        self.showOffWaithackButton = False
+        self.showAlwaysWaithackButton = False
         self.BuildWindow()
 
     def BuildWindow(self):
@@ -71,22 +74,7 @@ class ActionBot(BotBase):
                                           'd:/ymir work/ui/public/large_Button_01.sub',
                                           'd:/ymir work/ui/public/large_Button_02.sub',
                                           'd:/ymir work/ui/public/large_Button_03.sub')
-        
-        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 20,
-                                                         funcState=self.switch_always_use_waithack,
-                                                         defaultValue=False)
 
-        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', 'If checked, farmbot wont use waithack for destroying metin', 20, 40,
-                                                      funcState=self.switch_dont_use_waithack,
-                                                      defaultValue=False)
-
-    def switch_always_use_waithack(self, val):
-        if val:
-            self.showOffWaithackButton.SetOff()
-
-    def switch_dont_use_waithack(self, val):
-        if val:
-            self.showAlwaysWaithackButton.SetOff()
 
     def OnEnableSwitchButton(self, val):
         if val:
@@ -182,8 +170,8 @@ class ActionBot(BotBase):
             if not self.CheckIsThereNewAction():
                 return
 
-        if not self.showOffWaithackButton.isOn:
-            if self.showAlwaysWaithackButton.isOn:
+        if not self.showOffWaithackButton:
+            if self.showAlwaysWaithackButton:
                 DmgHacks.Resume()
             else:
                 if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',

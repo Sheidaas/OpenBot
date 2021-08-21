@@ -89,7 +89,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.waitTimeDeadSlotBar, self.waitTimeDeadEditLine = self.comp.EditLine(self.generalTab, '', 130, 235, 25, 15, 3)
 		self.waitTimeDeadText = self.comp.TextLine(self.generalTab, 's', 160, 235, self.comp.RGB(255, 255, 255))
 		self.waitTimeDeadText2 = self.comp.TextLine(self.generalTab, 'Time to wait after dead:', 20, 235, self.comp.RGB(255, 255, 255))
-		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Show key binds', 210, 235, self.OnShowKeyBindsButton,
+		self.showKeyBindsBtn = self.comp.Button(self.generalTab, 'KeyBinds', 'Show key binds', 190, 235, self.OnShowKeyBindsButton,
                                              'd:/ymir work/ui/public/Middle_Button_01.sub',
                                              'd:/ymir work/ui/public/Middle_Button_02.sub',
                                              'd:/ymir work/ui/public/Middle_Button_03.sub')
@@ -112,9 +112,9 @@ class SettingsDialog(ui.ScriptWindow):
 		self.ShopbarItems, self.ShopFileListBox, self.ShopScrollBar = self.comp.ListBoxEx2(self.shopTab, 60, 30, 140, 150)
 		self.AddSellItemBtn = self.comp.Button(self.shopTab, 'Add', '', 65, 185, self.OpenSellItemDialog, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
 		self.SellRemoveBtn = self.comp.Button(self.shopTab, 'Remove', '', 140, 185, self.UISellRemoveFilterItem, 'd:/ymir work/ui/public/Middle_Button_01.sub', 'd:/ymir work/ui/public/Middle_Button_02.sub', 'd:/ymir work/ui/public/Middle_Button_03.sub')
-		self.labelFarmbotOptions = self.comp.TextLine(self.shopTab, 'Farmbot Options', 95, 210, self.comp.RGB(255, 255, 0))
+		#self.labelFarmbotOptions = self.comp.TextLine(self.shopTab, 'Farmbot Options', 95, 210, self.comp.RGB(255, 255, 0))
 		#self.CanFarmbotExchangeToShop = self.comp.OnOffButton(self.shopTab, '\t\tSell items', '', 60, 225 ,funcState=self.OnCanFarmbotExchangeToShop, defaultValue=self.canFarmbotSellBool)
-		self.CanFarmbotExchangeToEnergy = self.comp.OnOffButton(self.shopTab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', '', 60, 245,funcState=self.OnCanFarmbotExchangeToEnergy, defaultValue=self.canFarmbotExchangeEnergyBool)
+		#self.CanFarmbotExchangeToEnergy = self.comp.OnOffButton(self.shopTab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', '', 60, 245,funcState=self.OnCanFarmbotExchangeToEnergy, defaultValue=self.canFarmbotExchangeEnergyBool)
 		#self.BtnRedBuy = self.comp.OnOffButton(self.generalTab, '', 'Buy Red Pots', 200, 130, image='icon/item/27002.tga',funcState=self.OnRedBuy,defaultValue=int(self.wallHack))
 
 		## CHANNELS

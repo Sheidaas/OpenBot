@@ -149,11 +149,32 @@ class FarmingBot(BotBase):
                                                       funcState=self.ButtonOnOff,
                                                       defaultValue=False)
 
-        self.slot_barWaitingTime, self.edit_lineWaitingTime = \
-            comp.EditLine(self.settings_tab, '5', 20, 110, 40, 20, 25)
+                
+        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 100,
+                                                         funcState=self.switch_always_use_waithack,
+                                                         defaultValue=ActionBot.instance.showAlwaysWaithackButton)
 
-        self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after ', 70, 115, comp.RGB(255, 255, 255))
-        self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, 'destorying metin',  75, 125, comp.RGB(255, 255, 255))
+        self.showOffWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tDont use waithack', 'If checked, farmbot wont use waithack for destroying metin', 20, 120,
+                                                      funcState=self.switch_dont_use_waithack,
+                                                      defaultValue=ActionBot.instance.showOffWaithackButton)
+
+        self.showExchangeTrash = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\t\tExchange to energy fragments', 'This option allow farmbot to exchange items listed in settings > shop to energy fragments.', 20, 140,
+                                                funcState=self.ButtonOnOff,
+                                                defaultValue=False)                                                 
+
+        self.slot_barWaitingTime, self.edit_lineWaitingTime = \
+            comp.EditLine(self.settings_tab, '5', 20, 170, 40, 20, 25)
+
+        self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after ', 70, 175, comp.RGB(255, 255, 255))
+        self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, 'destorying metin',  75, 185, comp.RGB(255, 255, 255))
+
+
+    def switch_always_use_waithack(self, val):
+        ActionBot.instance.showAlwaysWaithackButton = val
+
+    def switch_dont_use_waithack(self, val):
+        ActionBot.instance.showOffWaithackButton = val
+
 
     def OnEnableSwitchButton(self, val):
         if val:
@@ -359,7 +380,7 @@ class FarmingBot(BotBase):
                 
                 if OpenLib.isInventoryFull():
                     from OpenBot.Modules import Settings
-                    if Settings.instance.CanFarmbotExchangeToEnergy.isOn:
+                    if self.showExchangeTrash.isOn:
                         for item in Settings.instance.sellItems:
                             slot=OpenLib.GetItemByID(item)
                             if slot > -1:
