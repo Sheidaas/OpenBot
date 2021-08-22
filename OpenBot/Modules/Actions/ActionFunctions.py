@@ -92,14 +92,14 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
-    if OpenLib.isPlayerCloseToPosition(position[0], position[1], 500):
+    if OpenLib.isPlayerCloseToPosition(position[0], position[1], 200):
         return Action.NEXT_ACTION
     if len(args) > 1:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
     else:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
-    if error != None:
+    if error == None:
         return Action.ERROR
 
     #DebugPrint('Going to ' + str(position))
@@ -273,7 +273,7 @@ def MineOre(args):
     selectedOre = args[0]
     is_curr_mining = args[1]()
     if eXLib.IsDead(selectedOre):
-        return True
+        return Action.NEXT_ACTION
     
 
     can_mine = False
@@ -337,7 +337,7 @@ def LookForBlacksmithInDeamonTower(args):
                 
                 if go_above_six_stage:
                     if player.GetStatus(player.LEVEL) < 75:
-                        answer = [1, 1, 1]
+                        answer = [0, 254, 0]
                     else:
                         answer = [1, 1, 1, 1]
                 
@@ -345,8 +345,9 @@ def LookForBlacksmithInDeamonTower(args):
                     if player.GetStatus(player.LEVEL) < 75:
                         answer = [1, 1, 1]
                     else:
-                        answer = [1, 1, 1, 254]
+                        answer = [0, 254, 2]
                     
+                chat.AppendChat(3, answer)
                 if answer:
                     action_dict = {
                         'function_args': [_id, (x, y), answer, 'metin2_map_deviltower1'],
