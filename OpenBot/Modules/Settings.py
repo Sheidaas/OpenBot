@@ -34,6 +34,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.excludeInFilter = True
 		self.useRangePickup = False
 		self.doNotPickupIfPlayerHere = False
+		self.checkIsWallBetweenPlayerAndItem = False
 
 		self.useOnClickDmg = False
 		self.onClickDmgSpeed = 0.0
@@ -104,6 +105,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.labelFilter = self.comp.TextLine(self.pickupTab, 'Pickup Filter', 115, 90, self.comp.RGB(255, 255, 0))
 		self.PickfilterModeBtn = self.comp.OnOffButton(self.pickupTab, '\t\t\tExclude Items', 'If not selected will only pick items in the list', 190, 130,funcState=self.OnChangePickMode,defaultValue=int(self.excludeInFilter))
 		self.doNotPickupIfPlayerNear = self.comp.OnOffButton(self.pickupTab, '\t\t\tAvoid players', 'If you select this option, pickup will work only when there are not any player', 190, 110,funcState=self.OnDoNotPickupIfPlayerNear,defaultValue=int(self.doNotPickupIfPlayerHere))
+		#self.checkIsWallBetweenPlayerAndItemBtn = self.comp.OnOffButton(self.pickupTab, '\t\t\tNo lags mode', 'If this option is checked, OpenBot will check is wall between player and item', 190, 90,funcState=self.OnDoNotPickupIfPlayerNear,defaultValue=int(self.doNotPickupIfPlayerHere))
 		self.PickbarItems, self.PickfileListBox, self.PickScrollBar = self.comp.ListBoxEx2(self.pickupTab, 15, 117, 140, 150)
 
 
@@ -430,6 +432,11 @@ class SettingsDialog(ui.ScriptWindow):
 					#return
 					if not self.useRangePickup:
 						return
+					
+					#if self.checkIsWallBetweenPlayerAndItem:
+					#	if eXLib.IsPathBlocked(x, y, itemX, itemY):
+					#		return
+
 					Movement.TeleportStraightLine(x,y,itemX,itemY)
 					eXLib.SendPickupItem(vid)
 					Movement.TeleportStraightLine(itemX,itemY,x,y)

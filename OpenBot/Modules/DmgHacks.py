@@ -147,7 +147,7 @@ class DmgHacks(ui.Window):
 				
 	def OnUpdate(self):
 		val, self.lastTime = OpenLib.timeSleep(self.lastTime,self.speed)
-		if(val and self.enableButton.isOn):
+		if(val and self.enableButton.isOn and not eXLib.IsDead(net.GetMainActorVID())):
 			if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
 				return
 			isArch = OpenLib.IsWeaponArch()
@@ -166,15 +166,14 @@ class DmgHacks(ui.Window):
 				if OpenLib.IsThisNPC(vid):
 					continue
 
+				if not self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
+					continue
+
 				if self.playerClose.isOn and OpenLib.IsThisPlayer(vid) and vid != net.GetMainActorVID():
 					return
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
-					if self.attackPlayerBtn.isOn:	
-						lst.append(vid)
-					else:
-						if not OpenLib.IsThisPlayer(vid):
-							lst.append(vid)
+					lst.append(vid)
 						
 
 			hit_counter = 0
@@ -189,6 +188,7 @@ class DmgHacks(ui.Window):
 						continue
 				if self.wallBtn.isOn:
 					if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
+						lst.remove(vid)
 						continue
 				if self.cloudBtn.isOn and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
 					hit_counter+=self.AttackCloud(lst,mob_x, mob_y)

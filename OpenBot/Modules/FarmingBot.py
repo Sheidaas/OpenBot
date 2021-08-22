@@ -144,13 +144,13 @@ class FarmingBot(BotBase):
 
 
 
-        self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\tSwitch channels',
+        self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\tSwitch channels',
          'If checked, farmbot will change to next channel after complete a path', 20, 80,
                                                       funcState=self.ButtonOnOff,
                                                       defaultValue=False)
 
                 
-        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 100,
+        self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 100,
                                                          funcState=self.switch_always_use_waithack,
                                                          defaultValue=ActionBot.instance.showAlwaysWaithackButton)
 
@@ -158,7 +158,7 @@ class FarmingBot(BotBase):
                                                       funcState=self.switch_dont_use_waithack,
                                                       defaultValue=ActionBot.instance.showOffWaithackButton)
 
-        self.showExchangeTrash = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\t\tExchange to energy fragments', 'This option allow farmbot to exchange items listed in settings > shop to energy fragments.', 20, 140,
+        self.showExchangeTrash = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', 'This option allow farmbot to exchange items listed in settings > shop to energy fragments.', 20, 140,
                                                 funcState=self.ButtonOnOff,
                                                 defaultValue=False)                                                 
 
@@ -411,7 +411,7 @@ class FarmingBot(BotBase):
                 'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                 'function': ActionFunctions.MoveToPosition, 
                 'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0],
-                                                                            self.path[self.current_point][1], 500],
+                                                                            self.path[self.current_point][1], 200],
                                                                              ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
                 'callback': self.IsWalkingDone,
                 'interruptors_args': interruptors_args,

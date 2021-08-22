@@ -92,7 +92,7 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
-    if OpenLib.isPlayerCloseToPosition(position[0], position[1], 500):
+    if OpenLib.isPlayerCloseToPosition(position[0], position[1], 200):
         return Action.NEXT_ACTION
     if len(args) > 1:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
