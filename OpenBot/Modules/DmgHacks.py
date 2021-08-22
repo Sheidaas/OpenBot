@@ -3,7 +3,12 @@ import OpenLib,FileManager,Movement,UIComponents
 from FileManager import boolean
 
 
-class DmgHacks(ui.Window):
+CLOUD_SKILL_STATE_WAITING = 0
+CLOUD_SKILL_STATE_READY = 1
+CLOUD_SKILL_STATE_USED = 2
+
+
+class DmgHacksInstance(ui.Window):
 	def __init__(self):
 		ui.Window.__init__(self)
 		self.BuildWindow()
@@ -47,6 +52,7 @@ class DmgHacks(ui.Window):
 		self.speed = 0
 		self.lastTime = 0
 		self.maxMonster = 0
+		self.cloudSkillState = CLOUD_SKILL_STATE_READY
 		self.Speed_func()
 		self.Range_func()
 		self.Monster_func()
@@ -111,6 +117,8 @@ class DmgHacks(ui.Window):
 		return vid_hits
 		#chat.AppendChat(3,"After: " + str(len(lst)))
 
+	def __sendUseSkill(self):
+		Dmg.cloudSkillState = CLOUD_SKILL_STATE_READY
 
 	def AttackArch(self,lst,x,y):
 		vid_hits = 0
@@ -134,8 +142,15 @@ class DmgHacks(ui.Window):
 			mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
 			if OpenLib.dist(x,y,mob_x,mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
 				if not player.IsSkillCoolTime(5) and player.GetStatus(player.SP) >  OpenLib.GetSkillManaNeed(35,5):
-					#chat.AppendChat(3,"Skill Time, X:" + str(mob_x) + " Y:" + str(mob_y) + " VID: " +str(vid) + " Dist: " + str(OpenLib.dist(x,y,mob_x,mob_y)))
-					OpenLib.SetTimerFunction(1,eXLib.SendUseSkillPacketBySlot(5,vid))
+					if self.cloudSkillState == CLOUD_SKILL_STATE_READY:
+						eXLib.SendUseSkillPacketBySlot(5,vid)
+						self.cloudSkillState = CLOUD_SKILL_STATE_USED
+					elif self.cloudSkillState == CLOUD_SKILL_STATE_WAITING:
+						return 999999999
+					else:
+						OpenLib.SetTimerFunction(1,self.__sendUseSkill)
+						self.cloudSkillState = CLOUD_SKILL_STATE_WAITING
+						return 99999999
 				x,y,z = chr.GetPixelPosition(vid)
 				eXLib.SendAddFlyTarget(vid,x,y)
 				eXLib.SendShoot(35)
@@ -225,5 +240,5 @@ def switch_state():
 	"""
 	Dmg.OpenWindow()
 
-Dmg = DmgHacks()
+Dmg = DmgHacksInstance()
 Dmg.Show()

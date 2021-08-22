@@ -853,7 +853,7 @@ class TimeFunctionHandler(ui.ScriptWindow):
 		to_del = []
 		for i,func in enumerate(self.function_list):
 			if curTime >= func["time"]:
-				self.function_list["function"]()
+				func["function"]()
 				to_del.append(i)
 		
 		for i in to_del:
