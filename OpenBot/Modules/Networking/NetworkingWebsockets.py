@@ -1,4 +1,4 @@
-from Resources.Modules import simplejson as json
+from OpenBot import simplejson as json
 import ui, chat
 import eXLib
 import UIComponents

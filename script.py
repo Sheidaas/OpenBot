@@ -4,9 +4,9 @@ import OpenBot.hackbar
 #import dump_functions
 from OpenBot.Modules.Actions import ActionLoader, ActionBot
 
-actionLoader = ActionLoader.ActionLoader()
+#actionLoader = ActionLoader.ActionLoader()
 
-result = actionLoader.LoadActionsFromFile('GoToFirstCity.action')
+#result = actionLoader.LoadActionsFromFile('GoToFirstCity.action')
 
 """
 raw_actions = {'actions':[

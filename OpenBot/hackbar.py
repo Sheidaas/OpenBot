@@ -6,6 +6,7 @@ from OpenBot.Modules import FarmingBot
 from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Actions import ActionBot
+from OpenBot.Modules.Networking import NetworkingWebsockets
 DEBUG = False
 if DEBUG:
     from OpenBot.Modules import Filter, MiningBot
@@ -24,6 +25,8 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
+
+    
 
     def __init__(self):
         self.OpenBotBoard = ui.ThinBoard(layer="TOP_MOST")
@@ -80,6 +83,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/dt_0.tga', 'OpenBot/Images/Hackbar/dt_1.tga', 'OpenBot/Images/Hackbar/dt_0.tga')
         self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/energy_0.tga', 'OpenBot/Images/Hackbar/energy_1.tga', 'OpenBot/Images/Hackbar/energy_0.tga')
         self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
+        self.networkButton = self.comp.Button(self.OpenBotBoard, '', 'network', 8, 533, self.OnNetworkButton, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
 
         if DEBUG:
             self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
@@ -169,6 +173,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
 
     def OnSkillbot(self):
         Skillbot.switch_state()
+
+    def OnNetworkButton(self):
+        NetworkingWebsockets.instance.switch_state()
 
     def OnEnergyBot(self):
         self.energy_bot.switch_state()

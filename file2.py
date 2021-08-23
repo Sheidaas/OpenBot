@@ -6,6 +6,7 @@ from OpenBot.Modules import DmgHacks, Hooks, MapManager
 import chat, eXLib, player, chr,net,skill,app, background,event
 from OpenBot.Modules import Radar,FarmingBot, Movement, Settings, OpenLib, Skillbot,ChannelSwitcher,Movement, FishingBot
 from OpenBot.Modules.Actions import ActionFunctions
+import time
 
 
 #orig_select_answer = event.SelectAnswer
@@ -48,6 +49,9 @@ from OpenBot.Modules.Actions import ActionFunctions
 
 #chat.AppendChat(3,str(background.GetCurrentMapName()))
 
-
-val = eXLib.SendWebsocket(2,"frontend_client")
-chat.AppendChat(3,str(val))
+#def print_conn():
+#    print('conntected')
+#id = eXLib.OpenWebsocket('ws://127.0.0.1:13254', print_c)
+#time.sleep(1)
+#val = eXLib.SendWebsocket(id, "front_client")
+#chat.AppendChat(3,str(val))

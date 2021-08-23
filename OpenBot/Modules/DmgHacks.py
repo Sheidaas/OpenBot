@@ -178,14 +178,14 @@ class DmgHacksInstance(ui.Window):
 				if not chr.HasInstance(vid):
 					continue
 
+				if self.playerClose.isOn and OpenLib.IsThisPlayer(vid):
+					return
+
 				if OpenLib.IsThisNPC(vid):
 					continue
 
-				if not self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
+				if self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
 					continue
-
-				if self.playerClose.isOn and OpenLib.IsThisPlayer(vid) and vid != net.GetMainActorVID():
-					return
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
 					lst.append(vid)
