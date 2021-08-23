@@ -170,7 +170,7 @@ class DmgHacksInstance(ui.Window):
 			x,y,z = chr.GetPixelPosition(main_vid)
 			self.lastPos = (x,y)
 			lst = list()
-
+			
    			for vid in eXLib.InstancesList:
 				if vid == main_vid:
 					continue
@@ -181,11 +181,11 @@ class DmgHacksInstance(ui.Window):
 				if OpenLib.IsThisNPC(vid):
 					continue
 
-				if not self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
-					continue
-
 				if self.playerClose.isOn and OpenLib.IsThisPlayer(vid) and vid != net.GetMainActorVID():
 					return
+
+				if not self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
+					continue
 
 				if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
 					lst.append(vid)
