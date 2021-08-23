@@ -1,4 +1,5 @@
 
+from OpenBot.Modules.Networking import NetworkingWebsockets
 from OpenBot.Modules import AutoDungeon, OpenLog
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules import ChannelSwitcher
@@ -51,7 +52,9 @@ import time
 
 #def print_conn():
 #    print('conntected')
-#id = eXLib.OpenWebsocket('ws://127.0.0.1:13254', print_c)
+#id = eXLib.OpenWebsocket('ws://127.0.0.1:13254', print_conn)
 #time.sleep(1)
 #val = eXLib.SendWebsocket(id, "front_client")
 #chat.AppendChat(3,str(val))
+
+reload(NetworkingWebsockets)
