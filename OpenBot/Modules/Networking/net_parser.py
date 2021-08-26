@@ -1,6 +1,6 @@
 import eXLib
 import chr
-
+from OpenBot.Modules import OpenLib, OpenLog
 
 def parse_instances_list():
     instances_list = [None] * len(eXLib.InstancesList)
@@ -17,3 +17,8 @@ def parse_instances_list():
             'type': _type
         }
     return instances_list
+
+def parse_character_status_info():
+    status = OpenLib.getAllStatusOfMainActor()
+    #OpenLog.DebugPrint(str(status))
+    return status

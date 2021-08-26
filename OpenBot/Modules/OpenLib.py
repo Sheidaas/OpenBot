@@ -1,7 +1,7 @@
 _chr = chr
 from OpenBot.Modules.Hooks import Hook, questHook
 import Hooks
-import ui,chr,time,app, net, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog,skill, m2netm2g
+import ui,chr,time,app, net, background, player,wndMgr,math,snd,eXLib,uiToolTip,item,FileManager,event,chat,OpenLog,skill, m2netm2g
 from datetime import datetime
 #import pack
 
@@ -480,29 +480,32 @@ def getAllStatusOfMainActor():
 		dict
 
 	"""
+	x, y, z = chr.GetPixelPosition(net.GetMainActorVID())
 	character_status = {
-		'NAME': player.GetName(),
-		'MONEY': player.GetMoney(),
-		'MOVING_SPEED': player.MOVING_SPEED,
-		'RACE': player.GetRace(),
-		'LEVEL': player.LEVEL,
-		'EXP': player.GetEXP(),
-		'NEXT_EXP': player.NEXT_EXP,
+		'Position': [x, y],
+		'CurrentMap': background.GetCurrentMapName(),
+		'Name': player.GetName(),
+		'Level': player.GetStatus(player.LEVEL),
+		'Experience': player.GetEXP(),
+		'MaxExperience': player.GetStatus(player.NEXT_EXP),
+
+
+		'Money': player.GetMoney(),
+		'MovingSpeed': player.GetStatus(player.MOVING_SPEED),
 		'GUILD_ID': player.GetGuildID(),
-		'GUILD_NAME': player.GetGuildName(),
-		'DEF_BONUS': player.DEF_BONUS,
-		'ATT_BONUS': player.ATT_BONUS,
-		'ATT_POWER': player.ATT_POWER,
-		'ATT_SPEED': player.ATT_SPEED,
-		'STATUS': player.GetStatus(),
-		'MAX_HP': player.MAX_HP,
-		'HP': player.HP,
-		'HP_RECOVERY':  player.HP_RECOVERY,
-		'MAX_SP': player.MAX_SP,
-		'SP': player.SP,
-		'SP_RECOVERY': player.SP_RECOVERY,
-		'STAMINA': player.STAMINA,
-		'STAT': player.STAT
+		'GuildName': player.GetGuildName(),
+		'DefBonus': player.GetStatus(player.DEF_BONUS),
+		'AttBonus': player.GetStatus(player.ATT_BONUS),
+		'AttPower': player.GetStatus(player.ATT_POWER),
+		'AttSpeed': player.GetStatus(player.ATT_SPEED),
+		'MaxHP': player.GetStatus(player.MAX_HP),
+		'HP': player.GetStatus(player.HP),
+		'RecoveryHP': player.GetStatus(player.HP_RECOVERY),
+		'MaxSP': player.GetStatus(player.MAX_SP),
+		'SP': player.GetStatus(player.SP),
+		'RecoverySP': player.GetStatus(player.SP_RECOVERY),
+		'Stamina': player.GetStatus(player.STAMINA),
+		#'STAT': player.GetStatus()player.STAT
 
 	}
 

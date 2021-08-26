@@ -8,7 +8,7 @@ import chat, eXLib, player, chr,net,skill,app, background,event
 from OpenBot.Modules import Radar,FarmingBot, Movement, Settings, OpenLib, Skillbot,ChannelSwitcher,Movement, FishingBot
 from OpenBot.Modules.Actions import ActionFunctions
 import time
-
+from OpenBot.Modules.Networking import net_parser
 
 #orig_select_answer = event.SelectAnswer
 
@@ -58,3 +58,5 @@ import time
 #chat.AppendChat(3,str(val))
 
 reload(NetworkingWebsockets)
+reload(net_parser)
+reload(OpenLib)

@@ -319,6 +319,7 @@ class FarmingBot(BotBase):
             'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [OpenLib.GetNextChannel()]},
             'on_success': [Action.NEXT_ACTION],
             'callback': self.SetIsCurrActionDoneTrue,
+            #'call_only_once': True,
         }
         ActionBot.instance.AddNewAction(action_dict)
 
