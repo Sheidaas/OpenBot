@@ -488,8 +488,8 @@ def getAllStatusOfMainActor():
 		'Level': player.GetStatus(player.LEVEL),
 		'Experience': player.GetEXP(),
 		'MaxExperience': player.GetStatus(player.NEXT_EXP),
-
-
+		'FirstEmpireMap': GetPlayerEmpireFirstMap(),
+		'SecondEmpireMap': GetPlayerEmpireSecondMap(),
 		'Money': player.GetMoney(),
 		'MovingSpeed': player.GetStatus(player.MOVING_SPEED),
 		'GUILD_ID': player.GetGuildID(),

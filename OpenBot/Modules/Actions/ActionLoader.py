@@ -54,38 +54,39 @@ class ActionLoader:
         DebugPrint(str(cleared_actions))
 
     def ValidateRawActions(self, raw_actions_dict):
+        DebugPrint(str(raw_actions_dict))
         actions = []
         for loaded_action in raw_actions_dict['actions']:
             name = None
             function = None
             function_args = []
 
-            current_action_keys = raw_actions_dict['actions'][loaded_action].keys()
+            current_action_keys = loaded_action.keys()
             if 'function' not in current_action_keys:
                 DebugPrint('Function is required to create action dict')
                 return False
             
-            DebugPrint('Function name ' + loaded_action['function'])
-            function = self.LoadFunction(loaded_action['function'])
+            #DebugPrint('Function name ' + loaded_action['function'])
+            function = self.LoadFunction(loaded_action['function'].decode("cp-1252", "strict"))
             if function is None:
                 return False
 
             if 'function_args' in current_action_keys:
-                DebugPrint('Function args ' + str(loaded_action['function_args']))
-                function_args = self.CheckArgs(loaded_action['function'], loaded_action['function_args'])
+                #DebugPrint('Function args ' + str(loaded_action['function_args']))
+                function_args = self.CheckArgs(loaded_action['function'].decode("cp-1252", "strict"), loaded_action['function_args'].encode("cp-1252", "strict"))
                 if function_args is None:
                     return False
                 elif not function_args:
                     DebugPrint('Function args are empty')
 
-            DebugPrint('Requirements ' + str(loaded_action['requirements']))
-            requirements = self.CheckRequirements(loaded_action['requirements'])
+            DebugPrint('Requirements ' + str(loaded_action['requirements'].decode("cp-1252", "strict")))
+            requirements = self.CheckRequirements(loaded_action['requirements'].decode("cp-1252", "strict"))
             if requirements is None:
                 return False
             elif not requirements:
                 DebugPrint('Requirements are empty!')
 
-            name = self.CheckName(loaded_action['name'])
+            name = self.CheckName(loaded_action['name'].decode("cp-1252", "strict"))
             if name is None:
                 DebugPrint('Name is None')
 
@@ -227,3 +228,5 @@ class ActionLoader:
             if failed_key not in Action.on_success_keys:
                 return False
         return True
+
+instance = ActionLoader()

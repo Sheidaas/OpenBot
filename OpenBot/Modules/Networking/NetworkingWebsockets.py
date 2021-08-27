@@ -14,6 +14,20 @@ def OnMessage(id, message):
         instance.SetClientTypeAsMetin()
         instance.settedClientType = True
 
+    cleaned_message = json.loads(message)
+
+    if cleaned_message['type'] == 'actions':
+        from OpenBot.Modules.Actions import ActionLoader
+        raw_action_dict = {
+            'actions': cleaned_message['data']['message']
+        }
+        OpenLog.DebugPrint(str(type(raw_action_dict['actions'])))
+        cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
+        if cleaned_action_dict:
+            from OpenBot.Modules.Actions import ActionBot
+            for action in cleaned_action_dict:
+                ActionBot.instance.AddNewAction(action)
+
     OpenLog.DebugPrint(message)
 
 class NetworkingWebsockets(ui.ScriptWindow):
