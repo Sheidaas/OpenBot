@@ -22,3 +22,25 @@ def parse_character_status_info():
     status = OpenLib.getAllStatusOfMainActor()
     #OpenLog.DebugPrint(str(status))
     return status
+
+def parse_hack_status():
+    from OpenBot.Modules import DmgHacks
+    hack_status = {
+        'WaitHack': {
+            'enable': DmgHacks.Dmg.enableButton.isOn,
+            'switches': {
+                'IsWallBetween': DmgHacks.Dmg.wallBtn.isOn,
+                'CheckIsPlayer': DmgHacks.Dmg.playerClose.isOn,
+                'CloudExploit': DmgHacks.Dmg.cloudBtn.isOn,
+                'AttackBlockedMonsters': DmgHacks.Dmg.attackBlockedMonsters.isOn,
+                'AttackPlayers': DmgHacks.Dmg.attackPlayerBtn.isOn,
+            },
+            'values': {
+                'Range': DmgHacks.Dmg.range,
+                'Monsters': DmgHacks.Dmg.maxMonster,
+                'Speed': DmgHacks.Dmg.speed * 1000,
+            }
+        }
+    }
+
+    return hack_status

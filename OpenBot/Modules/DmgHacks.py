@@ -85,7 +85,7 @@ class DmgHacksInstance(ui.Window):
 		self.rangeNum.SetText(str(self.range))
 	
 	def Speed_func(self):
-		self.speed= float(self.SpeedSlider.GetSliderPos())
+		self.speed = float(self.SpeedSlider.GetSliderPos())
 		self.speedNum.SetText(str(int(self.speed*1000)) + ' ms')
 
 	def OnOffBtnState(self,val):

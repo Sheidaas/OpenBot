@@ -23,6 +23,7 @@ def OnMessage(id, message):
         }
         OpenLog.DebugPrint(str(type(raw_action_dict['actions'])))
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
+        print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
             from OpenBot.Modules.Actions import ActionBot
             for action in cleaned_action_dict:
@@ -36,7 +37,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         ui.Window.__init__(self)
         self.lastTime = 0
         self.timeLastUpdate = 0
-        self.timeToUpdate = 3
+        self.timeToUpdate = 1
         self.isConnected = False
         self.settedClientType = False
         self.socket_to_server = eXLib.OpenWebsocket(server_url, OnMessage)
@@ -89,6 +90,13 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = {'type': 'information', 'data': {'message': parsed_instances_list, 'action': 'set_vids'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
+    def UpdateHackStatus(self):
+        parsed_hack_status = net_parser.parse_hack_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
         if val and OpenLib.IsInGamePhase():
@@ -99,6 +107,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
                 if val:
                     self.UpdateInstancesListOnServer()
                     self.UpdateCharacterStatus()
+                    self.UpdateHackStatus()
 
 
 

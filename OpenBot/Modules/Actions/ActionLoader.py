@@ -7,7 +7,7 @@ functions_args_pattern = {
 'ClearFloor': [(0, 0)],
 'Destroy': [0, 0],
 'Find': [0],
-'MoveToPosition': [(0, 0), ''],
+'MoveToPosition': [[0, 0], ''],
 'MoveToVID': [0],
 'UsingItemOnInstance': [0, 0],
 'OpenAllSeals': [(0, 0)],
@@ -67,27 +67,31 @@ class ActionLoader:
                 return False
             
             #DebugPrint('Function name ' + loaded_action['function'])
-            function = self.LoadFunction(loaded_action['function'].decode("cp-1252", "strict"))
+            function = self.LoadFunction(loaded_action['function'])
             if function is None:
                 return False
 
             if 'function_args' in current_action_keys:
-                #DebugPrint('Function args ' + str(loaded_action['function_args']))
-                function_args = self.CheckArgs(loaded_action['function'].decode("cp-1252", "strict"), loaded_action['function_args'].encode("cp-1252", "strict"))
+                DebugPrint('Function args ' + str(loaded_action['function_args']))
+                function_args = self.CheckArgs(loaded_action['function'], loaded_action['function_args'])
                 if function_args is None:
+                    DebugPrint('function args are none')
                     return False
                 elif not function_args:
                     DebugPrint('Function args are empty')
 
-            DebugPrint('Requirements ' + str(loaded_action['requirements'].decode("cp-1252", "strict")))
-            requirements = self.CheckRequirements(loaded_action['requirements'].decode("cp-1252", "strict"))
+            DebugPrint('Requirements ' + str(loaded_action['requirements']))
+            requirements = self.CheckRequirements(loaded_action['requirements'])
             if requirements is None:
+                DebugPrint('Requirements are none')
                 return False
             elif not requirements:
                 DebugPrint('Requirements are empty!')
 
-            name = self.CheckName(loaded_action['name'].decode("cp-1252", "strict"))
-            if name is None:
+            try:
+                name = self.CheckName(loaded_action['name'])
+            except KeyError:
+                name = ''
                 DebugPrint('Name is None')
 
             action_dict = {
@@ -97,6 +101,7 @@ class ActionLoader:
                 'requirements': requirements
             }
             actions.append(action_dict)
+        #DebugPrint(actions)
         return actions
 
     def LoadFunction(self, function_name):
@@ -108,7 +113,8 @@ class ActionLoader:
     def CheckArgs(self, function_name, function_args_to_check):
         correct_args = functions_args_pattern[function_name]
         
-        if not len(correct_args) == len( function_args_to_check):
+        #DebugPrint(str(function_args_to_check))
+        if not len(function_args_to_check) == len( function_args_to_check):
             DebugPrint('Length of args_to_check is different than pattern!')
             return None
 
@@ -144,7 +150,8 @@ class ActionLoader:
                         return None
 
             elif type(function_args_to_check[arg_to_check]) == list:
-                if type(correct_args[arg_to_check]) is not list:
+                DebugPrint(str(type(correct_args[arg_to_check])))
+                if not type(correct_args[arg_to_check]) is list:
                     DebugPrint('['+str(arg_to_check)+'] + This argument should be type list!')
                     return None            
 
@@ -155,11 +162,11 @@ class ActionLoader:
             #elif callable(function_args_to_check[arg_to_check])
 
 
-        if function_name == 'MoveToPosition':
-            if type(function_args_to_check[1]) == str:
-                function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
-            else:
-                return None
+        #if function_name == 'MoveToPosition':
+        #    if type(function_args_to_check[1]) == str:
+        #        function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
+        #    else:
+        #        return None
                 
         return function_args_to_check
 
