@@ -62,6 +62,8 @@ class ActionLoader:
             function_args = []
 
             current_action_keys = loaded_action.keys()
+
+            # Function checking
             if 'function' not in current_action_keys:
                 DebugPrint('Function is required to create action dict')
                 return False
@@ -71,6 +73,8 @@ class ActionLoader:
             if function is None:
                 return False
 
+
+            # Function args checking
             if 'function_args' in current_action_keys:
                 DebugPrint('Function args ' + str(loaded_action['function_args']))
                 function_args = self.CheckArgs(loaded_action['function'], loaded_action['function_args'])
@@ -88,11 +92,17 @@ class ActionLoader:
             elif not requirements:
                 DebugPrint('Requirements are empty!')
 
+            
+            # Name checking
             try:
                 name = self.CheckName(loaded_action['name'])
             except KeyError:
                 name = ''
                 DebugPrint('Name is None')
+
+
+
+
 
             action_dict = {
                 'name': name,
@@ -179,9 +189,9 @@ class ActionLoader:
             return map_name
 
     def CheckRequirements(self, requirements):
-        DebugPrint(str(requirements))
+        #DebugPrint(str(requirements))
         for requirement in requirements.keys():
-            DebugPrint(requirement)
+            #DebugPrint(requirement)
             if requirement not in ActionRequirementsCheckers.req_list:
                 DebugPrint('Requirement ' + requirement + ' is not in this list' + str(ActionRequirementsCheckers.req_list))
                 return None
@@ -199,12 +209,12 @@ class ActionLoader:
                     if type(number) != int:
                         DebugPrint('This should be int! ' +str(number))
                         return None
-                
-
+            
             elif requirement == ActionRequirementsCheckers.IS_IN_MAP:
                 if type(requirements[requirement]) is not list:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list')
                     return None
+
                 if not requirements[requirement]:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is empty')
                     return None
@@ -215,7 +225,91 @@ class ActionLoader:
                         return None
 
                     requirements[requirement][_map] = self.CheckMap(requirements[requirement][_map])
-        
+
+            elif requirement == ActionRequirementsCheckers.IS_NEAR_POSITION:
+                if type(requirements[requirement]) is not list:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list')
+                    return None
+
+                if not len(requirements[requirement]) > 1 or not len(requirements[requirement]) < 4:
+                        DebugPrint('Requirement data length' + str(len(requirements[requirement])) + ' should be between 2-3')
+
+
+                for _digit in range(len(requirements[requirement])):
+                    if type(requirements[requirement][_digit]) is not int:
+                        DebugPrint('Requirement data ' + str(requirements[requirement][_digit]) + ' should be int!')
+                        return None
+
+            elif requirement == ActionRequirementsCheckers.IS_ABOVE_LVL or requirement == ActionRequirementsCheckers.IS_UNDER_LVL:
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None
+
+                if requirements[requirement] > 120 or requirements[requirement] < 1:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' should be between 1 and 120')
+                    return None
+
+            elif requirement == ActionRequirementsCheckers.IS_NEAR_INSTANCE:
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None   
+
+            elif requirement == ActionRequirementsCheckers.IS_RACE_NEARLY:
+                if type(requirements[requirement]) is not list:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list!')
+                    return None                
+
+                if not requirements[requirement]:
+                    DebugPrint('Requirement data cannot be empty!')
+                    return None
+                
+                for race in requirements[requirement]:
+                    if not type(race) == int:
+                        DebugPrint('Race should be int!')
+                        return None
+            
+            elif requirement == ActionRequirementsCheckers.IS_IN_CHANNEL:
+                from OpenBot.Modules import ChannelSwitcher
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None         
+                
+                ChannelSwitcher.instance.GetChannels()
+
+                channels_length = len(instance.channels.keys())
+                if not channels_length:
+                    DebugPrint('Channel switcher did not detect any channel!')
+                    return None
+
+                if requirements[requirement] < 0 or requirements[requirement] > channels_length:
+                    DebugPrint('Invalid channel number!')
+                    return None 
+            
+            elif requirement == ActionRequirementsCheckers.IS_CHAR_READY_TO_MINE:
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None   
+
+             elif requirement == ActionRequirementsCheckers.IS_DEAD:
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None      
+
+             elif requirement == ActionRequirementsCheckers.HAS_ITEM:
+                if type(requirements[requirement]) is not int:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
+                    return None  
+
+             elif requirement == ActionRequirementsCheckers.HAS_ITEM_IN_COUNT:
+                if type(requirements[requirement]) is not list:
+                    DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list!')
+                    return None  
+
+                if len(requirements[requirement]) > 2 or len(requirements[requirement]) < 2:
+                    DebugPrint('Requirement data needs 2 variable, got + ' + str(len(requirements[requirement])))
+                    return None
+            
+
         return requirements
 
     def CheckName(self, name):

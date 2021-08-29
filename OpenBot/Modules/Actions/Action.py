@@ -79,6 +79,7 @@ class Action:
             else:
                 action_result = self.function()
             self.called = True
+
         elif self.call_only_once and self.called:
             on_success = self.CheckOnSuccesList()
             requirements_done = self.CheckRequirements()
@@ -86,6 +87,7 @@ class Action:
                 if requirements_done:
                     return on_success
                 return REQUIREMENTS_NOT_DONE
+                
         elif not self.call_only_once:
             OpenLog.DebugPrint('Executing action function')
             if self.function_args:

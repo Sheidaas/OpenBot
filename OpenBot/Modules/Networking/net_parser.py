@@ -24,7 +24,7 @@ def parse_character_status_info():
     return status
 
 def parse_hack_status():
-    from OpenBot.Modules import DmgHacks
+    from OpenBot.Modules import DmgHacks, FarmingBot
     hack_status = {
         'WaitHack': {
             'enable': DmgHacks.Dmg.enableButton.isOn,
@@ -39,6 +39,15 @@ def parse_hack_status():
                 'Range': DmgHacks.Dmg.range,
                 'Monsters': DmgHacks.Dmg.maxMonster,
                 'Speed': DmgHacks.Dmg.speed * 1000,
+            }
+        }
+        'FarmBot': {
+            'enable': FarmingBot.instance.enableButton.isOn,
+            'current_state': FarmingBot.instance.CURRENT_STATE,
+            'time_to_wait': FarmingBot.instance.timeForWaitingState,
+            'pathing': {
+                'current_point': FarmingBot.instance.current_point,
+                'path': FarmingBot.instance.path
             }
         }
     }
