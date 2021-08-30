@@ -78,7 +78,7 @@ def isOnPosition(position):
     """
     x, y = position[0], position[1]
     if len(position) < 3:
-        max_dist = 100
+        max_dist = 200
     else:
         max_dist = position[2]
     if OpenLib.isPlayerCloseToPosition(x, y, max_dist):

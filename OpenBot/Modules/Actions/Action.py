@@ -17,9 +17,9 @@ on_success_keys = [NOTHING, NEXT_ACTION, ERROR, DISCARD_PREVIOUS, REQUIREMENTS_N
 
 class Action:
 
-    def __init__(self, function, id=0, callback=None, callback_on_failed=None, interrupt_function=None, name='None', function_args=[],
+    def __init__(self, function, _id=0, callback=None, callback_on_failed=None, interrupt_function=None, name='None', function_args=[],
      callback_args=[], interruptors_args=[], interrupt_function_args=[], requirements=[], on_success=[], on_failed=[], interruptors=[], call_only_once=False):
-        self.id = id
+        self.id = _id
         self.call_only_once = call_only_once
         self.called = False
         if name == 'None':
@@ -87,7 +87,7 @@ class Action:
                 if requirements_done:
                     return on_success
                 return REQUIREMENTS_NOT_DONE
-                
+
         elif not self.call_only_once:
             OpenLog.DebugPrint('Executing action function')
             if self.function_args:
@@ -95,7 +95,6 @@ class Action:
             else:
                 action_result = self.function()
        
-        OpenLog.DebugPrint(str(action_result))
         if type(action_result) == bool:
             if action_result:
                 on_success = self.CheckOnSuccesList()

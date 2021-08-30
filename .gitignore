@@ -1,4 +1,5 @@
 /**/*.pyc
+.DS_STORE
 Injector.exe
 dMetinWx.dll
 file.pyc

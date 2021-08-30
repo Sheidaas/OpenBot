@@ -455,8 +455,6 @@ class FarmingBot(BotBase):
                 self.isCurrActionDone = False
                 return
 
-
-
 def switch_state():
     global farm
     farm.switch_state()
