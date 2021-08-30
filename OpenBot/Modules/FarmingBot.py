@@ -386,6 +386,7 @@ class FarmingBot(BotBase):
                                 return
                 else:
                     OpenLog.DebugPrint('inventory is not full')
+                    
                 OpenLog.DebugPrint('No trash items')
 
                 interruptors_args = []
