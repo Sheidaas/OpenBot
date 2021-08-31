@@ -272,8 +272,9 @@ def TalkWithNPC(args):
 def MineOre(args):
     selectedOre = args[0]
     is_curr_mining = args[1]()
-    if eXLib.IsDead(selectedOre):
+    if selectedOre not in eXLib.InstancesList:
         return Action.NEXT_ACTION
+    
     
     can_mine = False
     idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
