@@ -291,17 +291,17 @@ class ActionLoader:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
                     return None   
 
-             elif requirement == ActionRequirementsCheckers.IS_DEAD:
+            elif requirement == ActionRequirementsCheckers.IS_DEAD:
                 if type(requirements[requirement]) is not int:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
                     return None      
 
-             elif requirement == ActionRequirementsCheckers.HAS_ITEM:
+            elif requirement == ActionRequirementsCheckers.HAS_ITEM:
                 if type(requirements[requirement]) is not int:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
                     return None  
 
-             elif requirement == ActionRequirementsCheckers.HAS_ITEM_IN_COUNT:
+            elif requirement == ActionRequirementsCheckers.HAS_ITEM_IN_COUNT:
                 if type(requirements[requirement]) is not list:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list!')
                     return None  

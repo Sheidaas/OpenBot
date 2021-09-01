@@ -36,7 +36,7 @@ def isAboveLVL(lvl):
     return True
 
 def isUnderLVL(lvl):
-     if player.GetStatus(player.LEVEL) > lvl:
+    if player.GetStatus(player.LEVEL) > lvl:
         return False
     return True   
 
@@ -52,8 +52,8 @@ def isInMaps(maps):
             return True
     return False
 
-def isNearInstance(vid):
-    return OpenLib.isPlayerCloseToInstance(vid)
+def isNearInstance(vid, max_dist=50):
+    return OpenLib.isPlayerCloseToInstance(vid, max_dist)
 
 def isNearPosition(position):
     """

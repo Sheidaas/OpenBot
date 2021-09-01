@@ -1,13 +1,14 @@
-from OpenBot.Modules import OpenLib
+from OpenBot.Modules import OpenLib, Hooks, UIComponents
 from OpenBot.Modules.BotBase import BotBase
-from OpenBot.Modules.FarmBot.farmbot_interface import farmbot_interface
+from OpenBot.Modules.Actions import ActionBot
+from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
 import player, ui, chat, chr, net, background
 
 
 def __PhaseTurnOnFarmbot(phase):
     global farm
     if phase == OpenLib.PHASE_GAME:
-        if farm.enableButton.isOn:
+        if farmbot_ui.enableButton.isOn:
             farmbot_interface.Start()
 
 
@@ -17,8 +18,8 @@ class FarmingBotUI(BotBase):
         self.BuildWindow()
 
 
-
     def BuildWindow(self):
+        status = farmbot_interface.GetStatus()
         self.Board = ui.BoardWithTitleBar()
         self.Board.SetSize(240, 300)
         self.Board.SetPosition(52, 40)
@@ -40,6 +41,7 @@ class FarmingBotUI(BotBase):
                                           'd:/ymir work/ui/public/small_Button_01.sub',
                                           'd:/ymir work/ui/public/small_Button_02.sub',
                                           'd:/ymir work/ui/public/small_Button_03.sub')
+
         self.deletePointButton = comp.Button(self.moving_tab, 'Delete', 'Delete selected position in path', 10, 165, self.remove_selected,
                                              'd:/ymir work/ui/public/small_Button_01.sub',
                                              'd:/ymir work/ui/public/small_Button_02.sub',
@@ -56,13 +58,13 @@ class FarmingBotUI(BotBase):
                                              OnUpVisual='OpenBot/Images/stop_0.tga',
                                              OnOverVisual='OpenBot/Images/stop_1.tga',
                                              OnDownVisual='OpenBot/Images/stop_2.tga',
-                                             funcState=self.OnEnableSwitchButton, defaultValue=False)
+                                             funcState=self.OnEnableSwitchButton, defaultValue=status['Enabled'])
 
         self.showMiningButton = comp.OnOffButton(self.moving_tab, '\t\t\t\t\t\tMining?',
-        'Do you want to mine?', 125, 140, funcState=farmbot_interface.SwitchLookForOre, defaultValue=False)
+        'Do you want to mine?', 125, 140, funcState=farmbot_interface.SwitchLookForOre, defaultValue=status['LookForOre'])
 
         self.showFarmingMetinButton = comp.OnOffButton(self.moving_tab, '\t\t\t\t\t\tMetins?',
-        'Do you want farm metins?', 125, 160, funcState=farmbot_interface.SwitchLookForMetins, defaultValue=False)
+        'Do you want farm metins?', 125, 160, funcState=farmbot_interface.SwitchLookForMetins, defaultValue=status['LookForMetins'])
 
         # Ores tab
         index_y = 0
@@ -98,8 +100,8 @@ class FarmingBotUI(BotBase):
 
         self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\tSwitch channels',
          'If checked, farmbot will change to next channel after complete a path', 20, 80,
-                                                      funcState=self.ButtonOnOff,
-                                                      defaultValue=False)
+                                                      funcState=farmbot_interface.SwitchChangeChannel,
+                                                      defaultValue=status['ChangeChannel'])
 
                 
         self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 100,
@@ -111,21 +113,18 @@ class FarmingBotUI(BotBase):
                                                       defaultValue=ActionBot.instance.showOffWaithackButton)
 
         self.showExchangeTrash = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', 'This option allow farmbot to exchange items listed in settings > shop to energy fragments.', 20, 140,
-                                                funcState=self.ButtonOnOff,
-                                                defaultValue=False)                                                 
+                                                funcState=farmbot_interface.SwitchExchangeItemsToEnergy,
+                                                defaultValue=status['ExchangeItemsToEnergy'])                                                 
 
         self.slot_barWaitingTime, self.edit_lineWaitingTime = \
-            comp.EditLine(self.settings_tab, '5', 20, 170, 40, 20, 25)
+            comp.EditLine(self.settings_tab, str(status['WaitingTime']), 20, 170, 40, 20, 25)
 
         self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after ', 70, 175, comp.RGB(255, 255, 255))
         self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, 'destorying metin',  75, 185, comp.RGB(255, 255, 255))
 
     def load_path(self):
         filename = self.edit_line.GetText()
-        if not self.is_text_validate(filename):
-            chat.AppendChat(3, '[Farmbot] - Cannot load ' + filename)
-            return
-        if farmbot_interface.load_path(filename):
+        if farmbot_interface.LoadPath(filename):
             self.update_points_list()
             chat.AppendChat(3, '[Farmbot] - Successfully load ' + filename)
 
@@ -134,10 +133,7 @@ class FarmingBotUI(BotBase):
 
     def save_path(self):
         filename = self.edit_line.GetText()
-        if not self.is_text_validate(filename):
-            chat.AppendChat(3, '[Farmbot] - Cannot save ' + filename)
-            return
-        if farmbot_interface.save_path(filename):
+        if farmbot_interface.SavePath(filename):
             chat.AppendChat(3, '[Farmbot] - Successfully saved ' + filename)
         else:
             chat.AppendChat(3, '[Farmbot] - Cannot save ' + filename)
@@ -162,6 +158,10 @@ class FarmingBotUI(BotBase):
     def remove_all(self):
         self.fileListBox.RemoveAllItems()
         farmbot_interface.ClearPath()
+
+    def switch_func(self, val):
+        pass
+
 
     def create_switch_function(self, ore_id):
 
@@ -215,9 +215,5 @@ class FarmingBotUI(BotBase):
         else:
             self.Board.Show()
 
-def switch_state():
-    global farm
-    farm.switch_state()
-
-farm = FarmingBotUI()
+farmbot_ui = FarmingBotUI()
 Hooks.registerPhaseCallback('farmbotCallback', __PhaseTurnOnFarmbot)

@@ -6,9 +6,11 @@ from OpenBot.Modules import ChannelSwitcher
 from OpenBot.Modules import DmgHacks, Hooks, MapManager
 import chat, eXLib, player, chr,net,skill,app, background,event
 from OpenBot.Modules import Radar,FarmingBot, Movement, Settings, OpenLib, Skillbot,ChannelSwitcher,Movement, FishingBot
-from OpenBot.Modules.Actions import ActionFunctions
+from OpenBot.Modules.Actions import ActionLoader
 import time
 from OpenBot.Modules.Networking import net_parser
+from OpenBot.Modules.Farmbot import Farmbot_ui
+from OpenBot import hackbar
 
 #orig_select_answer = event.SelectAnswer
 
@@ -57,6 +59,7 @@ from OpenBot.Modules.Networking import net_parser
 #val = eXLib.SendWebsocket(id, "front_client")
 #chat.AppendChat(3,str(val))
 
-reload(NetworkingWebsockets)
-reload(net_parser)
-reload(OpenLib)
+#reload(net_parser)
+#reload(NetworkingWebsockets)
+#reload(ActionLoader)
+reload(hackbar)

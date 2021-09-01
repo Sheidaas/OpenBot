@@ -1,8 +1,5 @@
 from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
-from OpenBot.Modules import ChannelSwitcher, OpenLog
-import DmgHacks
-import OpenLib, FileManager, Hooks
-import UIComponents
+from OpenBot.Modules import OpenLog, OpenLib, FileManager
 import player, ui, chat, chr, net, background
 import eXLib
 
@@ -54,6 +51,7 @@ class FarmingBot(ui.ScriptWindow):
         self.lastTimeWaitingState = 0
         self.timeForWaitingState = 5
         self.isReadyToSwitchChannel = False
+        
 
         self.switch_channels = False
         self.look_for_metins = False
@@ -130,7 +128,7 @@ class FarmingBot(ui.ScriptWindow):
         else:
             self.path.reverse()
             self.current_point = 0
-            if self.showChannelSwitchingButton.isOn:
+            if self.switch_channels:
                 self.isReadyToSwitchChannel = True
 
     def select_metin(self):
@@ -142,11 +140,11 @@ class FarmingBot(ui.ScriptWindow):
             self.selectedOre = self.ores_vid_list.pop()
 
     def search_for_farm(self):
-        if self.showFarmingMetinButton.isOn and len(self.metins_vid_list) > 0:
+        if self.look_for_metins and len(self.metins_vid_list) > 0:
             self.select_metin()
             self.CURRENT_STATE = FARMING_STATE
 
-        elif self.showMiningButton.isOn and len(self.ores_vid_list) > 0:
+        elif self.look_for_ore and len(self.ores_vid_list) > 0:
             self.select_ore()
             self.CURRENT_STATE = MINING_STATE
             return
@@ -164,6 +162,9 @@ class FarmingBot(ui.ScriptWindow):
             #'call_only_once': True,
         }
         ActionBot.instance.AddNewAction(action_dict)
+
+    def SetIsCurrActionDoneTrue(self):
+        self.isCurrActionDone = True
 
     def checkForMetinsAndOres(self):
         self.ores_vid_list = []

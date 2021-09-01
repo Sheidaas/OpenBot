@@ -2,7 +2,7 @@ from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot
-from OpenBot.Modules import FarmingBot
+from OpenBot.Modules.Farmbot.Farmbot_ui import farmbot_ui
 from OpenBot.Modules import Radar, Skillbot, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Actions import ActionBot
@@ -163,7 +163,7 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.tele.switch_state()
 
     def OnFarmingBot(self):
-        FarmingBot.switch_state()
+        farmbot_ui.switch_state()
 
     def OnAutoDungeon(self):
         AutoDungeon.switch_state()

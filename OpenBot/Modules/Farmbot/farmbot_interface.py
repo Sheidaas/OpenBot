@@ -81,32 +81,37 @@ class FarmbotInterface:
             return False
         farm_instance.timeForWaitingState = waiting_time
 
-    def SwitchChangeChannel(self):
+    def SwitchChangeChannel(self, val=None):
         if farm_instance.switch_channels:
             farm_instance.switch_channels = False
         else:
             farm_instance.switch_channels = True
+        return farm_instance.switch_channels
 
-    def SwitchLookForMetins(self):
+    def SwitchLookForMetins(self, val=None):
         if farm_instance.look_for_metins:
             farm_instance.look_for_metins = False
         else:
             farm_instance.look_for_metins = True
             if farm_instance.look_for_ore:
                 self.SwitchLookForOre()
+        return farm_instance.look_for_metins
 
-    def SwitchLookForOre(self):
+    def SwitchLookForOre(self, val=None):
         if farm_instance.look_for_ore:
             farm_instance.look_for_ore = False
         else:
             farm_instance.look_for_ore = True
             if farm_instance.look_for_metins:
                 self.SwitchLookForMetins()
+        return farm_instance.look_for_ore
 
-    def SwitchExchangeItemsToEnergy(self):
+
+    def SwitchExchangeItemsToEnergy(self, val=None):
         if farm_instance.exchange_items_to_energy:
             farm_instance.exchange_items_to_energy = False
         else:
             farm_instance.exchange_items_to_energy = True
+        return farm_instance.exchange_items_to_energy
 
 farmbot_interface = FarmbotInterface()
