@@ -2,6 +2,7 @@ from OpenBot.Modules import OpenLib, Hooks, UIComponents
 from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
+from OpenBot.Modules.OpenLog import DebugPrint
 import player, ui, chat, chr, net, background
 
 
@@ -15,11 +16,11 @@ def __PhaseTurnOnFarmbot(phase):
 class FarmingBotUI(BotBase):
 
     def __init__(self):
+        BotBase.__init__(self, 100,waitIsPlayerDead=True)
         self.BuildWindow()
 
 
     def BuildWindow(self):
-        status = farmbot_interface.GetStatus()
         self.Board = ui.BoardWithTitleBar()
         self.Board.SetSize(240, 300)
         self.Board.SetPosition(52, 40)
@@ -58,13 +59,13 @@ class FarmingBotUI(BotBase):
                                              OnUpVisual='OpenBot/Images/stop_0.tga',
                                              OnOverVisual='OpenBot/Images/stop_1.tga',
                                              OnDownVisual='OpenBot/Images/stop_2.tga',
-                                             funcState=self.OnEnableSwitchButton, defaultValue=status['Enabled'])
+                                             funcState=self.OnEnableSwitchButton, defaultValue=False)
 
         self.showMiningButton = comp.OnOffButton(self.moving_tab, '\t\t\t\t\t\tMining?',
-        'Do you want to mine?', 125, 140, funcState=farmbot_interface.SwitchLookForOre, defaultValue=status['LookForOre'])
+        'Do you want to mine?', 125, 140, funcState=farmbot_interface.SwitchLookForOre, defaultValue=False)
 
         self.showFarmingMetinButton = comp.OnOffButton(self.moving_tab, '\t\t\t\t\t\tMetins?',
-        'Do you want farm metins?', 125, 160, funcState=farmbot_interface.SwitchLookForMetins, defaultValue=status['LookForMetins'])
+        'Do you want farm metins?', 125, 160, funcState=farmbot_interface.SwitchLookForMetins, defaultValue=False)
 
         # Ores tab
         index_y = 0
@@ -101,9 +102,11 @@ class FarmingBotUI(BotBase):
         self.showChannelSwitchingButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\tSwitch channels',
          'If checked, farmbot will change to next channel after complete a path', 20, 80,
                                                       funcState=farmbot_interface.SwitchChangeChannel,
-                                                      defaultValue=status['ChangeChannel'])
+                                                      defaultValue=True)
 
-                
+        status = farmbot_interface.GetStatus()
+        DebugPrint(str(status))
+
         self.showAlwaysWaithackButton = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\tAlways use waithack', 'If check, waithack will be turned on even while walking', 20, 100,
                                                          funcState=self.switch_always_use_waithack,
                                                          defaultValue=ActionBot.instance.showAlwaysWaithackButton)
@@ -114,13 +117,31 @@ class FarmingBotUI(BotBase):
 
         self.showExchangeTrash = comp.OnOffButton(self.settings_tab, '\t\t\t\t\t\t\t\t\t\t\t\tExchange to energy fragments', 'This option allow farmbot to exchange items listed in settings > shop to energy fragments.', 20, 140,
                                                 funcState=farmbot_interface.SwitchExchangeItemsToEnergy,
-                                                defaultValue=status['ExchangeItemsToEnergy'])                                                 
+                                                defaultValue=False)                                                 
 
         self.slot_barWaitingTime, self.edit_lineWaitingTime = \
             comp.EditLine(self.settings_tab, str(status['WaitingTime']), 20, 170, 40, 20, 25)
 
         self.text_lineWaitingTime = comp.TextLine(self.settings_tab, 's. of waiting after ', 70, 175, comp.RGB(255, 255, 255))
         self.text_lineWaitingTime1 = comp.TextLine(self.settings_tab, 'destorying metin',  75, 185, comp.RGB(255, 255, 255))
+
+
+
+        if status['Enabled']:
+            self.enableButton.SetOn()
+
+        if status['LookForMetins']:
+            self.showFarmingMetinButton.SetOn()
+        
+        if status['LookForOre']:
+            self.showMiningButton.SetOn()
+
+        if status['ChangeChannel']:
+            self.showChannelSwitchingButton.SetOn()
+        
+
+        
+
 
     def load_path(self):
         filename = self.edit_line.GetText()
@@ -175,7 +196,7 @@ class FarmingBotUI(BotBase):
 
     def add_point(self):
         x, y, z = player.GetMainCharacterPosition()
-        point = {'x': x, 'y': y, 'map_name': background.GetCurrentMapName()}
+        point = {'x': round(x, 0), 'y': round(y, 0), 'map_name': background.GetCurrentMapName()}
         if farmbot_interface.AddPoint(point):
             self.update_points_list()
         else:

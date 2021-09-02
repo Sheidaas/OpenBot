@@ -1,5 +1,5 @@
 import eXLib, ui, net, chr, player, chat, item, skill
-import OpenLib, FileManager, Movement, UIComponents
+import OpenLib, FileManager, Movement
 from FileManager import boolean
 
 CLOUD_SKILL_STATE_WAITING = 0
@@ -7,12 +7,15 @@ CLOUD_SKILL_STATE_READY = 1
 CLOUD_SKILL_STATE_USED = 2
 
 
-class DmgHacksInstance(ui.Window):
+class Waithack(ui.ScriptWindow):
+
     def __init__(self):
         ui.Window.__init__(self)
+        self.lastTime = 0
+
+        self.enabled = False
         self.range = 0
         self.speed = 0
-        self.lastTime = 0
         self.maxMonster = 0
         self.cloudSkillState = CLOUD_SKILL_STATE_READY
 
@@ -27,17 +30,6 @@ class DmgHacksInstance(ui.Window):
     def __del__(self):
         ui.Window.__del__(self)
 
-    def BuildWindow(self):
-        self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(300, 260)
-        self.Board.SetCenterPosition()
-        self.Board.AddFlag('movable')
-        self.Board.AddFlag('float')
-        self.Board.SetTitleName('WaitHack')
-        self.Board.SetCloseEvent(self.Close)
-        self.Board.Hide()
-        self.comp = UIComponents.Component()
-
     def loadSettings(self):
         self.maxMonster(float(FileManager.ReadConfig("WaitHack_MaxMonsters")))
         self.speed(float(FileManager.ReadConfig("WaitHack_Speed")))
@@ -49,38 +41,19 @@ class DmgHacksInstance(ui.Window):
         self.attack_blocked_monsters = boolean(FileManager.ReadConfig("WaitHack_AttackBlocked"))
 
     def saveSettings(self):
-        FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.MonsterSlider.GetSliderPos()))
-        FileManager.WriteConfig("WaitHack_Speed", str(self.SpeedSlider.GetSliderPos()))
-        FileManager.WriteConfig("WaitHack_Range", str(self.RangeSlider.GetSliderPos()))
-        FileManager.WriteConfig("WaitHack_PlayerClose", str(self.playerClose.isOn))
-        FileManager.WriteConfig("WaitHack_attackPlayer", str(self.attackPlayerBtn.isOn))
-        FileManager.WriteConfig("WaitHack_CloudExploit", str(self.cloudBtn.isOn))
-
+        FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.maxMonster))
+        FileManager.WriteConfig("WaitHack_Speed", str(self.speed))
+        FileManager.WriteConfig("WaitHack_Range", str(self.range))
+        FileManager.WriteConfig("WaitHack_PlayerClose", str(self.avoidPlayers))
+        FileManager.WriteConfig("WaitHack_attackPlayer", str(self.attackPlayer))
+        FileManager.WriteConfig("WaitHack_CloudExploit", str(self.use_cloud_exploit))
         FileManager.Save()
 
-    def Monster_func(self):
-        self.maxMonster = int(self.MonsterSlider.GetSliderPos() * 1000)
-        self.monsterNum.SetText(str(self.maxMonster))
-
-    def Range_func(self):
-        self.range = int(self.RangeSlider.GetSliderPos() * 10000)
-        self.rangeNum.SetText(str(self.range))
-
-    def Speed_func(self):
-        self.speed = float(self.SpeedSlider.GetSliderPos())
-        self.speedNum.SetText(str(int(self.speed * 1000)) + ' ms')
-
     def OnOffBtnState(self, val):
-        if (val):
+        if val:
             eXLib.BlockAttackPackets()
         else:
             eXLib.UnblockAttackPackets()
-
-    def OpenWindow(self):
-        if self.Board.IsShow():
-            self.Board.Hide()
-        else:
-            self.Board.Show()
 
     def TeleportAttack(self, lst, x, y):
         Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
@@ -100,7 +73,7 @@ class DmgHacksInstance(ui.Window):
     # chat.AppendChat(3,"After: " + str(len(lst)))
 
     def __sendUseSkill(self):
-        Dmg.cloudSkillState = CLOUD_SKILL_STATE_READY
+        instance.cloudSkillState = CLOUD_SKILL_STATE_READY
 
     def AttackArch(self, lst, x, y):
         vid_hits = 0
@@ -142,7 +115,7 @@ class DmgHacksInstance(ui.Window):
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.speed)
-        if (val and self.enableButton.isOn and not eXLib.IsDead(net.GetMainActorVID())):
+        if val and self.enabled and not eXLib.IsDead(net.GetMainActorVID()):
             if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
                 return
             isArch = OpenLib.IsWeaponArch()
@@ -158,16 +131,16 @@ class DmgHacksInstance(ui.Window):
                 if not chr.HasInstance(vid):
                     continue
 
-                if self.playerClose.isOn and OpenLib.IsThisPlayer(vid):
+                if self.avoidPlayers and OpenLib.IsThisPlayer(vid):
                     return
 
                 if OpenLib.IsThisNPC(vid):
                     continue
 
-                if self.attackPlayerBtn.isOn and OpenLib.IsThisPlayer(vid):
+                if self.attackPlayer and OpenLib.IsThisPlayer(vid):
                     continue
 
-                if player.GetCharacterDistance(vid) < self.range and not eXLib.IsDead(vid):
+                if player.GetCharacterDistance(vid) <= self.range and not eXLib.IsDead(vid):
                     lst.append(vid)
 
             hit_counter = 0
@@ -176,15 +149,15 @@ class DmgHacksInstance(ui.Window):
             while len(lst) > 0 and hit_counter < self.maxMonster:
                 vid = lst[0]
                 mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-                if not self.attackBlockedMonsters.isOn:
+                if not self.attack_blocked_monsters:
                     if eXLib.IsPositionBlocked(mob_x, mob_y):
                         lst.remove(vid)
                         continue
-                if self.wallBtn.isOn:
+                if self.is_wall_between:
                     if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
                         lst.remove(vid)
                         continue
-                if self.cloudBtn.isOn and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
+                if self.use_cloud_exploit and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
                     hit_counter += self.AttackCloud(lst, mob_x, mob_y)
                 elif isArch:
                     hit_counter += self.AttackArch(lst, mob_x, mob_y)
@@ -194,35 +167,5 @@ class DmgHacksInstance(ui.Window):
             if (OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50):
                 Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
 
-    def Close(self):
-        self.Board.Hide()
-        self.saveSettings()
-
-
-def Pause():
-    """
-    Pauses the damage hack.
-    """
-    Dmg.enableButton.SetOff()
-
-
-def Resume():
-    """
-    Resumes damage hack.
-    """
-    Dmg.enableButton.SetOn()
-
-
-def IsOn():
-    return Dmg.enableButton.isOn
-
-
-def switch_state():
-    """
-    Open's or closes the UI window.
-    """
-    Dmg.OpenWindow()
-
-
-Dmg = DmgHacksInstance()
-Dmg.Show()
+instance = Waithack()
+instance.Show()

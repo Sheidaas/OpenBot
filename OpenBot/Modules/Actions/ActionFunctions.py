@@ -92,18 +92,22 @@ def Find(args):
 
 def MoveToPosition(args):
     position = args[0]
-    if OpenLib.isPlayerCloseToPosition(position[0], position[1], 50):
-        return Action.NEXT_ACTION
     if len(args) > 1:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
     else:
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
-    if error == None:
+    if error == Movement.NO_PATH_FOUND:
         return Action.ERROR
+    
+    elif error == Movement.MOVING:
+        return True
+    
+    elif error == Movement.DESTINATION_REACHED:
+        return Action.NEXT_ACTION
+
 
     #DebugPrint('Going to ' + str(position))
-    return Action.NOTHING
 
 def MoveToVID(args):
     if eXLib.IsDead(args[0]):
@@ -300,22 +304,20 @@ def MineOre(args):
 
     x, y, z = chr.GetPixelPosition(selectedOre)
 
-    if not OpenLib.isPlayerCloseToInstance(selectedOre, 75):
-        action_dict = {'function_args': [(x, y), background.GetCurrentMapName()],
+    if not can_mine:
+        return Action.NEXT_ACTION
+
+    if not OpenLib.isPlayerCloseToInstance(selectedOre, 200):
+        action_dict = {'function_args': [(x, y)],
                         'function': MoveToPosition,
-                        'requirements': {ActionRequirementsCheckers.isNearInstance: [selectedOre]},
-                        'on_success': [Action.NEXT_ACTION]}
+                        'requirements': {ActionRequirementsCheckers.isNearInstance: [selectedOre]}}
         return action_dict
                     
     if not is_curr_mining and can_mine:
         net.SendOnClickPacket(selectedOre)
         DebugPrint('Digging')
-        return Action.NOTHING
-    
-    if not can_mine:
-        return Action.NEXT_ACTION
-    
-    
+        return False
+      
 def LookForBlacksmithInDeamonTower(args):
     go_above_six_stage = args[0]
     item_index_to_upgrade = args[1]
@@ -494,4 +496,4 @@ def ChangeChannel(args):
     if ChannelSwitcher.instance.currState != ChannelSwitcher.STATE_CHANGING_CHANNEL:
         DebugPrint('Changing channel to ' + str(channel_id) )
         ChannelSwitcher.instance.ChangeChannelById(channel_id)
-        return True
+        return Action.NEXT_ACTION

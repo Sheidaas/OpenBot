@@ -1,37 +1,31 @@
-import UIComponents
-from BotBase import BotBase
-import ui, chat, player, net, m2netm2g
-import OpenLib, eXLib, FileManager
-import Hooks
-from OpenBot.Modules.Actions import ActionBot
-from OpenBot.Modules.Skillbot.skillbot_interface import instance as skillbot_interface
+from OpenBot.Modules import UIComponents, OpenLib, Hooks, OpenLog
+import ui, chat
+from OpenBot.Modules.Skillbot.skillbot_interface import interface as skillbot_interface
 
 
 def __PhaseChangeSkillCallback(phase):
     global instance
     if phase == OpenLib.PHASE_GAME:
-        instance.resetSkillsUI()
-        instance.LoadSettings()
-        if instance.shouldWait:
-            instance.startUpWait = True
+        skillbot_interface.ResetSkills()
+        skillbot_interface.LoadSettings()
+        if skillbot_interface.GetStatus()['ShouldWaitAfterLogout']:
+            skillbot_interface.SwitchStartUpWait()
         if instance.enableButton.isOn:
-            instance.Start()
+            skillbot_interface.Start()
         else:
-            instance.Stop()
+            skillbot_interface.Stop()
 
 
-class Skillbot(BotBase):
+class Skillbot(ui.ScriptWindow):
 
     def __init__(self):
-        BotBase.__init__(self)
+        ui.Window.__init__(self)
         self.BuildWindow()
 
     def __del__(self):
         ui.Window.__del__(self)
 
     def BuildWindow(self):
-        status = skillbot_interface.GetStatus()
-
         self.comp = UIComponents.Component()
         self.Board = ui.BoardWithTitleBar()
         self.Board.SetSize(235, 150)
@@ -41,6 +35,9 @@ class Skillbot(BotBase):
         self.Board.SetCloseEvent(self.switch_state)
         self.Board.Hide()
 
+        status = skillbot_interface.GetStatus()
+        OpenLog.DebugPrint(str(status))
+
         self.enableButton = self.comp.OnOffButton(self.Board, '', '', 15, 40,
                                                   OffUpVisual='OpenBot/Images/start_0.tga',
                                                   OffOverVisual='OpenBot/Images/start_1.tga',
@@ -48,12 +45,12 @@ class Skillbot(BotBase):
                                                   OnUpVisual='OpenBot/Images/stop_0.tga',
                                                   OnOverVisual='OpenBot/Images/stop_1.tga',
                                                   OnDownVisual='OpenBot/Images/stop_2.tga',
-                                                  funcState=self._start, defaultValue=status['Enabled'])
+                                                  funcState=self._start, defaultValue=False)
 
         self.showShouldWaitButton = self.comp.OnOffButton(self.Board, '\t\t\t\t\t\tWait after logout?',
                                                           'If check, skillbot will wait to use skill', 15, 95,
                                                           funcState=skillbot_interface.SwitchShouldWaitAfterLogout,
-                                                          defaultValue=status['ShouldWaitAfterLogout'])
+                                                          defaultValue=False)
 
         self.slotBarSlot, self.edit_lineWaitingTime = self.comp.EditLine(self.Board,
                                                                          str(status['TimeToWaitAfterLogout']),
@@ -65,22 +62,38 @@ class Skillbot(BotBase):
         self.showModeButton = self.comp.OnOffButton(self.Board, '\t\t\t\tCast instant?', 'Not working with every class',
                                                     120, 95,
                                                     funcState=skillbot_interface.SwitchInstantMode,
-                                                    defaultValue=status['InstantMode'])
+                                                    defaultValue=False)
+
+    def CreateSkillSet(self):
         pos_x = 0
+        self.LoadSettings()
+        status = skillbot_interface.GetStatus()
         for skill in status['CurrentSkillSet']:
             button = self.comp.OnOffButton(self.Board, '', '', 75 + 35 * pos_x, 45,
                                            image=OpenLib.GetSkillIconPath(skill['id']),
-                                           funcState=self.create_switch_function(skill['id']))
-            slot_bar, edit_line = self.comp.EditLine(self.Board, '40', 78 + 35 * pos_x, 75, 25, 15, 25)
-            setattr(self, 'button' + str(id), button)
-            setattr(self, 'slot_bar' + str(id), slot_bar)
-            setattr(self, 'edit_line' + str(id), edit_line)
+                                           funcState=self.create_switch_function(skill['id']), defaultValue=False)
+            slot_bar, edit_line = self.comp.EditLine(self.Board, str(skill['cooldown_time_instant_mode']), 78 + 35 * pos_x, 75, 25, 15, 25)
+
+            OpenLog.DebugPrint(str(skill['can_cast']))
+            if skill['can_cast']:
+                if not button.isOn:
+                    button.SetOn()
+            else:
+                if button.isOn:
+                    button.SetOff()
+
+            setattr(self, 'button' + str(skill['id']), button)
+            setattr(self, 'slot_bar' + str(skill['id']), slot_bar)
+            setattr(self, 'edit_line' + str(skill['id']), edit_line)
             pos_x += 1
 
     def create_switch_function(self, skill_id):
 
-        def x():
-            skillbot_interface.SwitchSkill(skill_id)
+        def x(val):
+            OpenLog.DebugPrint('if this asdflhkjasfdafdssfdfdsasafd')
+            result = skillbot_interface.SwitchSkill(skill_id)
+            if not result:
+                chat.AppendChat(3, '[Skillbot] - Cannot launch skill')
 
         return x
 
@@ -91,6 +104,22 @@ class Skillbot(BotBase):
     def LoadSettings(self):
         if not skillbot_interface.LoadSettings():
             chat.AppendChat(3, '[Skillbot] - Cannot load settings')
+        status = skillbot_interface.GetStatus()
+        OpenLog.DebugPrint(str(status))
+        if status['InstantMode']:
+            self.showModeButton.SetOn()
+        else:
+            self.showModeButton.SetOff()
+
+        if status['Enabled']:
+            self.enableButton.SetOn()
+        else:
+            self.enableButton.SetOff()
+        
+        if status['ShouldWaitAfterLogout']:
+            self.showShouldWaitButton.SetOn()
+        else:
+            self.showShouldWaitButton.SetOff()
 
     def _start(self, val):
         if val:
@@ -111,23 +140,28 @@ class Skillbot(BotBase):
 
     def switch_state(self):
         if self.Board.IsShow():
+            self.SaveSettings()
             self.Board.Hide()
         else:
+            self.CreateSkillSet()
             self.Board.Show()
 
     def __del__(self):
         Hooks.deletePhaseCallback("skillCallback")
 
-    def Frame(self):
+    def OnUpdate(self):
         status = skillbot_interface.GetStatus()
         for skill in status['CurrentSkillSet']:
-            time_to_wait = getattr(self, 'edit_line'+str(skill['id']))
+            try:
+                time_to_wait = getattr(self, 'edit_line'+str(skill['id'])).GetText()
+            except AttributeError:
+                continue
             if self.is_text_validate(time_to_wait):
-                skillbot_interface.SetCooldownForSkill(skill['id'], time_to_wait)
-
-def switch_state():
-    instance.switch_state()
+                skillbot_interface.SetCooldownForSkill(skill['id'], int(time_to_wait))
+            else:
+                chat.AppendChat(3, 'Cannot set cooldown')
 
 
 instance = Skillbot()
+instance.Show()
 Hooks.registerPhaseCallback("skillCallback", __PhaseChangeSkillCallback)

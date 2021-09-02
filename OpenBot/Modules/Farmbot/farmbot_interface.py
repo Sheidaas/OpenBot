@@ -1,3 +1,4 @@
+from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Farmbot.farmbot_module import farm as farm_instance
 
 
@@ -22,6 +23,7 @@ class FarmbotInterface:
         }
 
     def IsOn(self):
+        DebugPrint('Farmbot is enabled ' + str(farm_instance.enabled))
         return farm_instance.enabled
 
     def Start(self):
@@ -79,6 +81,7 @@ class FarmbotInterface:
     def SetWaitingTime(self, waiting_time):
         if not type(waiting_time) == int or not type(waiting_time) == float:
             return False
+        DebugPrint('waiting_time is now ' + str(farm_instance.waiting_time))
         farm_instance.timeForWaitingState = waiting_time
 
     def SwitchChangeChannel(self, val=None):
@@ -86,6 +89,7 @@ class FarmbotInterface:
             farm_instance.switch_channels = False
         else:
             farm_instance.switch_channels = True
+        DebugPrint('switch_channels is now ' + str(farm_instance.switch_channels))
         return farm_instance.switch_channels
 
     def SwitchLookForMetins(self, val=None):
@@ -95,6 +99,7 @@ class FarmbotInterface:
             farm_instance.look_for_metins = True
             if farm_instance.look_for_ore:
                 self.SwitchLookForOre()
+        DebugPrint('look_for_metins is now ' + str(farm_instance.look_for_metins))
         return farm_instance.look_for_metins
 
     def SwitchLookForOre(self, val=None):
@@ -104,6 +109,7 @@ class FarmbotInterface:
             farm_instance.look_for_ore = True
             if farm_instance.look_for_metins:
                 self.SwitchLookForMetins()
+        DebugPrint('LookForOre is now ' + str(farm_instance.look_for_ore))
         return farm_instance.look_for_ore
 
 
@@ -112,6 +118,7 @@ class FarmbotInterface:
             farm_instance.exchange_items_to_energy = False
         else:
             farm_instance.exchange_items_to_energy = True
+        DebugPrint('exchange_items_to_energy is now ' + str(farm_instance.exchange_items_to_energy))
         return farm_instance.exchange_items_to_energy
 
 farmbot_interface = FarmbotInterface()

@@ -1,5 +1,6 @@
 from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules import OpenLog, OpenLib, FileManager
+from OpenBot.Modules.OpenLog import DebugPrint
 import player, ui, chat, chr, net, background
 import eXLib
 
@@ -14,8 +15,8 @@ def OnDigMotionCallback(main_vid,target_ore,n):
     global farm
     if(main_vid != net.GetMainActorVID()):
         return
-    if farm.enableButton.isOn and farm.showMiningButton.isOn:
-        OpenLog.DebugPrint('Digging is starting')
+    if farm.enabled and farm.look_for_ore:
+        DebugPrint('Digging is starting')
         farm.is_currently_digging = True
         slash_time = n * farm.MINING_SLASH_TIME
         ActionBot.instance.AddNewWaiter(slash_time, farm.IsCurrentlyDiggingDone)
@@ -239,7 +240,7 @@ class FarmingBot(ui.ScriptWindow):
                     'function_args': [(self.path[self.current_point][0], self.path[self.current_point][1]), self.path[self.current_point][2]],
                     'function': ActionFunctions.MoveToPosition, 
                     'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [self.path[self.current_point][0],
-                                                                                self.path[self.current_point][1], 200],
+                                                                                self.path[self.current_point][1], 300],
                                                                                 ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
                     'callback': self.IsWalkingDone,
                     'interruptors_args': interruptors_args,

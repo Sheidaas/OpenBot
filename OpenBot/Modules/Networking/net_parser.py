@@ -24,25 +24,12 @@ def parse_character_status_info():
     return status
 
 def parse_hack_status():
-    from OpenBot.Modules import DmgHacks
     from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
+    from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
     hack_status = {
-        'WaitHack': {
-            'enable': DmgHacks.Dmg.enableButton.isOn,
-            'switches': {
-                'IsWallBetween': DmgHacks.Dmg.wallBtn.isOn,
-                'CheckIsPlayer': DmgHacks.Dmg.playerClose.isOn,
-                'CloudExploit': DmgHacks.Dmg.cloudBtn.isOn,
-                'AttackBlockedMonsters': DmgHacks.Dmg.attackBlockedMonsters.isOn,
-                'AttackPlayers': DmgHacks.Dmg.attackPlayerBtn.isOn,
-            },
-            'values': {
-                'Range': DmgHacks.Dmg.range,
-                'Monsters': DmgHacks.Dmg.maxMonster,
-                'Speed': DmgHacks.Dmg.speed * 1000,
-            }
-        },
-        'FarmBot': farmbot_interface.GetStatus()
+        'WaitHack': waithack_interface.GetStatus(),
+        'FarmBot': farmbot_interface.GetStatus(),
+        'SkillBot': None,
     }
 
     return hack_status
