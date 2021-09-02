@@ -72,16 +72,13 @@ class Skillbot(ui.ScriptWindow):
             button = self.comp.OnOffButton(self.Board, '', '', 75 + 35 * pos_x, 45,
                                            image=OpenLib.GetSkillIconPath(skill['id']),
                                            funcState=self.create_switch_function(skill['id']), defaultValue=False)
-            slot_bar, edit_line = self.comp.EditLine(self.Board, str(skill['cooldown_time_instant_mode']), 78 + 35 * pos_x, 75, 25, 15, 25)
 
-            OpenLog.DebugPrint(str(skill['can_cast']))
             if skill['can_cast']:
-                if not button.isOn:
-                    button.SetOn()
+                button.SetOff()
             else:
-                if button.isOn:
-                    button.SetOff()
+                button.SetOn()
 
+            slot_bar, edit_line = self.comp.EditLine(self.Board, str(skill['cooldown_time_instant_mode']), 78 + 35 * pos_x, 75, 25, 15, 25)
             setattr(self, 'button' + str(skill['id']), button)
             setattr(self, 'slot_bar' + str(skill['id']), slot_bar)
             setattr(self, 'edit_line' + str(skill['id']), edit_line)
@@ -90,7 +87,6 @@ class Skillbot(ui.ScriptWindow):
     def create_switch_function(self, skill_id):
 
         def x(val):
-            OpenLog.DebugPrint('if this asdflhkjasfdafdssfdfdsasafd')
             result = skillbot_interface.SwitchSkill(skill_id)
             if not result:
                 chat.AppendChat(3, '[Skillbot] - Cannot launch skill')
@@ -160,6 +156,12 @@ class Skillbot(ui.ScriptWindow):
                 skillbot_interface.SetCooldownForSkill(skill['id'], int(time_to_wait))
             else:
                 chat.AppendChat(3, 'Cannot set cooldown')
+
+        time_to_wait = self.edit_lineWaitingTime.GetText() 
+        if self.is_text_validate(time_to_wait):
+            skillbot_interface.SetTimeToWaitAfterLogout(int(time_to_wait))
+        else:
+            chat.AppendChat(3, 'Cannot set cooldown')
 
 
 instance = Skillbot()

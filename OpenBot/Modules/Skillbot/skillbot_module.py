@@ -1,15 +1,13 @@
-import UIComponents
-from BotBase import BotBase
-import ui, chat, player, net, m2netm2g
-import OpenLib, eXLib, FileManager
-import Hooks
+from OpenBot.Modules.OpenLog import DebugPrint
+import ui, chat, player, net, m2netm2g,eXLib
+from OpenBot.Modules import OpenLib, FileManager, Hooks
 from OpenBot.Modules.Actions import ActionBot
 
 
 def __PhaseChangeSkillCallback(phase):
     global instance
     if phase == OpenLib.PHASE_GAME:
-        instance.resetSkillsUI()
+        instance.resetSkills()
         if instance.shouldWait:
             instance.startUpWait = True
 
@@ -39,6 +37,7 @@ class Skillbot(ui.ScriptWindow):
 
     def __init__(self):
         ui.Window.__init__(self)
+        self.lastTime = 0
         self.enabled = False
         self.lastTimeStartUp = 0
         self.TimeToWaitAfterStart = 0
@@ -47,7 +46,7 @@ class Skillbot(ui.ScriptWindow):
         self.instant_mode = False
         self.currentSkillSet = []
 
-        self.resetSkillsUI()
+        self.resetSkills()
 
     def onStart(self):
         self.enabled = True
@@ -58,10 +57,11 @@ class Skillbot(ui.ScriptWindow):
     def SaveSettings(self, filename=''):
         for skill in self.currentSkillSet:
             FileManager.WriteConfig(str(skill['id']), str(skill['can_cast']), file=FileManager.CONFIG_SKILLBOT)
-            FileManager.WriteConfig('skillTimer' + str(skill['cooldown_time_instant_mode']), file=FileManager.CONFIG_SKILLBOT)
+            FileManager.WriteConfig('skillTimer'+str(skill['id']), str(skill['cooldown_time_instant_mode']), file=FileManager.CONFIG_SKILLBOT)
         FileManager.WriteConfig('InstantMode', str(self.instant_mode), file=FileManager.CONFIG_SKILLBOT)
         FileManager.WriteConfig('IsTurnedOn', str(self.enabled), file=FileManager.CONFIG_SKILLBOT)
         FileManager.WriteConfig('ShouldWaitAfterLogout', str(self.shouldWait), file=FileManager.CONFIG_SKILLBOT)
+        FileManager.WriteConfig('TimeToWaitAfterStart', str(self.TimeToWaitAfterStart), file=FileManager.CONFIG_SKILLBOT)
         FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
 
     def LoadSettings(self, filename=''):
@@ -71,14 +71,18 @@ class Skillbot(ui.ScriptWindow):
                                                                        file=FileManager.CONFIG_SKILLBOT))
         self.shouldWait = FileManager.boolean(FileManager.ReadConfig('ShouldWaitAfterLogout',
                                                                      file=FileManager.CONFIG_SKILLBOT))
+        
+        self.TimeToWaitAfterStart = int(FileManager.ReadConfig('TimeToWaitAfterStart',
+                                                                     file=FileManager.CONFIG_SKILLBOT))
 
         for skill in self.currentSkillSet:
             skill['can_cast'] = FileManager.boolean(FileManager.ReadConfig(str(skill['id']),
                                                                            file=FileManager.CONFIG_SKILLBOT))
-            skill['cooldown_time_instant_mode'] = FileManager.ReadConfig('skillTimer' + str(skill['id']),
-                                                                         file=FileManager.CONFIG_SKILLBOT)
+            skill['cooldown_time_instant_mode'] = int(FileManager.ReadConfig('skillTimer' + str(skill['id']),
+                                                                         file=FileManager.CONFIG_SKILLBOT))
+                                                                         
 
-    def resetSkillsUI(self):
+    def resetSkills(self):
         current_class = OpenLib.GetClass()
         if current_class == OpenLib.SKILL_SET_NONE:
             return
@@ -93,7 +97,7 @@ class Skillbot(ui.ScriptWindow):
                     'slot': i + 1,
                     'is_turned_on': False,
                 })
-        self.LoadSettings()
+        DebugPrint(str(self.currentSkillSet))
 
     def addCallbackToWaiter(self, skill):
         def wait_to_use_skill():
@@ -106,28 +110,35 @@ class Skillbot(ui.ScriptWindow):
         if val and OpenLib.IsInGamePhase() and self.enabled:
             if not self.startUpWait:
                 for skill in self.currentSkillSet:
-                    if skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
-                        if self.instant_mode:
-                            if skill['is_turned_on']:
-                                continue
-
-                        if not player.IsMountingHorse():
-                            eXLib.SendUseSkillPacketBySlot(skill['slot'])
-                        else:
-                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-                            eXLib.SendUseSkillPacketBySlot(skill['slot'])
-                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-
-                        if self.instant_mode:
+                    if self.instant_mode:
+                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
+                            if not player.IsMountingHorse():
+                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                            else:
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
                             skill['is_turned_on'] = True
-                            ActionBot.instance.AddNewWaiter(int(waiter_time), self.addCallbackToWaiter(skill))
+                            ActionBot.instance.AddNewWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
+                    else:
+                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
+                            if not player.IsMountingHorse():
+                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
+                            else:
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
             else:
-                val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, time_to_wait)
+                val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, self.TimeToWaitAfterStart)
                 if val:
                     self.startUpWait = False
 
     def __del__(self):
+        ui.Window.__del__(self)
         Hooks.deletePhaseCallback("skillCallback")
+
+    def GetCurrentSkillSet(self):
+        return self.currentSkillSet
 
 instance = Skillbot()
 instance.Show()
