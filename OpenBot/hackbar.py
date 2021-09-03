@@ -2,7 +2,7 @@ from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot
-from OpenBot.Modules.Farmbot.Farmbot_ui import farmbot_ui
+from OpenBot.Modules.Farmbot.farmbot_ui import farmbot_ui
 from OpenBot.Modules.Skillbot.skillbot_ui import instance as skillbot_ui
 from OpenBot.Modules import Radar, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar

@@ -3,7 +3,7 @@ import ui, chat
 from OpenBot.Modules.Skillbot.skillbot_interface import interface as skillbot_interface
 
 
-def __PhaseChangeSkillCallback(phase):
+def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         skillbot_interface.ResetSkills()

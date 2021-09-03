@@ -15,7 +15,7 @@ MINING_STATE = 2
 FARMING_STATE = 3
 EXCHANGING_ITEMS_TO_ENERGY = 4
 
-def __PhaseTurnOnFarmbot(phase):
+def __PhaseTurnOnFarmbot(phase,phaseWnd):
     global farm
     if phase == OpenLib.PHASE_GAME:
         if farm.enableButton.isOn:
@@ -310,9 +310,9 @@ class FarmingBot(BotBase):
 
     def go_to_next_channel(self):
         action_dict = {
-            'function_args': [OpenLib.GetNextChannel()],
+            'function_args': [ChannelSwitcher.GetNextChannel()],
             'function': ActionFunctions.ChangeChannel,
-            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [OpenLib.GetNextChannel()]},
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [ChannelSwitcher.GetNextChannel()]},
             'on_success': [Action.NEXT_ACTION],
             'callback': self.SetIsCurrActionDoneTrue,
             #'call_only_once': True,

@@ -21,3 +21,6 @@ ShouldWaitAfterLogout=False
 skillTimer3=115
 skillTimer4=60
 skillTimer34=0
+InstantMode=False
+TimeToWaitAfterStart=0
+skillTimer49=0

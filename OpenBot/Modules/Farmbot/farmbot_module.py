@@ -1,5 +1,5 @@
 from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
-from OpenBot.Modules import OpenLog, OpenLib, FileManager
+from OpenBot.Modules import OpenLog, OpenLib, FileManager,ChannelSwitcher
 from OpenBot.Modules.OpenLog import DebugPrint
 import player, ui, chat, chr, net, background
 import eXLib
@@ -155,9 +155,9 @@ class FarmingBot(ui.ScriptWindow):
 
     def go_to_next_channel(self):
         action_dict = {
-            'function_args': [OpenLib.GetNextChannel()],
+            'function_args': [ChannelSwitcher.GetNextChannel()],
             'function': ActionFunctions.ChangeChannel,
-            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [OpenLib.GetNextChannel()]},
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [ChannelSwitcher.GetNextChannel()]},
             'on_success': [Action.NEXT_ACTION],
             'callback': self.SetIsCurrActionDoneTrue,
             #'call_only_once': True,

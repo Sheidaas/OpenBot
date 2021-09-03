@@ -6,7 +6,7 @@ from OpenBot.Modules.OpenLog import DebugPrint
 import player, ui, chat, chr, net, background
 
 
-def __PhaseTurnOnFarmbot(phase):
+def __PhaseTurnOnFarmbot(phase,phaseWnd):
     global farm
     if phase == OpenLib.PHASE_GAME:
         if farmbot_ui.enableButton.isOn:
