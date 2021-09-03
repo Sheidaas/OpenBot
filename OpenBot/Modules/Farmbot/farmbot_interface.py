@@ -7,7 +7,7 @@ class FarmbotInterface:
     def __init__(self):
         pass
 
-    def SetStatus(self, status)
+    def SetStatus(self, status):
         good_keys = ['Enabled', 'CurrentWaypointIndex', 'Path','OresToMine','WaitingTime','ChangeChannel','LookForMetins', 'LookForOre', 'ExchangeItemsToEnergy']
         if not type(status) == dict:
             return False
@@ -29,6 +29,7 @@ class FarmbotInterface:
         farm_instance.exchange_items_to_energy = status['ExchangeItemsToEnergy']
 
     def GetStatus(self):
+        return{
             'CurrentWaypointIndex': farm_instance.current_point,
             'Path': farm_instance.path,
             'OresToMine': farm_instance.ores_to_mine,
