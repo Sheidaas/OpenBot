@@ -88,6 +88,8 @@ class FarmingBot(ui.ScriptWindow):
     def IsCurrentlyDiggingDone(self):
         self.is_currently_digging = False
         self.isCurrActionDone = True
+        if self.selectedOre not in eXLib.InstancesList:
+            self.selectedOre = 0
 
     def IsExchangingItemsToEnergyFragmentsDone(self):
         self.isCurrActionDone = True

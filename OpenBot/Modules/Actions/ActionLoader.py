@@ -95,12 +95,10 @@ class ActionLoader:
             
             # Name checking
             try:
-                name = self.CheckName(loaded_action['name'])
+                name = loaded_action['name']
             except KeyError:
-                name = ''
+                name = 'None'
                 DebugPrint('Name is None')
-
-
             # 
 
 
@@ -187,7 +185,7 @@ class ActionLoader:
         elif map_name == 'metin2_second_city':
             return OpenLib.GetPlayerEmpireSecondMap()
         else:
-            return map_name
+            return str(map_name)
 
     def CheckRequirements(self, requirements):
         #DebugPrint(str(requirements))
@@ -314,9 +312,9 @@ class ActionLoader:
         return requirements
 
     def CheckName(self, name):
-        if type(name) != str:
+        if not type(name) == str:
             DebugPrint('Name is not string!')
-            return None
+            return ''
         return name
 
     def CheckOnSuccess(self, on_success_list):

@@ -7,7 +7,26 @@ class FarmbotInterface:
     def __init__(self):
         pass
 
+    def SetStatus(self, status):
+        good_keys = ['Enabled', 'CurrentWaypointIndex', 'Path','OresToMine','WaitingTime','ChangeChannel','LookForMetins', 'LookForOre', 'ExchangeItemsToEnergy']
+        if not type(status) == dict:
+            return False
+        
+        for key in status.keys():
+            if key not in good_keys:
+                return False
+        
+        if status['Enabled']:
+            self.Start()
+        else:
+            self.Stop()
 
+        farm_instance.path = status['Path']
+        farm_instance.switch_channels = status['ChangeChannel']
+        farm_instance.look_for_metins = status['LookForMetins']
+        farm_instance.look_for_ore = status['LookForOre']
+        farm_instance.ores_to_mine = status['OresToMine']
+        farm_instance.exchange_items_to_energy = status['ExchangeItemsToEnergy']
 
     def GetStatus(self):
         return {

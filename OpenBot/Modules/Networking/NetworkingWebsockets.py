@@ -1,3 +1,4 @@
+from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
 from OpenBot import simplejson as json
 import ui, chat
 import eXLib
@@ -15,7 +16,7 @@ def OnMessage(id, message):
         instance.settedClientType = True
 
     cleaned_message = json.loads(message)
-
+    OpenLog.DebugPrint(str(cleaned_message))
     if cleaned_message['type'] == 'actions':
         from OpenBot.Modules.Actions import ActionLoader
         raw_action_dict = {
@@ -29,7 +30,11 @@ def OnMessage(id, message):
             for action in cleaned_action_dict:
                 ActionBot.instance.AddNewAction(action)
 
-    OpenLog.DebugPrint(message)
+    elif cleaned_message['type'] == 'update':
+        OpenLog.DebugPrint(str(cleaned_message.keys()))
+        if cleaned_message['data']['module'] == 'FarmBot':
+            farmbot_interface.SetStatus(cleaned_message['data']['message'])
+            OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
 
 class NetworkingWebsockets(ui.ScriptWindow):
 
@@ -68,6 +73,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
                                               'd:/ymir work/ui/public/Middle_Button_01.sub',
                                               'd:/ymir work/ui/public/Middle_Button_02.sub',
                                               'd:/ymir work/ui/public/Middle_Button_03.sub')
+    
     def switch_state(self):
         if self.Board.IsShow():
             self.Board.Hide()
@@ -95,7 +101,6 @@ class NetworkingWebsockets(ui.ScriptWindow):
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
-
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
