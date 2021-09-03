@@ -7,8 +7,6 @@ class FarmbotInterface:
     def __init__(self):
         pass
 
-
-
     def GetStatus(self):
         return {
             'Enabled': farm_instance.enabled,
