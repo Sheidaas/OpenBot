@@ -1,16 +1,16 @@
 from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
-from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Settings, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot
+from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot #, Settings, 
 from OpenBot.Modules.Farmbot.farmbot_ui import farmbot_ui
 from OpenBot.Modules.Skillbot.skillbot_ui import instance as skillbot_ui
 from OpenBot.Modules import Radar, ChannelSwitcher, AutoDungeon
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules.Networking import NetworkingWebsockets
-DEBUG = False
+DEBUG = True
 if DEBUG:
-    from OpenBot.Modules import Filter, MiningBot
+    from OpenBot.Modules import MiningBot #, Filter, 
 
 class OpenBotHackbarDialog(ui.ScriptWindow): 				
 
@@ -33,14 +33,14 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.OpenBotBoard = ui.ThinBoard(layer="TOP_MOST")
         self.OpenBotBoard.SetPosition(0, 40)
         if DEBUG:
-            self.OpenBotBoard.SetSize(51, 500)
+            self.OpenBotBoard.SetSize(51, 650)
         else:
             self.OpenBotBoard.SetSize(51, 550)
         self.OpenBotBoard.AddFlag("float")
         self.OpenBotBoard.AddFlag("movable")
         self.OpenBotBoard.Hide()
-        if DEBUG:
-            self.filter = Filter.FilterDialog()
+        #if DEBUG:
+        #    self.filter = Filter.FilterDialog()
 
         self.ShowHackbarButton = self.comp.Button(None, '', 'Show Hackbar', wndMgr.GetScreenWidth()-99, 260, self.OpenHackbar, 'OpenBot/Images/Shortcuts/show_0.tga', 'OpenBot/Images/Shortcuts/show_1.tga', 'OpenBot/Images/Shortcuts/show_0.tga')
         self.HideHackbarButton = self.comp.HideButton(None, '', 'Hide Hackbar', wndMgr.GetScreenWidth()-99, 260, self.OpenHackbar, 'OpenBot/Images/Shortcuts/hide_0.tga', 'OpenBot/Images/Shortcuts/hide_1.tga', 'OpenBot/Images/Shortcuts/hide_0.tga')
@@ -66,12 +66,12 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.GoRight = self.comp.HideButton(None, '', '', wndMgr.GetScreenWidth()-196, 58, lambda : self.TeleportInDirection(3), 'OpenBot/Images/Shortcuts/Arrow/tele_right_0.tga', 'OpenBot/Images/Shortcuts/Arrow/tele_right_1.tga', 'OpenBot/Images/Shortcuts/Arrow/tele_right_0.tga')
         self.GoLeft = self.comp.HideButton(None, '', '', wndMgr.GetScreenWidth()-290, 59, lambda : self.TeleportInDirection(4), 'OpenBot/Images/Shortcuts/Arrow/tele_left_0.tga', 'OpenBot/Images/Shortcuts/Arrow/tele_left_1.tga', 'OpenBot/Images/Shortcuts/Arrow/tele_left_0.tga')
 
-        self.SettingsButton = self.comp.Button(self.OpenBotBoard, '', 'Settings', 9, 10, self.Generel, 'OpenBot/Images/Hackbar/sett_0.tga', 'OpenBot/Images/Hackbar/sett_1.tga', 'OpenBot/Images/Hackbar/sett_2.tga')
+        #self.SettingsButton = self.comp.Button(self.OpenBotBoard, '', 'Settings', 9, 10, self.Generel, 'OpenBot/Images/Hackbar/sett_0.tga', 'OpenBot/Images/Hackbar/sett_1.tga', 'OpenBot/Images/Hackbar/sett_2.tga')
         self.LevelbotButton = self.comp.Button(self.OpenBotBoard, '', 'Levelbot', 8, 43, self.OnLevelbot, 'OpenBot/Images/Hackbar/sword_0.tga', 'OpenBot/Images/Hackbar/sword_1.tga', 'OpenBot/Images/Hackbar/sword_0.tga')
         #self.BuffbotButton = self.comp.Button(self.OpenBotBoard, '', 'Buffbot', 8, 78, self.BuffBot, 'OpenBot/Images/Hackbar/buff_0.tga', 'OpenBot/Images/Hackbar/buff_1.tga', 'OpenBot/Images/Hackbar/buff_0.tga')
         self.SpambotButton = self.comp.Button(self.OpenBotBoard, '', 'Spambot', 8, 253, self.Spambot, 'OpenBot/Images/Hackbar/spam_0.tga', 'OpenBot/Images/Hackbar/spam_1.tga', 'OpenBot/Images/Hackbar/spam_0.tga')
         if DEBUG:
-            self.MiningBotButton = self.comp.Button(self.OpenBotBoard, '', 'MiningBot', 8, 323, self.MiningBot, 'OpenBot/Images/Hackbar/ore_slot_0.tga', 'OpenBot/Images/Hackbar/ore_slot_1.tga', 'OpenBot/Images/Hackbar/ore_slot_0.tga')
+            self.MiningBotButton = self.comp.Button(self.OpenBotBoard, '', 'MiningBot', 8, 570, self.MiningBot, 'OpenBot/Images/Hackbar/ore_slot_0.tga', 'OpenBot/Images/Hackbar/ore_slot_1.tga', 'OpenBot/Images/Hackbar/ore_slot_0.tga')
         self.SearchBotButton = self.comp.Button(self.OpenBotBoard, '', 'SearchBot', 10, 113, self.SearchBot, 'OpenBot/Images/Hackbar/search_0.tga', 'OpenBot/Images/Hackbar/search_1.tga', 'OpenBot/Images/Hackbar/search_0.tga')
         self.ShopCreatorButton = self.comp.Button(self.OpenBotBoard, '', 'Shopbot', 8, 148, self.ShopCreator, 'OpenBot/Images/Hackbar/shop_0.tga', 'OpenBot/Images/Hackbar/shop_1.tga', 'OpenBot/Images/Hackbar/shop_0.tga')
         self.FishingBotButton = self.comp.Button(self.OpenBotBoard, '', 'FishingBot', 8, 78, self.FishingBot, 'OpenBot/Images/Hackbar/fishing_0.tga', 'OpenBot/Images/Hackbar/fishing_1.tga', 'OpenBot/Images/Hackbar/fishing_0.tga')
