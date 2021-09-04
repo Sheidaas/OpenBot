@@ -98,7 +98,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
     def UpdateHackStatus(self):
         parsed_hack_status = net_parser.parse_hack_status()
-        OpenLog.DebugPrint(str(parsed_hack_status))
+        #OpenLog.DebugPrint(str(parsed_hack_status))
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
