@@ -30,6 +30,7 @@ class FarmbotInterface:
 
     def GetStatus(self):
         return{
+            'Enabled': farm_instance.enabled,
             'CurrentWaypointIndex': farm_instance.current_point,
             'Path': farm_instance.path,
             'OresToMine': farm_instance.ores_to_mine,
