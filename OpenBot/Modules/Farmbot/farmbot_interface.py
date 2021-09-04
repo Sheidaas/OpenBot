@@ -1,5 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Farmbot.farmbot_module import farm as farm_instance
+import eXLib
 
 
 class FarmbotInterface:
@@ -21,12 +22,25 @@ class FarmbotInterface:
         else:
             self.Stop()
 
-        farm_instance.path = status['Path']
-        farm_instance.switch_channels = status['ChangeChannel']
-        farm_instance.look_for_metins = status['LookForMetins']
-        farm_instance.look_for_ore = status['LookForOre']
-        farm_instance.ores_to_mine = status['OresToMine']
-        farm_instance.exchange_items_to_energy = status['ExchangeItemsToEnergy']
+        farm_instance.path = []
+        for point in status['Path']:
+            self.AddPoint({
+                'x': point[0],
+                'y': point[1],
+                'map_name': point[2]
+            })
+        farm_instance.ores_to_mine = []
+        for ore_id in status['OresToMine']:
+            self.AddOreToMine(ore_id)
+
+        if farm_instance.switch_channels != status['ChangeChannel']:
+            self.SwitchChangeChannel()
+        if farm_instance.look_for_metins != status['LookForMetins']:
+            self.SwitchLookForMetins()
+        if farm_instance.look_for_ore != status['LookForOre']:
+            self.SwitchLookForOre()
+        if farm_instance.exchange_items_to_energy != status['ExchangeItemsToEnergy']:
+            self.SwitchExchangeItemsToEnergy()
 
     def GetStatus(self):
         return{
@@ -57,6 +71,8 @@ class FarmbotInterface:
         for key in point.keys():
             if key not in ['x', 'y', 'map_name']:
                 return False
+        if eXLib.IsPositionBlocked(point['x'], point['y']):
+            return False
         farm_instance.add_point(point)
         return True
     

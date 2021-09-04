@@ -35,7 +35,7 @@ class SettingsInterface:
         if status['CheckIsWallBetweenPlayerAndItem'] != instance.checkIsWallBetweenPlayerAndItem:
             self.SwitchCheckIsWallBetweenPlayerAndItem()
         if status['UseWallhack'] != instance.wallHack:
-            self.SwitchUseWallhack()
+            self.SwitchWallhack()
 
     def GetStatus(self):
         return {
@@ -55,6 +55,7 @@ class SettingsInterface:
             'AvoidPlayersInPickup': instance.doNotPickupIfPlayerHere,
             'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
             'UseWallhack': instance.wallHack,   
+            #'PickupFiltersID': instance.pickFilter
         }
     
     def SwitchRestartHere(self):
@@ -117,7 +118,7 @@ class SettingsInterface:
         else:
             return False
 
-     def SwitchPickup(self):
+    def SwitchPickup(self):
         if instance.pickUp:
             instance.pickUp = False
         else:
@@ -134,7 +135,7 @@ class SettingsInterface:
     def SetPickupSpeed(self, pickup_speed):
         if not type(pickup_speed) == int or not type(pickup_speed) == float:
             return False
-        if pickup_speed >= 1 and pickup_range <= 10:
+        if pickup_speed >= 1 and pickup_speed <= 10:
             instance.pickUpSpeed = float(pickup_speed)
         else:
             return False
@@ -162,3 +163,11 @@ class SettingsInterface:
             instance.checkIsWallBetweenPlayerAndItem = False
         else:
             instance.checkIsWallBetweenPlayerAndItem = True  
+
+    def SwitchWallhack(self):
+        if instance.wallHack:
+            instance.WallHackSwich(False)
+        else:
+            instance.WallHackSwich(True)
+
+settings_interface = SettingsInterface()

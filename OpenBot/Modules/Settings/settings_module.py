@@ -1,10 +1,6 @@
-import ui,app,chat,chr,net,player,item,skill,time,game,shop,chrmgr,OpenLib,eXLib
-import background,constInfo,miniMap,wndMgr,math,uiCommon,grp,FileManager,UIComponents,Movement,OpenLog, Hooks
-import DmgHacks as Dmg
-import ChannelSwitcher
-from FileManager import boolean
-import ChannelSwitcher
-import UIComponents
+import ui,net,player,eXLib
+from OpenBot.Modules import FileManager, Movement, OpenLib
+from OpenBot.Modules.FileManager import boolean
 
 
 class SettingsDialog(ui.ScriptWindow):

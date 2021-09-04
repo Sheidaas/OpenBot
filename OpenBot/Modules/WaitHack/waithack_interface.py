@@ -6,7 +6,7 @@ class WaithackInterface():
     def GetStatus(self):
         return {
             'Enabled': instance.enabled,
-            'Range': instance.range * 100,
+            'Range': instance.range,
             'Speed': instance.speed,
             'MaxMonsters': instance.maxMonster,
             'AvoidPlayers': instance.avoidPlayers,

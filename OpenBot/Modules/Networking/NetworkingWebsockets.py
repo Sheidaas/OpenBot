@@ -16,7 +16,7 @@ def OnMessage(id, message):
         instance.settedClientType = True
 
     cleaned_message = json.loads(message)
-    OpenLog.DebugPrint(str(cleaned_message))
+    #OpenLog.DebugPrint(str(cleaned_message))
     if cleaned_message['type'] == 'actions':
         from OpenBot.Modules.Actions import ActionLoader
         raw_action_dict = {
@@ -31,10 +31,10 @@ def OnMessage(id, message):
                 ActionBot.instance.AddNewAction(action)
 
     elif cleaned_message['type'] == 'update':
-        OpenLog.DebugPrint(str(cleaned_message.keys()))
+       # OpenLog.DebugPrint(str(cleaned_message.keys()))
         if cleaned_message['data']['module'] == 'FarmBot':
             farmbot_interface.SetStatus(cleaned_message['data']['message'])
-            OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
+            #OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
 
 class NetworkingWebsockets(ui.ScriptWindow):
 
@@ -98,6 +98,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
     def UpdateHackStatus(self):
         parsed_hack_status = net_parser.parse_hack_status()
+        OpenLog.DebugPrint(str(parsed_hack_status))
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))

@@ -13,6 +13,7 @@ EXCHANGING_ITEMS_TO_ENERGY = 4
 
 def OnDigMotionCallback(main_vid,target_ore,n):
     global farm
+    DebugPrint(str(main_vid) + ' ' + str(net.GetMainActorVID()))
     if(main_vid != net.GetMainActorVID()):
         return
     if farm.enabled and farm.look_for_ore:
@@ -72,6 +73,10 @@ class FarmingBot(ui.ScriptWindow):
             return False
     
     def onStop(self):
+        self.isCurrActionDone = True
+        self.selectedMetin = 0
+        self.selectedOre = 0
+        self.is_currently_digging = False
         self.enabled = False
 
     def IsWalkingDone(self):

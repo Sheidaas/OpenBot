@@ -286,28 +286,13 @@ def MineOre(args):
         item.SelectItem(idx)
         if item.GetItemType() == item.ITEM_TYPE_PICK:
             can_mine = True
-    
-    if not can_mine:
-        pickaxe_slot = OpenLib.GetItemByID(29101)
-        if pickaxe_slot > -1:
-            chat.AppendChat(3, 'pickaxe slot '+str(pickaxe_slot))
-            net.SendItemUsePacket(pickaxe_slot)   
-        else:
-            can_mine = False
-
-    if not can_mine:
-        idx = player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
-        if idx != 0:
-            item.SelectItem(idx)
-            if item.GetItemType() == item.ITEM_TYPE_PICK:
-                can_mine = True
 
     x, y, z = chr.GetPixelPosition(selectedOre)
 
     if not can_mine:
         return Action.NEXT_ACTION
 
-    if not OpenLib.isPlayerCloseToInstance(selectedOre, 200):
+    if not OpenLib.isPlayerCloseToInstance(selectedOre, 300):
         action_dict = {'function_args': [(x, y)],
                         'function': MoveToPosition,
                         'requirements': {ActionRequirementsCheckers.isNearInstance: [selectedOre]}}

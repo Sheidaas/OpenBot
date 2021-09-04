@@ -1,5 +1,5 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules.Settings import ItemListDialog
+from OpenBot.Modules._Settings import ItemListDialog
 from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers, ActionBot
 from BotBase import BotBase
 import UIComponents, OpenLib
