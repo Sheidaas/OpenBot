@@ -41,6 +41,9 @@ class FarmbotInterface:
             self.SwitchLookForOre()
         if farm_instance.exchange_items_to_energy != status['ExchangeItemsToEnergy']:
             self.SwitchExchangeItemsToEnergy()
+        
+        self.SetWaitingTime(status['WaitingTime'])
+
 
     def GetStatus(self):
         return{
@@ -114,9 +117,7 @@ class FarmbotInterface:
         return farm_instance.load_path(filename)
 
     def SetWaitingTime(self, waiting_time):
-        if not type(waiting_time) == int or not type(waiting_time) == float:
-            return False
-        DebugPrint('waiting_time is now ' + str(farm_instance.waiting_time))
+        DebugPrint('waiting_time is now ' + str(farm_instance.timeForWaitingState))
         farm_instance.timeForWaitingState = waiting_time
 
     def SwitchChangeChannel(self, val=None):

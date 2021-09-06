@@ -145,6 +145,21 @@ class SettingsDialog(ui.ScriptWindow):
             ActionBot.instance.AddNewWaiter(3, _anti_exp)
             self.can_add_waiter = False
 
+    def SetSpeedHackMultiplier(self, new_speed_multiplier):
+        self.speedMultiplier = new_speed_multiplier
+        if self.speedHack:
+            eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
+
+    def OnSpeedHackOnOff(self):
+        if self.speedHack:
+            self.speedHack = False
+        else:
+            self.speedHack = True
+        if self.speedHack:
+            eXLib.SetMoveSpeedMultiplier(self.speedMultiplier)
+        else:
+            eXLib.SetMoveSpeedMultiplier(0.0)
+
     #PICKUP
     def OnChangePickMode(self,val):
         self.excludeInFilter = val

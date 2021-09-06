@@ -4,6 +4,25 @@ from OpenBot.Modules.Skillbot.skillbot_module import instance
 
 class SkillbotInterface:
 
+    def SetStatus(self, status):
+        if status['Enabled']:
+            self.Start()
+        else:
+            self.Stop()
+        
+        self.SetTimeToWaitAfterLogout(status['TimeToWaitAfterLogout'])
+        if status['ShouldWaitAfterLogout'] != instance.shouldWait:
+            self.SwitchShouldWaitAfterLogout()
+        if status['InstantMode'] != instance.instant_mode:
+            self.SwitchInstantMode()
+        
+        for skill in range(len(status['CurrentSkillSet'])):
+            if status['CurrentSkillSet'][skill]['can_cast'] != instance.currentSkillSet[skill]['can_cast']:
+                self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
+            if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
+                self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
+            
+
     def GetStatus(self):
         return {
             'Enabled': instance.enabled,
@@ -91,5 +110,5 @@ class SkillbotInterface:
         DebugPrint('Skillbot switch instant_mode')
 
 
-interface = SkillbotInterface()
+skillbot_interface = SkillbotInterface()
 

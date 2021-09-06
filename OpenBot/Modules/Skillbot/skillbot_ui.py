@@ -1,6 +1,6 @@
 from OpenBot.Modules import UIComponents, OpenLib, Hooks, OpenLog
 import ui, chat
-from OpenBot.Modules.Skillbot.skillbot_interface import interface as skillbot_interface
+from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
 
 
 def __PhaseChangeSkillCallback(phase,phaseWnd):

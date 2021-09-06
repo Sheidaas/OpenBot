@@ -1,7 +1,39 @@
-from OpenBot.Modules.WaitHack.waithack_module import instance
-
+from OpenBot.Modules.Waithack.waithack_module import instance
+from OpenBot.Modules.OpenLog import DebugPrint
 
 class WaithackInterface():
+
+    def SetStatus(self, status):
+        good_keys = ['Enabled', 'Range', 'Speed','MaxMonsters','AvoidPlayers','AttackBlockedMonsters','UseCloudExploit', 'AttackPlayer', 'IsWallBetween']
+        if not type(status) == dict:
+            return False
+        
+        for key in status.keys():
+            if key not in good_keys:
+                return False
+
+        if status['Enabled']:
+            self.Start()
+        else:
+            self.Stop()
+        
+        DebugPrint(str(status))
+        if instance.range != status['Range']:
+            self.SetRange(status['Range'])
+        if instance.speed != status['Speed']:
+            self.SetSpeed(status['Speed'])
+        if instance.maxMonster != status['MaxMonsters']:
+            self.SetMaxMonsters(status['MaxMonsters'])
+        if instance.avoidPlayers != status['AvoidPlayers']:
+            self.SwitchAvoidPlayers()
+        if instance.use_cloud_exploit != status['UseCloudExploit']:
+            self.SwitchUseCloudExploit()
+        if instance.attackPlayer != status['AttackPlayer']:
+            self.SwitchAttackPlayer()
+        if instance.is_wall_between != status['IsWallBetween']:
+            self.SwitchIsWallBetween()
+        if instance.attack_blocked_monsters != status['AttackBlockedMonsters']:
+            self.SwitchAttackBlockedMonsters()
 
     def GetStatus(self):
         return {

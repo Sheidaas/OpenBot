@@ -79,10 +79,10 @@ class MapMovementDialog(ui.ScriptWindow):
         
 
     def SetStateMoving(self):
-        from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
+        from OpenBot.Modules.Actions import ActionBot
         from OpenBot.Modules.Actions.ActionFunctions import ChangeMap
-        DebugPrint('SetStateMoving')
-        DebugPrint('Length leftiLinkLIst' + str(len(self.leftLinkList)))
+        #DebugPrint('SetStateMoving')
+        #DebugPrint('Length leftiLinkLIst' + str(len(self.leftLinkList)))
         if(len(self.leftLinkList)>0):
             if self.can_add_action:
                 self.currLink = self.leftLinkList.pop(0)
@@ -91,7 +91,7 @@ class MapMovementDialog(ui.ScriptWindow):
                 event_answer = self.currLink.npc_action.event_answer
                 map_name = self.currLink.npc_action.mapName
                 map_destination_name = self.currLink.GetDestMapName()
-                DebugPrint('npc_race '+str(npc_race) + ' ' + 'event_answer ' + str(event_answer) + ' ' + 'map_name ' + str(map_name) + ' ' + 'position ' + str(position) + 'map destionation')
+                #DebugPrint('npc_race '+str(npc_race) + ' ' + 'event_answer ' + str(event_answer) + ' ' + 'map_name ' + str(map_name) + ' ' + 'position ' + str(position) + 'map destionation')
 
                 if not map_destination_name:
                     map_destination_name=map_name
@@ -108,7 +108,7 @@ class MapMovementDialog(ui.ScriptWindow):
             #Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=_DestinationReachedCallback)
             #self.SetState(self.STATE_MOVING)
         else:
-            DebugPrint('Last point')
+            #DebugPrint('Last point')
             OpenLog.DebugPrint("Moving to ("+str(self.finalPosition[0])+","+str(self.finalPosition[1])+")")
             Movement.GoToPositionAvoidingObjects(self.finalPosition[0],self.finalPosition[1],maxDist=self.maxDist,callback=self.callback)
             self.callback = None
@@ -264,14 +264,14 @@ def TeleportStraightLine(start_x,start_y,end_x,end_y,max_packets=MAX_TELEPORT_PA
     #To move across maps simply provide either a map name or a list of links
     #If both are provided, mapName will be ignored
 
-def GoToPositionAvoidingObjects(x,y,maxDist=250,callback=None,mapName=None,mapLinks=[]):
+def GoToPositionAvoidingObjects(x,y,maxDist=200,callback=None,mapName=None,mapLinks=[]):
     """
     Move to a specific position using pathfinding.
     
     Args:
         x ([float]): Destenation X.
         y ([float]):  Destanation Y.
-        maxDist (int, optional): Distance to turn points to be considered a reached point. Defaults to 250.
+        maxDist (int, optional): Distance to turn points to be considered a reached point. Defaults to 200.
         callback ([function], optional): Function callback called after reach destination. Defaults to None.
         mapName ([str], optional): The name of the map of the final destination, if is None it will use the current map. Defaults to None.
         mapLinks (list, optional): Reserved.

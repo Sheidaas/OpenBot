@@ -1,3 +1,4 @@
+from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib, ui, net, chr, player, chat, item, skill
 from OpenBot.Modules import OpenLib, FileManager, Movement
 from OpenBot.Modules.FileManager import boolean
@@ -31,9 +32,9 @@ class Waithack(ui.ScriptWindow):
         ui.Window.__del__(self)
 
     def loadSettings(self):
-        self.maxMonster = (float(FileManager.ReadConfig("WaitHack_MaxMonsters")))
-        self.speed = (float(FileManager.ReadConfig("WaitHack_Speed")))
-        self.range = (float(FileManager.ReadConfig("WaitHack_Range")))
+        self.maxMonster = float(FileManager.ReadConfig("WaitHack_MaxMonsters"))
+        self.speed = float(FileManager.ReadConfig("WaitHack_Speed"))
+        self.range = float(FileManager.ReadConfig("WaitHack_Range"))
         self.use_cloud_exploit = boolean(FileManager.ReadConfig("WaitHack_CloudExploit"))
         self.attackPlayer = boolean(FileManager.ReadConfig('WaitHack_attackPlayer'))
         self.avoidPlayers = boolean(FileManager.ReadConfig("WaitHack_PlayerClose"))

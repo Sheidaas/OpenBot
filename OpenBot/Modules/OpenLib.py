@@ -470,6 +470,8 @@ def getAllStatusOfMainActor():
 	x, y, z = chr.GetPixelPosition(net.GetMainActorVID())
 	character_status = {
 		'Position': [x, y],
+		'CurrentChannel': GetCurrentChannel(),
+		'Server': GetCurrentServer(),
 		'CurrentMap': background.GetCurrentMapName(),
 		'Name': player.GetName(),
 		'Level': player.GetStatus(player.LEVEL),
@@ -492,8 +494,8 @@ def getAllStatusOfMainActor():
 		'SP': player.GetStatus(player.SP),
 		'RecoverySP': player.GetStatus(player.SP_RECOVERY),
 		'Stamina': player.GetStatus(player.STAMINA),
+		'MaxStamina': player.GetStatus(player.MAX_STAMINA)
 		#'STAT': player.GetStatus()player.STAT
-
 	}
 
 	return character_status

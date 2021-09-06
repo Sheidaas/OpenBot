@@ -68,7 +68,7 @@ class FarmingBot(ui.ScriptWindow):
             self.enabled = True
             return True
         else:
-            chat.AppendChat(3, 'You need add more than 1 waypoint!')
+            chat.AppendChat(3, 'You need to add more than 1 waypoint!')
             self.enabled = False
             return False
     
@@ -76,6 +76,7 @@ class FarmingBot(ui.ScriptWindow):
         self.isCurrActionDone = True
         self.selectedMetin = 0
         self.selectedOre = 0
+        self.current_point = 0
         self.is_currently_digging = False
         self.enabled = False
 
@@ -89,6 +90,7 @@ class FarmingBot(ui.ScriptWindow):
         self.selectedMetin = 0
         self.CURRENT_STATE = WAITING_STATE
         self.lastTimeWaitingState = OpenLib.GetTime()
+
 
     def IsCurrentlyDiggingDone(self):
         self.is_currently_digging = False

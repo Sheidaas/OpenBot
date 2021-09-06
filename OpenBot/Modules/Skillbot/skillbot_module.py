@@ -97,7 +97,7 @@ class Skillbot(ui.ScriptWindow):
                     'slot': i + 1,
                     'is_turned_on': False,
                 })
-        DebugPrint(str(self.currentSkillSet))
+        #DebugPrint(str(self.currentSkillSet))
 
     def addCallbackToWaiter(self, skill):
         def wait_to_use_skill():

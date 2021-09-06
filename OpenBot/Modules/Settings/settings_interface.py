@@ -4,6 +4,8 @@ from OpenBot.Modules.Settings.settings_module import instance
 class SettingsInterface:
 
     def SetStatus(self, status):
+        self.SetPickupRange(status['PickupRange'])
+
         if status['RestartHere'] != instance.restartHere:
             self.SwitchRestartHere()
         if status['RestartInCity'] != instance.restartInCity:
@@ -32,8 +34,8 @@ class SettingsInterface:
             self.SwitchUseRangePickup()
         if status['AvoidPlayersInPickup'] != instance.doNotPickupIfPlayerHere:
             self.SwitchAvoidPlayersInPickup()
-        if status['CheckIsWallBetweenPlayerAndItem'] != instance.checkIsWallBetweenPlayerAndItem:
-            self.SwitchCheckIsWallBetweenPlayerAndItem()
+        #if status['CheckIsWallBetweenPlayerAndItem'] != instance.checkIsWallBetweenPlayerAndItem:
+        #    self.SwitchCheckIsWallBetweenPlayerAndItem()
         if status['UseWallhack'] != instance.wallHack:
             self.SwitchWallhack()
 
@@ -49,11 +51,12 @@ class SettingsInterface:
             'AntiExp': instance.antiExp,
             'SpeedMultiplier': instance.speedMultiplier,
             'Pickup': instance.pickUp,
+            'PickupRange': instance.pickUpRange,
             'PickupSpeed': instance.pickUpSpeed,
             'ExcludeInFilter': instance.excludeInFilter,
             'UseRangePickup': instance.useRangePickup,
             'AvoidPlayersInPickup': instance.doNotPickupIfPlayerHere,
-            'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
+            #'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
             'UseWallhack': instance.wallHack,   
             #'PickupFiltersID': instance.pickFilter
         }
@@ -77,12 +80,8 @@ class SettingsInterface:
             instance.bluePotions = True
 
     def SetMinMana(self, min_mana):
-        if not type(min_mana) == int:
-            return False
-        if min_mana >=0 and min_mana <= 100:
-            instance.minMana = min_mana
-        else:
-            return False
+        instance.minMana = min_mana
+
 
     def SwitchRedPotions(self):
         if instance.redPotions:
@@ -91,18 +90,10 @@ class SettingsInterface:
             instance.redPotions = True
 
     def SetMinHealth(self, min_health):
-        if not type(min_health) == int:
-            return False
-        if min_health >= 0 and min_health <= 100:
-            instance.minHealth = min_health
-        else:
-            return False
+        instance.minHealth = min_health
 
     def SwitchSpeedHack(self):
-        if instance.speedHack:
-            instance.speedHack = False
-        else:
-            instance.speedHack = True
+        instance.OnSpeedHackOnOff()
 
     def SwitchAntiExp(self):
         if instance.antiExp:
@@ -111,12 +102,7 @@ class SettingsInterface:
             instance.antiExp = True
     
     def SetSpeedMultiplier(self, speed_multiplier):
-        if not type(speed_multiplier) == int or not type(speed_multiplier) == float:
-            return False
-        if speed_multiplier >= 1 and speed_multiplier <= 10:
-            instance.speedMultiplier = float(speed_multiplier)
-        else:
-            return False
+        instance.SetSpeedHackMultiplier(float(speed_multiplier))
 
     def SwitchPickup(self):
         if instance.pickUp:
@@ -125,26 +111,17 @@ class SettingsInterface:
             instance.pickUp = True 
 
     def SetPickupRange(self, pickup_range):
-        if not type(pickup_range) == int or not type(pickup_range) == float:
-            return False
-        if pickup_range >= 100 and pickup_range <= 10000:
-            instance.pickUpRange = float(pickup_range)
-        else:
-            return False
+        instance.pickUpRange = pickup_range * 10
+
     
     def SetPickupSpeed(self, pickup_speed):
-        if not type(pickup_speed) == int or not type(pickup_speed) == float:
-            return False
-        if pickup_speed >= 1 and pickup_speed <= 10:
-            instance.pickUpSpeed = float(pickup_speed)
-        else:
-            return False
-    
+        instance.pickUpSpeed = pickup_speed
+
     def SwitchExcludeInFilter(self):
         if instance.excludeInFilter:
-            instance.excludeInFilter = False
+            instance.OnChangePickMode(False)
         else:
-            instance.excludeInFilter = True     
+            instance.OnChangePickMode(True)     
 
     def SwitchUseRangePickup(self):
         if instance.useRangePickup:

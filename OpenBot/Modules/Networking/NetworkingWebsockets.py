@@ -1,4 +1,7 @@
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
+from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+from OpenBot.Modules.Settings.settings_interface import settings_interface
+from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
 from OpenBot import simplejson as json
 import ui, chat
 import eXLib
@@ -35,6 +38,15 @@ def OnMessage(id, message):
         if cleaned_message['data']['module'] == 'FarmBot':
             farmbot_interface.SetStatus(cleaned_message['data']['message'])
             #OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
+        
+        elif cleaned_message['data']['module'] == 'WaitHack':
+            waithack_interface.SetStatus(cleaned_message['data']['message'])
+
+        elif cleaned_message['data']['module'] == 'Settings':
+            settings_interface.SetStatus(cleaned_message['data']['message'])
+        
+        elif cleaned_message['data']['module'] == 'SkillBot':
+            skillbot_interface.SetStatus(cleaned_message['data']['message'])
 
 class NetworkingWebsockets(ui.ScriptWindow):
 
@@ -106,8 +118,6 @@ class NetworkingWebsockets(ui.ScriptWindow):
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
         if val and OpenLib.IsInGamePhase():
-
-
             if self.settedClientType and self.isConnected:
                 val, self.timeLastUpdate = OpenLib.timeSleep(self.timeLastUpdate, self.timeToUpdate)
                 if val:
