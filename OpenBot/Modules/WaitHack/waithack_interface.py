@@ -35,6 +35,9 @@ class WaithackInterface():
         if instance.attack_blocked_monsters != status['AttackBlockedMonsters']:
             self.SwitchAttackBlockedMonsters()
 
+        self.SaveSettings()
+
+
     def GetStatus(self):
         return {
             'Enabled': instance.enabled,
@@ -50,15 +53,17 @@ class WaithackInterface():
     
     def Start(self):
         instance.enabled = True
+        instance.onEnableChange(True)
     
     def Stop(self):
         instance.enabled = False
+        instance.onEnableChange(False)
 
     def LoadSettings(self):
-        instance.loadSettings()
+        instance.LoadSettings()
     
     def SaveSettings(self):
-        instance.saveSettings()
+        instance.SaveSettings()
     
     def SetRange(self, range_value):
         instance.range = range_value

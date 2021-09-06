@@ -21,7 +21,8 @@ class SkillbotInterface:
                 self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
             if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
                 self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
-            
+        
+        instance.SaveSettings()
 
     def GetStatus(self):
         return {
