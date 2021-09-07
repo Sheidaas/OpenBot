@@ -435,7 +435,7 @@ def ChangeMap(args):
     map_destination_name = args[4]
 
     if map_destination_name == map_name:
-        return Action.NEXT_ACTION
+        return True
 
     DebugPrint('Changing the map')
     if map_name == background.GetCurrentMapName() and not npc_id and not event_answer:
@@ -447,10 +447,10 @@ def ChangeMap(args):
                 'name': 'Going to teleport point',
                 'function': MoveToPosition,
                 #'on_success': [Action.NEXT_ACTION],
-                #'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [move_position_x, move_position_y]}
+                'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [move_position_x, move_position_y]}
             }
         DebugPrint('going to next actions')
-        return Action.NEXT_ACTION
+        return True
 
     if map_destination_name != background.GetCurrentMapName():
         DebugPrint('Returning talk with npc')
@@ -460,7 +460,7 @@ def ChangeMap(args):
             'function': TalkWithNPC,
             'on_success': [Action.NEXT_ACTION],
         }
-    return Action.NEXT_ACTION
+    return True
     
 def ChangeChannel(args):
     channel_id = args[0]
