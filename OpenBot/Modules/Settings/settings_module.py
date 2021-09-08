@@ -31,7 +31,8 @@ class SettingsDialog(ui.ScriptWindow):
         self.useRangePickup = False
         self.doNotPickupIfPlayerHere = False
         self.checkIsWallBetweenPlayerAndItem = False
-
+        self.pickItemsFirst = True
+        self.pickItemsIgnorePath = False
         self.useOnClickDmg = False
         self.onClickDmgSpeed = 0.0
         self.timerDmg = OpenLib.GetTime()
@@ -64,9 +65,23 @@ class SettingsDialog(ui.ScriptWindow):
         self.onClickDmgSpeed  = boolean(FileManager.ReadConfig("OnClickDamageSpeed"))
         self.antiExp = boolean(FileManager.ReadConfig("antiExp"))
         self.doNotPickupIfPlayerHere = boolean(FileManager.ReadConfig("doNotPickupIfPlayerHere"))
+        self.pickItemsFirst = boolean(FileManager.ReadConfig("pickItemsFirst"))
+        self.pickItemsIgnorePath = boolean(FileManager.ReadConfig("pickItemsIgnorePath"))
         for i in FileManager.LoadListFile(FileManager.CONFIG_PICKUP_FILTER):
             self.addPickFilterItem(int(i))
         self.sellItems = {int(i) for i in FileManager.LoadListFile(FileManager.CONFIG_SELL_INVENTORY)}
+
+        if(self.pickItemsIgnorePath):
+            eXLib.ItemGrndInBlockedPath()
+        else:
+            eXLib.ItemGrndNotInBlockedPath()
+
+        if(self.pickItemsFirst):
+            eXLib.ItemGrndItemFirst()
+        else:
+            eXLib.ItemGrndNoItemFirst()
+
+        eXLib.ItemGrndSelectRange(self.pickUpRange)
 
     def SaveSettings(self):
         #OpenLog.DebugPrint("Saving Settings")
@@ -86,9 +101,9 @@ class SettingsDialog(ui.ScriptWindow):
         FileManager.WriteConfig("WallHack", str(self.wallHack))
         FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
         FileManager.WriteConfig("antiExp", str(self.antiExp))
-        FileManager.WriteConfig("timeAfterDead", str(self.waitTimeDeadEditLine.GetText()))
         FileManager.WriteConfig("doNotPickupIfPlayerHere", str(self.doNotPickupIfPlayerHere))
-        
+        FileManager.WriteConfig("pickItemsFirst", str(self.pickItemsFirst))
+        FileManager.WriteConfig("pickItemsIgnorePath", str(self.pickItemsIgnorePath))
         #chat.AppendChat(3,str(self.pickUp))
         FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
         FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
@@ -160,7 +175,25 @@ class SettingsDialog(ui.ScriptWindow):
         else:
             eXLib.SetMoveSpeedMultiplier(0.0)
 
+    def SetPickupRange(self, value):
+        self.pickUpRange = value
+        eXLib.ItemGrndSelectRange(self.pickUpRange)
+
     #PICKUP
+    def OnChangePickItemFirst(self,val):
+        self.pickItemsFirst = val
+        if(self.pickItemsFirst):
+            eXLib.ItemGrndItemFirst()
+        else:
+            eXLib.ItemGrndNoItemFirst()
+
+    def OnChangePickItemsIgnorePath(self,val):
+        self.pickItemsIgnorePath = val
+        if(self.pickItemsIgnorePath):
+            eXLib.ItemGrndInBlockedPath()
+        else:
+            eXLib.ItemGrndNotInBlockedPath()
+
     def OnChangePickMode(self,val):
         self.excludeInFilter = val
         if not val:

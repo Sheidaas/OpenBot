@@ -1,6 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
+import OpenLib, MapManager
 import eXLib,ui,chr,player,chat,background,app,net
-import OpenLib,MapManager,OpenLog
 
 
 
@@ -59,11 +59,11 @@ class MapMovementDialog(ui.ScriptWindow):
     def MoveToMapPosition(self,finalPosition,mapName=None,listLinks=[],callback=None,maxDist=250):
         if len(listLinks) == 0:
             if mapName == None or mapName == background.GetCurrentMapName():
-                OpenLog.DebugPrint("[MOVEMENT] Moving to ("+str(finalPosition[0])+","+str(finalPosition[1])+") on " + str(background.GetCurrentMapName()))
+                DebugPrint("[MOVEMENT] Moving to ("+str(finalPosition[0])+","+str(finalPosition[1])+") on " + str(background.GetCurrentMapName()))
                 return Movement.GoToPositionAvoidingObjects(finalPosition[0],finalPosition[1],maxDist,callback=callback)
             listLinks = MapManager.GetMapPath(mapName)
             if len(listLinks) == 0:
-                OpenLog.DebugPrint("[MOVEMENT] Error no map found by the name: "+str(mapName))
+                DebugPrint("[MOVEMENT] Error no map found by the name: "+str(mapName))
                 return None
 
         self.maxDist = maxDist
@@ -79,7 +79,7 @@ class MapMovementDialog(ui.ScriptWindow):
         
 
     def SetStateMoving(self):
-        from OpenBot.Modules.Actions import ActionBot
+        from OpenBot.Modules.Actions import ActionBot, ActionRequirementsCheckers
         from OpenBot.Modules.Actions.ActionFunctions import ChangeMap
         #DebugPrint('SetStateMoving')
         #DebugPrint('Length leftiLinkLIst' + str(len(self.leftLinkList)))
@@ -100,16 +100,17 @@ class MapMovementDialog(ui.ScriptWindow):
                     'function_args': [position, map_name, npc_race, event_answer, map_destination_name],
                     'function': ChangeMap,
                     'callback': self.SetCanAddActionTrue,
+                    'requirements': {ActionRequirementsCheckers.IS_IN_MAP: [map_destination_name]}
                 }
                 self.SetState(self.STATE_MOVING)
                 ActionBot.instance.NewActionReturned(action_dict)
-                self.can_add_action = False
+                self.can_add_action = False 
             #OpenLog.DebugPrint("Moving to ("+str(position[0])+","+str(position[1])+")")
             #Movement.GoToPositionAvoidingObjects(position[0],position[1],maxDist=250,callback=_DestinationReachedCallback)
             #self.SetState(self.STATE_MOVING)
         else:
             #DebugPrint('Last point')
-            OpenLog.DebugPrint("Moving to ("+str(self.finalPosition[0])+","+str(self.finalPosition[1])+")")
+            DebugPrint("Moving to ("+str(self.finalPosition[0])+","+str(self.finalPosition[1])+")")
             Movement.GoToPositionAvoidingObjects(self.finalPosition[0],self.finalPosition[1],maxDist=self.maxDist,callback=self.callback)
             self.callback = None
             self.SetState(self.STATE_NONE)
@@ -169,9 +170,9 @@ class MovementDialog(ui.ScriptWindow):
         self.callback = callback
         if(round(x) != round(self.currDestinationX) or round(y) != round(self.currDestinationY)):
             my_x,my_y,z = player.GetMainCharacterPosition()
-            OpenLog.DebugPrint("[MOVEMENT] Finding Path from ("+str(my_x)+","+str(my_y)+") to " + "("+str(x)+","+str(y)+")")
+            DebugPrint("[MOVEMENT] Finding Path from ("+str(my_x)+","+str(my_y)+") to " + "("+str(x)+","+str(y)+")")
             self.path = eXLib.FindPath(my_x,my_y,x,y)
-            OpenLog.DebugPrint("[MOVEMENT] Path Found with "+str(len(self.path)) +" points")
+            DebugPrint("[MOVEMENT] Path Found with "+str(len(self.path)) +" points")
             if(len(self.path)>0):
                 self.currDestinationX = x
                 self.currDestinationY = y

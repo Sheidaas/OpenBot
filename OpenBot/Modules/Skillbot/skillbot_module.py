@@ -8,6 +8,7 @@ def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkills()
+        instance.LoadSettings()
         if instance.shouldWait:
             instance.startUpWait = True
 

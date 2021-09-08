@@ -4,7 +4,8 @@ from OpenBot.Modules.Settings.settings_module import instance
 class SettingsInterface:
 
     def SetStatus(self, status):
-        self.SetPickupRange(status['PickupRange'])
+        if status['PickupRange'] != instance.pickUpRange:
+            self.SetPickupRange(status['PickupRange'])
 
         if status['RestartHere'] != instance.restartHere:
             self.SwitchRestartHere()
@@ -38,6 +39,11 @@ class SettingsInterface:
         #    self.SwitchCheckIsWallBetweenPlayerAndItem()
         if status['UseWallhack'] != instance.wallHack:
             self.SwitchWallhack()
+        
+        if status['PickupItemFirst'] != instance.pickItemsFirst:
+            self.SwitchPickupItemFirst()
+
+        instance.SaveSettings()
 
     def GetStatus(self):
         return {
@@ -56,11 +62,25 @@ class SettingsInterface:
             'ExcludeInFilter': instance.excludeInFilter,
             'UseRangePickup': instance.useRangePickup,
             'AvoidPlayersInPickup': instance.doNotPickupIfPlayerHere,
+            'PickupItemFirst': instance.pickItemsFirst,
+            'PickupIgnorePath': instance.pickItemsIgnorePath,
             #'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
             'UseWallhack': instance.wallHack,   
             #'PickupFiltersID': instance.pickFilter
         }
     
+    def SwitchPickupItemFirst(self):
+        if instance.pickItemsFirst:
+            instance.OnChangePickItemFirst(False) 
+        else:
+            instance.OnChangePickItemFirst(True)         
+
+    def SwitchPickupIgnorePath(self):
+        if instance.pickItemsIgnorePath:
+            instance.OnChangePickItemsIgnorePath(False)
+        else:
+            instance.OnChangePickItemsIgnorePath(True)
+
     def SwitchRestartHere(self):
         if instance.restartHere:
             instance.restartHere = False
@@ -111,7 +131,7 @@ class SettingsInterface:
             instance.pickUp = True 
 
     def SetPickupRange(self, pickup_range):
-        instance.pickUpRange = pickup_range * 10
+        instance.SetPickupRange(pickup_range)
 
     
     def SetPickupSpeed(self, pickup_speed):

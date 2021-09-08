@@ -26,12 +26,12 @@ class Waithack(ui.ScriptWindow):
         self.is_wall_between = False
         self.attack_blocked_monsters = False
 
-        self.loadSettings()
+        self.LoadSettings()
 
     def __del__(self):
         ui.Window.__del__(self)
 
-    def loadSettings(self):
+    def LoadSettings(self):
         self.maxMonster = float(FileManager.ReadConfig("WaitHack_MaxMonsters"))
         self.speed = float(FileManager.ReadConfig("WaitHack_Speed"))
         self.range = float(FileManager.ReadConfig("WaitHack_Range"))
@@ -41,7 +41,7 @@ class Waithack(ui.ScriptWindow):
         self.is_wall_between = boolean(FileManager.ReadConfig("WaitHack_IsWallBetween"))
         self.attack_blocked_monsters = boolean(FileManager.ReadConfig("WaitHack_AttackBlocked"))
 
-    def saveSettings(self):
+    def SaveSettings(self):
         FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.maxMonster))
         FileManager.WriteConfig("WaitHack_Speed", str(self.speed))
         FileManager.WriteConfig("WaitHack_Range", str(self.range))
@@ -52,7 +52,7 @@ class Waithack(ui.ScriptWindow):
         FileManager.WriteConfig("WaitHack_AttackBlocked", str(self.attack_blocked_monsters))
         FileManager.Save()
 
-    def OnOffBtnState(self, val):
+    def onEnableChange(self, val):
         if val:
             eXLib.BlockAttackPackets()
         else:
