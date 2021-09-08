@@ -1,0 +1,4 @@
+channels
+currChannel
+currState
+selectedChannel

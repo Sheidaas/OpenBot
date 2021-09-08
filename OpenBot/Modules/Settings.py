@@ -473,9 +473,6 @@ class SettingsDialog(ui.ScriptWindow):
 					if not self.useRangePickup:
 						return
 					
-					#if self.checkIsWallBetweenPlayerAndItem:
-					#	if eXLib.IsPathBlocked(x, y, itemX, itemY):
-					#		return
 
 					Movement.TeleportStraightLine(x,y,itemX,itemY)
 					eXLib.SendPickupItem(vid)

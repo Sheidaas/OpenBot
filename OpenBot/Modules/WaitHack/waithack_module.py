@@ -48,6 +48,8 @@ class Waithack(ui.ScriptWindow):
         FileManager.WriteConfig("WaitHack_PlayerClose", str(self.avoidPlayers))
         FileManager.WriteConfig("WaitHack_attackPlayer", str(self.attackPlayer))
         FileManager.WriteConfig("WaitHack_CloudExploit", str(self.use_cloud_exploit))
+        FileManager.WriteConfig("WaitHack_IsWallBetween", str(self.is_wall_between))
+        FileManager.WriteConfig("WaitHack_AttackBlocked", str(self.attack_blocked_monsters))
         FileManager.Save()
 
     def OnOffBtnState(self, val):
