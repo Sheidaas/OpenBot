@@ -1,4 +1,4 @@
-from OpenBot.Modules import OpenLib, OpenLog
+from OpenBot.Modules import OpenLog
 import ActionRequirementsCheckers
 
 # Parents
@@ -109,7 +109,8 @@ class Action:
                     return REQUIREMENTS_NOT_DONE
             else:
                 on_failed = self.CheckOnFailedList()
-                return on_failed
+                if on_failed == None:
+                    return NOTHING
         else:
             return action_result
 
@@ -136,6 +137,9 @@ class Action:
                 if not ActionRequirementsCheckers.IsInChannel(self.requirements[requirement]):
                     return False
 
+            elif requirement == ActionRequirementsCheckers.IS_HP_RECOVERED:
+                if not ActionRequirementsCheckers.IsHPRecovered(self.requirements[requirement]):
+                    return False
         return True
 
     def CheckOnSuccesList(self):
@@ -158,5 +162,5 @@ class Action:
             elif type(failed_key) == str:
                 if failed_key == NEXT_ACTION:
                     return NEXT_ACTION
-        return NEXT_ACTION
+        return None
 

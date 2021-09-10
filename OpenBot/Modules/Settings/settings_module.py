@@ -1,10 +1,13 @@
+from OpenBot.Modules.OpenLog import DebugPrint
+from OpenBot.Modules.Actions.Action import NEXT_ACTION
+from OpenBot.Modules.Actions.ActionFunctions import WaitFor
 import ui,net,player,eXLib
 from OpenBot.Modules import FileManager, Movement, OpenLib
 from OpenBot.Modules.FileManager import boolean
 
 
 class SettingsDialog(ui.ScriptWindow):
-    TIME_DEAD = 5
+    TIME_DEAD = 10
     TIME_POTS = 0.2
     RED_POTIONS_IDS = [27001,27002,27003,27007,27051,27201,27202,27203]
     BLUE_POTIONS_IDS = [27004,27005,27006,27008,27052,27204,27205,27206,63018]
@@ -26,7 +29,7 @@ class SettingsDialog(ui.ScriptWindow):
         self.pickUp = False
         self.pickUpRange = 290.0
         self.pickUpSpeed = 0.5
-        self.pickFilter = set()
+        self.pickFilter = []
         self.excludeInFilter = True
         self.useRangePickup = False
         self.doNotPickupIfPlayerHere = False
@@ -36,7 +39,7 @@ class SettingsDialog(ui.ScriptWindow):
         self.useOnClickDmg = False
         self.onClickDmgSpeed = 0.0
         self.timerDmg = OpenLib.GetTime()
-
+        self.can_add_revive_action = True
         self.wallHack = False
         self.sellItems = set()
 
@@ -119,6 +122,9 @@ class SettingsDialog(ui.ScriptWindow):
             if self.bluePotions and (float(player.GetStatus(player.SP)) / (float(player.GetStatus(player.MAX_SP))) * 100) < int(self.minMana):
                 OpenLib.UseAnyItemByID(self.BLUE_POTIONS_IDS)
 
+    def revive_callback(self):
+        self.can_add_revive_action = True
+
     def checkReviveAndLogin(self):
         val, self.timerDead = OpenLib.timeSleep(self.timerDead,self.TIME_DEAD)
 
@@ -126,9 +132,24 @@ class SettingsDialog(ui.ScriptWindow):
             return
 
         if self.restartHere and player.GetStatus(player.HP) <= 0:
+
             self.lastTimeDead = OpenLib.GetTime()
+            DebugPrint(str(self.can_add_revive_action))
+            if self.can_add_revive_action:
+                self.can_add_revive_action = False
+                from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
+                ActionBot.instance.NewActionReturned({
+                    'name': 'Recovering',
+                    'function_args': [0, ['waithack']],
+                    'function': ActionFunctions.WaitFor,
+                    'requirements': {ActionRequirementsCheckers.IS_HP_RECOVERED: []},
+                    'callback': self.revive_callback, 
+                })
+            
             if not self.restartInCity:
+                
                 OpenLib.Revive()
+
             else:
                 OpenLib.Revive(in_city=True)
         
@@ -207,7 +228,7 @@ class SettingsDialog(ui.ScriptWindow):
 
     def addPickFilterItem(self,id):
         eXLib.ItemGrndAddFilter(id)
-        self.pickFilter.add(int(id))
+        self.pickFilter.append(int(id))
         
     def PickUp(self):
         if self.pickUp:

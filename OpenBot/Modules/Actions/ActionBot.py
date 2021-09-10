@@ -1,5 +1,5 @@
-from OpenBot.Modules import DmgHacks
-import ActionRequirementsCheckers, Action
+from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+import Action
 from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import OpenLib, UIComponents
@@ -125,13 +125,14 @@ class ActionBot(BotBase):
         return new_action
         
     def NewActionReturned(self, action):
-        if not self.currActionObject in self.currActionsQueue:
+        if not self.currActionObject in self.currActionsQueue and self.currActionObject is not None:
             self.currActionsQueue.append(self.currActionObject)
 
         if isinstance(action, Action.Action):
             self.currActionObject = action
         else:
             new_action = self.ConvertDictActionToObjectAction(action)
+            DebugPrint(str(action))
             self.currActionObject = new_action
 
     def AddNewAction(self, action):
@@ -172,16 +173,16 @@ class ActionBot(BotBase):
 
         if not self.showOffWaithackButton:
             if self.showAlwaysWaithackButton:
-                DmgHacks.Resume()
+                waithack_interface.Start()
             else:
                 if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
                                                                'FindMapInDT', 'OpenASealInMonument'] or \
                     self.currActionObject.name in names:
-                    DmgHacks.Resume()
+                    waithack_interface.Start()
                 else:
-                    DmgHacks.Pause()
+                    waithack_interface.Stop()
         else:
-            DmgHacks.Pause()
+            waithack_interface.Start()
         
         self.FrameDoAction()
 
@@ -197,7 +198,8 @@ class ActionBot(BotBase):
             self.RefreshRenderedActions()
 
         action_result = self.currActionObject.CallFunction()
-
+        #DebugPrint(str(self.currActionsQueue))
+        #DebugPrint(str(action_result))
         if type(action_result) == str:
             
             if action_result == Action.NEXT_ACTION:
@@ -226,14 +228,15 @@ class ActionBot(BotBase):
 
 
     def RefreshRenderedActions(self):
-        actions_to_render = [self.currActionObject] + self.currActionsQueue
+        actions_to_render = self.currActionsQueue + [self.currActionObject]
         self.rendered_actions = []
         x = 10
         y = 15
         comp = UIComponents.Component()
-        for action in actions_to_render:
-            self.rendered_actions.append(comp.TextLine(self.general, action.name, x, y, UIComponents.RGB(255, 255, 255)))
-            y += 20
+        for action in reversed(actions_to_render):
+            if action is not None:
+                self.rendered_actions.append(comp.TextLine(self.general, action.name, x, y, UIComponents.RGB(255, 255, 255)))
+                y += 20
     
     def RefreshRenderedWaiters(self):
         x = 100
@@ -241,8 +244,9 @@ class ActionBot(BotBase):
         self.rendered_waiters = []
         comp = UIComponents.Component()
         for action in self.waiters:
-            self.rendered_waiters.append(comp.TextLine(self.general, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
-            y += 20
+            if action != None:
+                self.rendered_waiters.append(comp.TextLine(self.general, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
+                y += 20
 
     def switch_state(self):
         if self.Board.IsShow():

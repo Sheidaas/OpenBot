@@ -478,7 +478,22 @@ def ChangeChannel(args):
     if 0 < channel_id > len(ChannelSwitcher.instance.channels):
         return Action.ERROR
     
+
     if ChannelSwitcher.instance.currState != ChannelSwitcher.STATE_CHANGING_CHANNEL:
         DebugPrint('Changing channel to ' + str(channel_id) )
         ChannelSwitcher.instance.ChangeChannelById(channel_id)
-        return Action.NEXT_ACTION
+        return {
+            'name': 'Waiting to change channel',
+            'function': WaitFor,
+            'function_args': [0],
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: channel_id}
+        }
+
+def WaitFor(args):
+    if not len(args) > 1:
+        return True
+    from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+    modules_to_switch_off = args[1]
+    if 'waithack' in modules_to_switch_off:
+        waithack_interface.Stop()
+    return True

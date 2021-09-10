@@ -33,11 +33,12 @@ class FarmbotInterface:
         for ore_id in status['OresToMine']:
             self.AddOreToMine(ore_id)
 
+        look_for_ore = farm_instance.look_for_ore
         if farm_instance.switch_channels != status['ChangeChannel']:
             self.SwitchChangeChannel()
         if farm_instance.look_for_metins != status['LookForMetins']:
             self.SwitchLookForMetins()
-        if farm_instance.look_for_ore != status['LookForOre']:
+        if look_for_ore != status['LookForOre']:
             self.SwitchLookForOre()
         if farm_instance.exchange_items_to_energy != status['ExchangeItemsToEnergy']:
             self.SwitchExchangeItemsToEnergy()

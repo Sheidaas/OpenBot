@@ -1,5 +1,5 @@
 from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
-from OpenBot.Modules import OpenLog, OpenLib, FileManager,ChannelSwitcher
+from OpenBot.Modules import OpenLog, OpenLib, FileManager,ChannelSwitcher, Movement
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.FileManager import boolean
 import player, ui, chat, chr, net, background
@@ -66,13 +66,14 @@ class FarmingBot(ui.ScriptWindow):
 
 	def onStart(self):
 		if len(self.path) > 1:
-			self.enabled = True
+			self.enabled = True			
 			return True
 		else:
 			chat.AppendChat(3, 'You need to add more than 1 waypoint!')
-			self.enabled = False
+			self.onStop()
 			return False
 	
+
 	def onStop(self):
 		self.isCurrActionDone = True
 		self.selectedMetin = 0
@@ -80,6 +81,7 @@ class FarmingBot(ui.ScriptWindow):
 		self.current_point = 0
 		self.is_currently_digging = False
 		self.enabled = False
+		Movement.StopMovement()
 
 	def IsWalkingDone(self):
 		self.isCurrActionDone = True
@@ -134,6 +136,7 @@ class FarmingBot(ui.ScriptWindow):
 		return False
 
 	def next_point(self):
+		Movement.StopMovement()
 		if self.current_point + 1 < len(self.path):
 			self.current_point += 1
 		else:
@@ -204,9 +207,6 @@ class FarmingBot(ui.ScriptWindow):
 				if self.CURRENT_STATE == WAITING_STATE:
 
 					OpenLog.DebugPrint("[Farming-bot] WAITING_STATE")
-					text = self.edit_lineWaitingTime.GetText()
-					if self.is_text_validate(text):
-						self.timeForWaitingState = int(text)
 					val, self.lastTimeWaitingState = OpenLib.timeSleep(self.lastTimeWaitingState, self.timeForWaitingState)
 					if val:
 						self.lastTimeWaitingState = 0

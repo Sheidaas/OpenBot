@@ -1,5 +1,5 @@
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
-from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
+from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
 from OpenBot.Modules.Settings.settings_interface import settings_interface
 from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
 from OpenBot import simplejson as json

@@ -14,6 +14,7 @@ IS_RACE_NEARLY = 'IS_RACE_NEARLY'
 IS_IN_CHANNEL = 'IS_IN_CHANNEL'
 IS_CHAR_READY_TO_MINE = 'IS_CHAR_READY_TO_MINE'
 IS_DEAD = 'IS_DEAD'
+IS_HP_RECOVERED = 'IS_HP_RECOVERED'
 HAS_ITEM = 'HAS_ITEM'
 HAS_ITEM_IN_COUNT = 'HAS_ITEM_IN_COUNT'
 
@@ -141,3 +142,10 @@ def IsInChannel(channel):
     if OpenLib.GetCurrentChannel() == channel:
         return True
     return False
+
+def IsHPRecovered(args):
+    current_hp = player.GetStatus(player.HP)
+    max_hp = player.GetStatus(player.MAX_HP)
+    if current_hp / max_hp * 100 >= 50:
+        return True
+    return False 

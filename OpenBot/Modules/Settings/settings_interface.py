@@ -39,9 +39,18 @@ class SettingsInterface:
         #    self.SwitchCheckIsWallBetweenPlayerAndItem()
         if status['UseWallhack'] != instance.wallHack:
             self.SwitchWallhack()
-        
+        if status['AutoLogin'] != instance.autoLogin:
+            self.SwitchAutoLogin()
         if status['PickupItemFirst'] != instance.pickItemsFirst:
             self.SwitchPickupItemFirst()
+
+        _filter = instance.pickFilter
+        instance.pickFilter = []
+        for _id in _filter:
+            instance.delPickFilterItem(_id)
+        
+        for _id in status['PickupFiltersID']:
+            instance.addPickFilterItem(_id)
 
         instance.SaveSettings()
 
@@ -65,8 +74,9 @@ class SettingsInterface:
             'PickupItemFirst': instance.pickItemsFirst,
             'PickupIgnorePath': instance.pickItemsIgnorePath,
             #'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
-            'UseWallhack': instance.wallHack,   
-            #'PickupFiltersID': instance.pickFilter
+            'UseWallhack': instance.wallHack,
+            'AutoLogin': instance.autoLogin,   
+            'PickupFiltersID': instance.pickFilter
         }
     
     def SwitchPickupItemFirst(self):
@@ -80,6 +90,12 @@ class SettingsInterface:
             instance.OnChangePickItemsIgnorePath(False)
         else:
             instance.OnChangePickItemsIgnorePath(True)
+
+    def SwitchAutoLogin(self):
+        if instance.autoLogin:
+            instance.autoLogin = False
+        else:
+            instance.autoLogin = True
 
     def SwitchRestartHere(self):
         if instance.restartHere:
