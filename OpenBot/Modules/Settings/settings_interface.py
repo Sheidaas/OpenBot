@@ -1,4 +1,5 @@
 from OpenBot.Modules.Settings.settings_module import instance
+from OpenBot.Modules import OpenLog
 
 
 class SettingsInterface:
@@ -45,10 +46,10 @@ class SettingsInterface:
             self.SwitchPickupItemFirst()
 
         _filter = instance.pickFilter
-        instance.pickFilter = []
         for _id in _filter:
             instance.delPickFilterItem(_id)
         
+        OpenLog.DebugPrint(str(status['PickupFiltersID']))
         for _id in status['PickupFiltersID']:
             instance.addPickFilterItem(_id)
 

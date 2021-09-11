@@ -42,6 +42,9 @@ class FarmbotInterface:
             self.SwitchLookForOre()
         if farm_instance.exchange_items_to_energy != status['ExchangeItemsToEnergy']:
             self.SwitchExchangeItemsToEnergy()
+
+        if 'ClearPath' in status.keys():
+            self.ClearPath()
         
         self.SetWaitingTime(status['WaitingTime'])
 

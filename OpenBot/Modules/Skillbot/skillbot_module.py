@@ -1,7 +1,7 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 import ui, chat, player, net, m2netm2g,eXLib
 from OpenBot.Modules import OpenLib, FileManager, Hooks
-from OpenBot.Modules.Actions import ActionBot
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 
 
 def __PhaseChangeSkillCallback(phase,phaseWnd):
@@ -120,7 +120,7 @@ class Skillbot(ui.ScriptWindow):
                                 eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
                                 net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
                             skill['is_turned_on'] = True
-                            ActionBot.instance.AddNewWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
+                            action_bot_interface.AddWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
                     else:
                         if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
                             if not player.IsMountingHorse():

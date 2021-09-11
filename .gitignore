@@ -16,3 +16,7 @@ deXLib.dll
 .idea
 settings.xml
 PatternScanner.dll
+*.xml
+Tracef.txt
+Tracenf.txt
+settings.xml

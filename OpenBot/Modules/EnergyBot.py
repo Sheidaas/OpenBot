@@ -1,6 +1,7 @@
 from OpenBot.Modules import OpenLib
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Actions import ActionFunctions, ActionRequirementsCheckers, ActionBot
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from BotBase import BotBase
 import UIComponents
 import ui
@@ -117,7 +118,7 @@ class EnergyBot(BotBase):
                     item_slot = int(self.edit_lineItemSlotToBuy.GetText())
                     self.currSchema['stages'][self.currStage]['actions'][self.currAction]['function_args'][0] = [item_slot for x in range(item_count)]
                 
-            ActionBot.instance.AddNewAction(action_dict)
+            action_bot_interface.AddAction(action_dict)
             DebugPrint(str(action_dict))
 
 instance = EnergyBot()

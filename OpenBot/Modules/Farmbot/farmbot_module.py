@@ -1,4 +1,5 @@
-from OpenBot.Modules.Actions import Action, ActionBot, ActionFunctions, ActionRequirementsCheckers
+from OpenBot.Modules.Actions import Action, ActionBotInterface, ActionFunctions, ActionRequirementsCheckers
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules import OpenLog, OpenLib, FileManager,ChannelSwitcher, Movement
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.FileManager import boolean
@@ -21,7 +22,7 @@ def OnDigMotionCallback(main_vid,target_ore,n):
 		DebugPrint('Digging is starting')
 		farm.is_currently_digging = True
 		slash_time = n * farm.MINING_SLASH_TIME
-		ActionBot.instance.AddNewWaiter(slash_time, farm.IsCurrentlyDiggingDone)
+		action_bot_interface.AddWaiter(slash_time, farm.IsCurrentlyDiggingDone)
 
 def returnFuncWithArgs(func, args):
 	def x():
@@ -54,12 +55,12 @@ class FarmingBot(ui.ScriptWindow):
 		self.lastTimeWaitingState = 0
 		self.timeForWaitingState = 5
 		self.isReadyToSwitchChannel = False
-		
-
 		self.switch_channels = False
 		self.look_for_metins = False
 		self.look_for_ore = False
 		self.exchange_items_to_energy = False
+		self.always_use_waithack = False
+		self.dont_use_waithack = False
 
 	def __del__(self):
 		ui.Window.__del__(self)
@@ -175,7 +176,7 @@ class FarmingBot(ui.ScriptWindow):
 			'callback': self.SetIsCurrActionDoneTrue,
 			#'call_only_once': True,
 		}
-		ActionBot.instance.AddNewAction(action_dict)
+		action_bot_interface.AddAction(action_dict)
 
 	def SetIsCurrActionDoneTrue(self):
 		self.isCurrActionDone = True
@@ -256,7 +257,7 @@ class FarmingBot(ui.ScriptWindow):
 					'interruptors_args': interruptors_args,
 					'interruptors': interruptors,
 					'interrupt_function': interrupt_function}
-					ActionBot.instance.AddNewAction(action_dict)
+					action_bot_interface.AddAction(action_dict)
 					self.isCurrActionDone = False
 					return
 
@@ -270,7 +271,7 @@ class FarmingBot(ui.ScriptWindow):
 						'on_failed': [Action.NEXT_ACTION]
 					}
 
-					ActionBot.instance.AddNewAction(action_dict)
+					action_bot_interface.AddAction(action_dict)
 					self.isCurrActionDone = False
 					return
 
@@ -283,7 +284,7 @@ class FarmingBot(ui.ScriptWindow):
 								'on_failed': [],
 								'callback': self.IsDestroyingMetinDone
 								}
-					ActionBot.instance.AddNewAction(action_dict)
+					action_bot_interface.AddAction(action_dict)
 					self.isCurrActionDone = False
 					return
 				
@@ -293,7 +294,7 @@ class FarmingBot(ui.ScriptWindow):
 									'function': ActionFunctions.ExchangeTrashItemsToEnergyFragments,
 									'on_success': [Action.NEXT_ACTION],
 									'callback': self.IsExchangingItemsToEnergyFragmentsDone}
-					ActionBot.instance.AddNewAction(action_dict)
+					action_bot_interface.AddAction(action_dict)
 					self.isCurrActionDone = False
 					return
 

@@ -1,6 +1,11 @@
 import eXLib
 import chr, app, item
 from OpenBot.Modules import OpenLib, OpenLog
+from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
+from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+from OpenBot.Modules.Skillbot.skillbot_ui import skillbot_interface
+from OpenBot.Modules.Settings.settings_interface import settings_interface
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 
 def parse_instances_list():
     instances_list = [None] * len(eXLib.InstancesList)
@@ -44,15 +49,12 @@ def parse_character_status_info():
     return status
 
 def parse_hack_status():
-    from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
-    from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
-    from OpenBot.Modules.Skillbot.skillbot_ui import skillbot_interface
-    from OpenBot.Modules.Settings.settings_interface import settings_interface
     hack_status = {
         'Settings': settings_interface.GetStatus(),
         'WaitHack': waithack_interface.GetStatus(),
         'FarmBot': farmbot_interface.GetStatus(),
         'SkillBot': skillbot_interface.GetStatus(),
+        'ActionBot': action_bot_interface.GetStatus(),
     }
 
     return hack_status

@@ -16,20 +16,17 @@ STAGE_REPEAT = 'stage_reapat'
 def _afterLoadPhase(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_LOGIN or phase==OpenLib.PHASE_GAME:
-        instance.enableActionBot.SetOn()
-        instance.Start()
         for waiter in instance.waiters:
             waiter['callback']()
         instance.waiters = []
 
 
-class ActionBot(BotBase):
+class ActionBot(ui.ScriptWindow):
 
     def __init__(self):
-        BotBase.__init__(self, 0.2)
-        
-        self.currState = STATE_STOP
-
+        ui.Window.__init__(self)
+        self.lastTime = 0
+        self.enabled = True
         self.currActionObject = None
         self.currActionsQueue = []
 
@@ -38,64 +35,6 @@ class ActionBot(BotBase):
 
         self.showOffWaithackButton = False
         self.showAlwaysWaithackButton = False
-        self.BuildWindow()
-
-    def BuildWindow(self):
-        self.comp = UIComponents.Component()
-        self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(235, 275)
-        self.Board.SetPosition(52, 40)
-        self.Board.AddFlag('movable')
-        self.Board.SetTitleName('ActionBot')
-        self.Board.SetCloseEvent(self.switch_state)
-        self.Board.Hide()
-
-        comp = UIComponents.Component()
-
-        self.TabWidget = UIComponents.TabWindow(10, 30, 215, 235, self.Board, ['General', 'Settings'])
-
-        self.general = self.TabWidget.GetTab(0)
-        self.settings_tab = self.TabWidget.GetTab(1)
-
-        self.enableActionBot = comp.OnOffButton(self.general, '', '', 170, 135,
-                                                    OffUpVisual='OpenBot/Images/start_0.tga',
-                                                    OffOverVisual='OpenBot/Images/start_1.tga',
-                                                    OffDownVisual='OpenBot/Images/start_2.tga',
-                                                    OnUpVisual='OpenBot/Images/stop_0.tga',
-                                                    OnOverVisual='OpenBot/Images/stop_1.tga',
-                                                    OnDownVisual='OpenBot/Images/stop_2.tga',
-                                                    funcState=self.OnEnableSwitchButton, defaultValue=False)
-        
-        self.ClearButton = comp.Button(self.general, 'Clear', '', 20, 135, self.OnClearButton,
-                                          'd:/ymir work/ui/public/large_Button_01.sub',
-                                          'd:/ymir work/ui/public/large_Button_02.sub',
-                                          'd:/ymir work/ui/public/large_Button_03.sub')
-        self.ShowButton = comp.Button(self.general, 'Show', '', 20, 155, self.OnClearButton,
-                                          'd:/ymir work/ui/public/large_Button_01.sub',
-                                          'd:/ymir work/ui/public/large_Button_02.sub',
-                                          'd:/ymir work/ui/public/large_Button_03.sub')
-
-
-    def OnEnableSwitchButton(self, val):
-        if val:
-            self.Start()
-        else:
-            self.Stop()
-            
-    def OnClearButton(self):
-
-        if self.currActionObject is not None:
-            self.currActionObject.CallCallback()
-
-        for action in self.currActionsQueue:
-            action.CallCallback()
-
-        for waiter in self.waiters:
-            waiter['callback']()
-        
-        self.currActionObject = None
-        self.currActionsQueue = []
-        self.waiters = []
 
     def GetNewId(self):
         return 0
@@ -135,68 +74,14 @@ class ActionBot(BotBase):
             DebugPrint(str(action))
             self.currActionObject = new_action
 
-    def AddNewAction(self, action):
-        if type(action) == Action.Action:
-            self.currActionsQueue.append(action)
-        else:
-            new_action = self.ConvertDictActionToObjectAction(action)
-            DebugPrint('Converted Dict action to object action')
-            self.currActionsQueue.append(new_action)          
-
     def CheckIsThereNewAction(self):
         if not len(self.currActionsQueue):
             return False
         else:
             self.currActionObject = self.currActionsQueue.pop()
-            return True
-
-    def StopBot(self):
-        self.OnClearButton()
-
-    def Frame(self):
-        self.rendered_actions = []
-        self.rendered_waiters = []
-        names = ['Going to enemy']
-
-        if self.Board.IsShow():
-            self.RefreshRenderedWaiters()
-
-        this_time = OpenLib.GetTime()
-        for waiter in self.waiters:
-            if this_time > waiter['timeToWait'] + waiter['launching_time']:
-                waiter['callback']()
-                self.waiters.remove(waiter)
-
-        if self.currActionObject == None:
-            if not self.CheckIsThereNewAction():
-                return
-
-        if not self.showOffWaithackButton:
-            if self.showAlwaysWaithackButton:
-                waithack_interface.Start()
-            else:
-                if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
-                                                               'FindMapInDT', 'OpenASealInMonument'] or \
-                    self.currActionObject.name in names:
-                    waithack_interface.Start()
-                else:
-                    waithack_interface.Stop()
-        else:
-            waithack_interface.Start()
-        
-        self.FrameDoAction()
-
-    def AddNewWaiter(self, timeToWait, callback):
-        self.waiters.append({
-            'timeToWait': timeToWait,
-            'callback': callback,
-            'launching_time': OpenLib.GetTime(),
-        })     
+            return True   
 
     def FrameDoAction(self):
-        if self.Board.IsShow():
-            self.RefreshRenderedActions()
-
         action_result = self.currActionObject.CallFunction()
         #DebugPrint(str(self.currActionsQueue))
         #DebugPrint(str(action_result))
@@ -225,34 +110,38 @@ class ActionBot(BotBase):
             DebugPrint('New action returned')
             self.NewActionReturned(action_result)
 
+    def OnUpdate(self):
+        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
+        if val and OpenLib.IsInGamePhase() and self.enabled:
+            self.rendered_actions = []
+            self.rendered_waiters = []
+            names = ['Going to enemy']
 
+            this_time = OpenLib.GetTime()
+            for waiter in self.waiters:
+                if this_time >= waiter['timeToWait'] + waiter['launching_time']:
+                    waiter['callback']()
+                    self.waiters.remove(waiter)
 
-    def RefreshRenderedActions(self):
-        actions_to_render = self.currActionsQueue + [self.currActionObject]
-        self.rendered_actions = []
-        x = 10
-        y = 15
-        comp = UIComponents.Component()
-        for action in reversed(actions_to_render):
-            if action is not None:
-                self.rendered_actions.append(comp.TextLine(self.general, action.name, x, y, UIComponents.RGB(255, 255, 255)))
-                y += 20
-    
-    def RefreshRenderedWaiters(self):
-        x = 100
-        y = 15
-        self.rendered_waiters = []
-        comp = UIComponents.Component()
-        for action in self.waiters:
-            if action != None:
-                self.rendered_waiters.append(comp.TextLine(self.general, action['callback'].__name__, x, y, UIComponents.RGB(255, 255, 255)))
-                y += 20
+            if self.currActionObject == None:
+                if not self.CheckIsThereNewAction():
+                    return
 
-    def switch_state(self):
-        if self.Board.IsShow():
-            self.Board.Hide()
-        else:
-            self.Board.Show()
+            if not self.showOffWaithackButton:
+                if self.showAlwaysWaithackButton:
+                    waithack_interface.Start()
+                else:
+                    if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                                                                'FindMapInDT', 'OpenASealInMonument'] or \
+                        self.currActionObject.name in names:
+                        waithack_interface.Start()
+                    else:
+                        waithack_interface.Stop()
+            else:
+                waithack_interface.Start()
+            
+            self.FrameDoAction()
 
 instance = ActionBot()
+instance.Show()
 Hooks.registerPhaseCallback('actionBot', _afterLoadPhase)

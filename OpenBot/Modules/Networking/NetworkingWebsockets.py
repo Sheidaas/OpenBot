@@ -116,7 +116,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
     def OnUpdate(self):
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.01)
+        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
         if val and OpenLib.IsInGamePhase():
             if self.settedClientType and self.isConnected:
                 val, self.timeLastUpdate = OpenLib.timeSleep(self.timeLastUpdate, self.timeToUpdate)

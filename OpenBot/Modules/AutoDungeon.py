@@ -1,6 +1,7 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules._Settings import ItemListDialog
-from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers, ActionBot
+from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from BotBase import BotBase
 import UIComponents, OpenLib
 import ui, player, background, chat, item
@@ -331,7 +332,7 @@ class AutoDungeon(BotBase):
             action_dict = self.currSchema['stages'][self.currStage]['actions'][self.currAction]
             action_dict['callback'] = self.SetIsCurrActionDoneTrue
             self.isCurrActionDone = False
-            ActionBot.instance.AddNewAction(action_dict)
+            action_bot_interface.AddAction(action_dict)
             DebugPrint(str(action_dict))
 
     def switch_state(self):
