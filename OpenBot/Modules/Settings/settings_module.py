@@ -166,7 +166,7 @@ class SettingsDialog(ui.ScriptWindow):
             eXLib.EnableCollisions()
 
     def antiExpFunc(self):
-        from OpenBot.Modules.Actions import ActionBot
+        from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
         def _anti_exp():
             self.can_add_waiter = True
             exp = player.GetEXP()
@@ -178,7 +178,7 @@ class SettingsDialog(ui.ScriptWindow):
                 return
         
         if self.antiExp and self.can_add_waiter:
-            ActionBot.instance.AddNewWaiter(3, _anti_exp)
+            action_bot_interface.AddWaiter(3, _anti_exp)
             self.can_add_waiter = False
 
     def SetSpeedHackMultiplier(self, new_speed_multiplier):

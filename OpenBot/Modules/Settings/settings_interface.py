@@ -45,13 +45,13 @@ class SettingsInterface:
         if status['PickupItemFirst'] != instance.pickItemsFirst:
             self.SwitchPickupItemFirst()
 
-        _filter = instance.pickFilter
-        for _id in _filter:
-            instance.delPickFilterItem(_id)
+        #_filter = instance.pickFilter
+        #for _id in _filter:
+        #    instance.delPickFilterItem(_id)
         
-        OpenLog.DebugPrint(str(status['PickupFiltersID']))
-        for _id in status['PickupFiltersID']:
-            instance.addPickFilterItem(_id)
+        #OpenLog.DebugPrint(str(status['PickupFiltersID']))
+        #for _id in status['PickupFiltersID']:
+        #    instance.addPickFilterItem(_id)
 
         instance.SaveSettings()
 
@@ -74,12 +74,30 @@ class SettingsInterface:
             'AvoidPlayersInPickup': instance.doNotPickupIfPlayerHere,
             'PickupItemFirst': instance.pickItemsFirst,
             'PickupIgnorePath': instance.pickItemsIgnorePath,
-            #'CheckIsWallBetweenPlayerAndItem': instance.checkIsWallBetweenPlayerAndItem,
             'UseWallhack': instance.wallHack,
             'AutoLogin': instance.autoLogin,   
-            'PickupFiltersID': instance.pickFilter
         }
     
+    def SetPickupFilter(self, pickup_list):
+        for item_id in instance.pickFilter:
+            if item_id not in pickup_list:
+                instance.delPickFilterItem(item_id)
+        
+        for item_id in pickup_list:
+            if item_id not in instance.pickFilter:
+                instance.addPickFilterItem(item_id)
+        
+        if not pickup_list:
+            for item_id in instance.pickFilter:
+                instance.delPickFilterItem(item_id)
+        
+        OpenLog.DebugPrint(str(instance.pickFilter))
+
+
+
+    def GetPickupFilter(self):
+        return instance.pickFilter
+
     def SwitchPickupItemFirst(self):
         if instance.pickItemsFirst:
             instance.OnChangePickItemFirst(False) 

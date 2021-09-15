@@ -1,3 +1,4 @@
+from OpenBot.Modules.Actions import ActionBotInterface
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
 from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
 from OpenBot.Modules.Settings.settings_interface import settings_interface
@@ -17,6 +18,10 @@ def OnMessage(id, message):
     if not instance.settedClientType:
         instance.SetClientTypeAsMetin()
         instance.settedClientType = True
+    
+    if not instance.settedBasicInformation:
+        instance.settedBasicInformation = True
+        pass
 
     cleaned_message = json.loads(message)
     #OpenLog.DebugPrint(str(cleaned_message))
@@ -29,9 +34,9 @@ def OnMessage(id, message):
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
         print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
-            from OpenBot.Modules.Actions import ActionBot
+            from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
             for action in cleaned_action_dict:
-                ActionBot.instance.AddNewAction(action)
+                action_bot_interface.AddAction(action)
 
     elif cleaned_message['type'] == 'update':
        # OpenLog.DebugPrint(str(cleaned_message.keys()))
@@ -48,16 +53,44 @@ def OnMessage(id, message):
         elif cleaned_message['data']['module'] == 'SkillBot':
             skillbot_interface.SetStatus(cleaned_message['data']['message'])
 
+        elif cleaned_message['data']['module'] == 'ActionBot':
+            from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
+            action_bot_interface.SetStatus(cleaned_message['data']['message'])
+        
+        elif cleaned_message['data']['module'] == 'Inventory':
+            from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
+            inventory_interface.SetStatus(cleaned_message['data']['message'])
+            instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
+        
+        elif cleaned_message['data']['module'] == 'PickupFilter':
+            OpenLog.DebugPrint(str(cleaned_message['data']['message']['pickup_filter']))
+            settings_interface.SetPickupFilter(cleaned_message['data']['message']['pickup_filter'])
+            instance.packetToSendQueue.append(instance.UpdatePickupFilter)
+
+    elif cleaned_message['type'] == 'update_request':
+        if cleaned_message['data']['action'] == 'get_inventory_status':
+            instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
+        
+        if cleaned_message['data']['action'] == 'get_pickup_filter':
+            instance.packetToSendQueue.append(instance.UpdatePickupFilter)
+
+
 class NetworkingWebsockets(ui.ScriptWindow):
 
     def __init__(self):
         ui.Window.__init__(self)
+        self.lastTimeSendPacket = 0
         self.lastTime = 0
         self.timeLastUpdate = 0
-        self.timeToUpdate = 1
+        self.timeToUpdateBasicInformation = 1
         self.isConnected = False
+        self.settedBasicInformation = False
         self.settedClientType = False
         self.socket_to_server = eXLib.OpenWebsocket(server_url, OnMessage)
+
+
+
+        self.packetToSendQueue = []
         #OpenLog.DebugPrint(str(self.socket_to_server))
         self.BuildWindow()
 
@@ -66,7 +99,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
     def BuildWindow(self):
         self.Board = ui.BoardWithTitleBar()
-        self.Board.SetSize(300, 500)
+        self.Board.SetSize(150, 100)
         self.Board.SetCenterPosition()
         self.Board.AddFlag('movable')
         self.Board.AddFlag('float')
@@ -92,9 +125,33 @@ class NetworkingWebsockets(ui.ScriptWindow):
         else:
             self.Board.Show()
 
+    def SendPacketFromQueue(self):
+        #OpenLog.DebugPrint(str(self.packetToSendQueue))
+        if self.packetToSendQueue:
+            packet_to_send = self.packetToSendQueue.pop()
+            packet_to_send()
+
     def SetClientTypeAsMetin(self):
         data = {'type': 'set_role', 'data': {'message': 'metin2_client'}},
         respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+    def UpdateInventoryStatus(self):
+        iventory_staus = net_parser.parse_inventory_status()
+        if iventory_staus:
+            data = {'type': 'information', 'data': {'message': iventory_staus, 'action': 'set_inventory_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))         
+
+    def UpdatePickupFilter(self):
+        pickup_filter = net_parser.parse_pickup_filter()
+        if pickup_filter:
+            data = {'type': 'information', 'data': {'message': pickup_filter, 'action': 'set_pickup_filter'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))  
+
+    def UpdateBasicCharacterInformation(self):
+        parsed_character_status = net_parser.parse_character_status_info()
+        if parsed_character_status:
+            data = {'type': 'information', 'data': {'message': parsed_character_status, 'action': 'set_character_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))        
 
     def UpdateCharacterStatus(self):
         parsed_character_status = net_parser.parse_character_status_info()
@@ -108,23 +165,57 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = {'type': 'information', 'data': {'message': parsed_instances_list, 'action': 'set_vids'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
-    def UpdateHackStatus(self):
-        parsed_hack_status = net_parser.parse_hack_status()
-        #OpenLog.DebugPrint(str(parsed_hack_status))
+    def UpdateSkillbotStatus(self):
+        parsed_hack_status = net_parser.parse_skill_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
-    def OnUpdate(self):
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
-        if val and OpenLib.IsInGamePhase():
-            if self.settedClientType and self.isConnected:
-                val, self.timeLastUpdate = OpenLib.timeSleep(self.timeLastUpdate, self.timeToUpdate)
-                if val:
-                    self.UpdateInstancesListOnServer()
-                    self.UpdateCharacterStatus()
-                    self.UpdateHackStatus()
+    def UpdateActionbotStatus(self):
+        parsed_hack_status = net_parser.parse_action_bot_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+    
+    def UpdateWaithackStatus(self):
+        parsed_hack_status = net_parser.parse_wait_hack_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
+    def UpdateSettingsStatus(self):
+        parsed_hack_status = net_parser.parse_settings_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+    def UpdateFarmbotStatus(self):
+        parsed_hack_status = net_parser.parse_farm_bot_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+    def UpdateHackStatus(self):
+        self.packetToSendQueue.append(self.UpdateSkillbotStatus)
+        self.packetToSendQueue.append(self.UpdateActionbotStatus)
+        self.packetToSendQueue.append(self.UpdateWaithackStatus)
+        self.packetToSendQueue.append(self.UpdateSettingsStatus)
+        self.packetToSendQueue.append(self.UpdateFarmbotStatus)
+
+    def OnUpdate(self):
+        val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
+        if val:
+            if self.settedClientType and self.isConnected:
+                self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
+                self.packetToSendQueue.append(self.UpdateCharacterStatus)
+                self.packetToSendQueue.append(self.UpdateHackStatus)
+
+        val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
+        if val:
+            self.SendPacketFromQueue()
+
+        if not OpenLib.IsInGamePhase():
+            self.settedBasicInformation = False
 
 
 instance = NetworkingWebsockets()
