@@ -1,5 +1,5 @@
 import Movement
-import ui,OpenLib,NPCInteraction,DmgHacks,player,Settings,chat,OpenLog,Settings
+import ui,OpenLib,NPCInteraction,DmgHacks,player,_Settings as Settings,chat,OpenLog
 import abc
 from .Actions import ActionRequirementsCheckers
 

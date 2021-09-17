@@ -418,7 +418,7 @@ def OpenASealInMonument(args):
     return action_dict  
 
 def ExchangeTrashItemsToEnergyFragments(args):
-    from OpenBot.Modules import Settings
+    from OpenBot.Modules import _Settings as Settings
     first_map = OpenLib.GetPlayerEmpireFirstMap()
 
     x, y = MapManager.GetNpcFromMap(first_map, 20001)
@@ -492,7 +492,7 @@ def ChangeChannel(args):
 def WaitFor(args):
     if not len(args) > 1:
         return True
-    from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+    from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
     modules_to_switch_off = args[1]
     if 'waithack' in modules_to_switch_off:
         waithack_interface.Stop()

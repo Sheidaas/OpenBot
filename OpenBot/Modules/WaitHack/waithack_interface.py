@@ -1,4 +1,4 @@
-from OpenBot.Modules.Waithack.waithack_module import instance
+from OpenBot.Modules.WaitHack.waithack_module import instance
 from OpenBot.Modules.OpenLog import DebugPrint
 
 class WaithackInterface():
