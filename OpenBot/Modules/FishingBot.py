@@ -1,5 +1,5 @@
 import eXLib,ui,net,chr,player,chat,item,app
-import OpenLib,NPCInteraction,FileManager,Movement,UIComponents,Settings
+import OpenLib,NPCInteraction,FileManager,Movement,UIComponents
 from FileManager import boolean
 
 def _PositionRestoreCallback():

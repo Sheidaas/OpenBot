@@ -46,7 +46,7 @@ def parse_action_bot_status():
     return hack_status
 
 def parse_wait_hack_status():
-    from OpenBot.Modules.Waithack.waithack_interface import waithack_interface
+    from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
     hack_status = {
         'WaitHack': waithack_interface.GetStatus(),
     }

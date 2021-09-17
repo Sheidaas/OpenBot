@@ -1,4 +1,4 @@
-import OpenLib, UIComponents, Hooks, Settings, OpenLog
+import OpenLib, UIComponents, Hooks, OpenLog
 import serverInfo, background, ui, chat, net, app, introLogin # introLogin gives ServerStateChecker module
 
 

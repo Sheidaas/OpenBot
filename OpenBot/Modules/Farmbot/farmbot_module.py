@@ -219,7 +219,7 @@ class FarmingBot(ui.ScriptWindow):
 					OpenLog.DebugPrint("[Farming-bot] WALKING_STATE")
 					
 					if OpenLib.isInventoryFull():
-						from OpenBot.Modules import Settings
+						from OpenBot.Modules import _Settings as Settings
 						if self.exchange_items_to_energy:
 							for item in Settings.instance.sellItems:
 								slot=OpenLib.GetItemByID(item)
