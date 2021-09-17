@@ -107,6 +107,7 @@ class Skillbot(ui.ScriptWindow):
         return wait_to_use_skill
 
     def OnUpdate(self):
+        # USE player.ClickSkillSlot instead of SendUseSkillPacket for sura
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
         if val and OpenLib.IsInGamePhase() and self.enabled:
             if not self.startUpWait:
