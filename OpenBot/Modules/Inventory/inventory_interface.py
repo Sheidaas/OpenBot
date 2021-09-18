@@ -50,7 +50,7 @@ class InventoryInterface:
             'Unique1': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_UNIQUE1) },
             'Unique2': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_UNIQUE2) },
             'Count': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_COUNT) },
-            'Belt': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON) },
+            'Belt': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_BELT) },
             'Arrow': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_ARROW) },
             'Wrist': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WRIST) },
         }
