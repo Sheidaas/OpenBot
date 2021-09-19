@@ -467,8 +467,8 @@ def getAllSkillsInfo():
 		if index:
 			skills[x] = {
 				'name': skill.GetSkillName(index),
-				'level': player.GetSkillLevel(index),
-				'grade': player.GetSkillGrade(index)
+				'level': player.GetSkillLevel(player.GetSkillSlotIndex(index)),
+				'grade': player.GetSkillGrade(player.GetSkillSlotIndex(index))
 			}
 	return skills
 
