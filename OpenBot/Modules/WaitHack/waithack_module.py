@@ -109,6 +109,7 @@ class Waithack(ui.ScriptWindow):
                         self.cloudSkillState = CLOUD_SKILL_STATE_WAITING
                         return 99999999
                 x, y, z = chr.GetPixelPosition(vid)
+                eXLib.SendAttackPacket(vid, 0)
                 eXLib.SendAddFlyTarget(vid, x, y)
                 eXLib.SendShoot(35)
                 lst.remove(vid)

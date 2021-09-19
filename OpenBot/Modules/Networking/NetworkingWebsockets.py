@@ -69,10 +69,10 @@ def OnMessage(id, message):
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
 
     elif cleaned_message['type'] == 'update_request':
-        if cleaned_message['data']['action'] == 'get_inventory_status':
+        if cleaned_message['data']['action'] == 'GET_INVENTORY_STATUS':
             instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
         
-        if cleaned_message['data']['action'] == 'get_pickup_filter':
+        if cleaned_message['data']['action'] == 'GET_PICKUP_FILTER':
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
 
 
