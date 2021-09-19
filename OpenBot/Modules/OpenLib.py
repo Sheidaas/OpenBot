@@ -459,6 +459,19 @@ def IsInGamePhase():
 	"""
 	return GetCurrentPhase() == PHASE_GAME
 
+def getAllSkillsInfo():
+	# This could be faster without checking is skill exist
+	skills = {}
+	for x in range(300):
+		index = player.GetSkillIndex(x)
+		if index:
+			skills[x] = {
+				'name': skill.GetSkillName(index),
+				'level': player.GetSkillLevel(index),
+				'grade': player.GetSkillGrade(index)
+			}
+	return skills
+
 def getAllStatusOfMainActor():
 	"""
 	Returns the currents stats of main character.
@@ -484,6 +497,7 @@ def getAllStatusOfMainActor():
 		'GUILD_ID': player.GetGuildID(),
 		'GuildName': player.GetGuildName(),
 		'DefBonus': player.GetStatus(player.DEF_BONUS),
+		'DefGrade': player.GetStatus(player.DEF_GRADE),
 		'AttBonus': player.GetStatus(player.ATT_BONUS),
 		'AttPower': player.GetStatus(player.ATT_POWER),
 		'AttSpeed': player.GetStatus(player.ATT_SPEED),
@@ -494,7 +508,13 @@ def getAllStatusOfMainActor():
 		'SP': player.GetStatus(player.SP),
 		'RecoverySP': player.GetStatus(player.SP_RECOVERY),
 		'Stamina': player.GetStatus(player.STAMINA),
-		'MaxStamina': player.GetStatus(player.MAX_STAMINA)
+		'MaxStamina': player.GetStatus(player.MAX_STAMINA),
+		'IsMountingHorse': player.IsMountingHorse(),
+		'Strength': player.GetStatus(player.ST),
+		'Inteligence': player.GetStatus(player.IQ),
+		'Vitality': player.GetStatus(player.HT),
+		'Dexterity': player.GetStatus(player.DX),
+		'Skills': getAllSkillsInfo()
 		#'STAT': player.GetStatus()player.STAT
 	}
 
