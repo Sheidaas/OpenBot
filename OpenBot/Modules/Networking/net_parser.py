@@ -66,6 +66,13 @@ def parse_farm_bot_status():
     }
     return hack_status
 
+def parse_channel_switcher_status():
+    from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
+    hack_status = {
+        'ChannelSwitcher': channel_switcher_interface.GetStatus()
+    }
+    return hack_status
+
 def parse_inventory_status():
     from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
     return inventory_interface.GetStatus()
