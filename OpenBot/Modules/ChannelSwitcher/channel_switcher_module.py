@@ -99,6 +99,10 @@ class ChannelSwitcher:
         if int(id) not in self.channels:
             chat.AppendChat(3, "[Channel-Switcher] - Channel " + str(id) + " doesn't exist")
             return
+        
+        if self.IsSpecialMap():
+            chat.AppendChat(3, "[Channel-Switcher] - You are on special map!")
+            return           
 
         self.selectedChannel = self.channels[int(id)]
         self.currState = STATE_CHANGING_CHANNEL
