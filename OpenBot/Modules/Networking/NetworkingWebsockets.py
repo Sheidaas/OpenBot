@@ -56,7 +56,12 @@ def OnMessage(id, message):
         elif cleaned_message['data']['module'] == 'ActionBot':
             from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
             action_bot_interface.SetStatus(cleaned_message['data']['message'])
-        
+
+        elif cleaned_message['data']['module'] == 'ChannelSwitcher':
+            from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
+            OpenLog.DebugPrint(str(cleaned_message['data']['message']))
+            channel_switcher_interface.SetStatus(cleaned_message['data']['message'])
+
         elif cleaned_message['data']['module'] == 'Inventory':
             from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
             OpenLog.DebugPrint(str(cleaned_message['data']['message']))
@@ -196,6 +201,12 @@ class NetworkingWebsockets(ui.ScriptWindow):
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+    
+    def UpdateChannelSwitcherStatus(self):
+        parsed_hack_status = net_parser.parse_channel_switcher_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
     def UpdateHackStatus(self):
         self.packetToSendQueue.append(self.UpdateSkillbotStatus)
@@ -203,6 +214,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateWaithackStatus)
         self.packetToSendQueue.append(self.UpdateSettingsStatus)
         self.packetToSendQueue.append(self.UpdateFarmbotStatus)
+        self.packetToSendQueue.append(self.UpdateChannelSwitcherStatus)
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)

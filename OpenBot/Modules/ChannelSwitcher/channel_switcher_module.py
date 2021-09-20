@@ -1,4 +1,4 @@
-import OpenLib, UIComponents, Hooks, OpenLog
+from OpenBot.Modules import OpenLib, Hooks
 import serverInfo, background, ui, chat, net, app, introLogin # introLogin gives ServerStateChecker module
 
 
@@ -26,47 +26,6 @@ class ChannelSwitcher:
         self.currChannel = 0
         self.currState = STATE_NONE
         self.selectedChannel = 0
-
-    def BuildWindow(self, board):
-        self.component = UIComponents.Component()
-        self.Board = board
-
-        #self.barItems, self.fileListBox, self.ScrollBar = component.ListBoxEx2(self.Board, 50, 40, 100, 150)
-        #self.fileListBox.SetViewItemCount(10)
-
-        self.refreshButton = self.component.Button(self.Board, 'Refresh', '', 90, 150, self.OnRefreshButton,
-                                          'd:/ymir work/ui/public/large_Button_01.sub',
-                                          'd:/ymir work/ui/public/large_Button_02.sub',
-                                          'd:/ymir work/ui/public/large_Button_03.sub')
-
-    def OnRefreshButton(self):
-        self.GetChannels()
-        #self.fileListBox.RemoveAllItems()
-        x = 65
-        y = 50
-        for id in sorted(self.channels): #.items():
-            self.channels[id]['btn'] = self.component.Button(self.Board, 'CH ' + str(id), '', x, y,
-                                                            getCallBackWithArg(self.OnConnectButton, int(id)),
-                                                            'd:/ymir work/ui/public/small_Button_01.sub',
-                                                            'd:/ymir work/ui/public/small_Button_02.sub',
-                                                            'd:/ymir work/ui/public/small_Button_03.sub')
-            
-            x += 50
-            if x >= 200:
-                x = 65
-                y += 30
-
-    def OnConnectButton(self,id):
-        _channel = id#self.fileListBox.GetSelectedItem().text
-        if not _channel:
-            chat.AppendChat(3, '[ChannelSwitcher] You did not select a channel')
-            return
-
-        if self.IsSpecialMap():
-           chat.AppendChat(1, "[ChannelSwitcher] Sorry in this area you cannot change channel without logout!")
-           return
-
-        self.ChangeChannelById(_channel)
 
     def GetRegionID(self):
         # FOR EU IS 0
@@ -140,46 +99,21 @@ class ChannelSwitcher:
         if int(id) not in self.channels:
             chat.AppendChat(3, "[Channel-Switcher] - Channel " + str(id) + " doesn't exist")
             return
+        
+        if self.IsSpecialMap():
+            chat.AppendChat(3, "[Channel-Switcher] - You are on special map!")
+            return           
 
         self.selectedChannel = self.channels[int(id)]
         self.currState = STATE_CHANGING_CHANNEL
         self.ConnectToChannel()
 
-
     def SetStateNone(self):
         self.selectedChannel = 0
         self.currState = STATE_NONE
 
-
     def __del__(self):
         Hooks.deletePhaseCallback("channelCallback")
 
-    def switch_state(self):
-        if self.Board.IsShow():
-            self.Board.Hide()
-        else:
-            self.OnRefreshButton()
-            self.Board.Show()
-
-
-def switch_state():
-    instance.switch_state()
-
-def SwitchChannel(val):
-    instance.ChangeChannelById(val)
-
-def GetNextChannel():
-	current_channel = OpenLib.GetCurrentChannel()
-
-	if not current_channel:
-		return 0
-	if current_channel + 1 > len(instance.channels):
-		current_channel = 1
-	else:
-		current_channel += 1
-	
-	return current_channel
-
 instance = ChannelSwitcher()
 Hooks.registerPhaseCallback("channelCallback", __PhaseChangeChannelCallback)
-OpenLog.DumpObject(instance)

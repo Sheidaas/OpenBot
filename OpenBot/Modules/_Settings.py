@@ -126,11 +126,11 @@ class SettingsDialog(ui.ScriptWindow):
 		#self.BtnRedBuy = self.comp.OnOffButton(self.generalTab, '', 'Buy Red Pots', 200, 130, image='icon/item/27002.tga',funcState=self.OnRedBuy,defaultValue=int(self.wallHack))
 
 		## CHANNELS
-		self.ChannelSwitcher = ChannelSwitcher.instance
-		self.ChannelSwitcher.BuildWindow(self.channelsTab)
-		self.ChannelSwitcher.OnRefreshButton()
-		for id in sorted(self.ChannelSwitcher.channels):
-			setattr(self, 'channel_' + str(id), self.ChannelSwitcher.channels[id]['btn'])
+		#self.ChannelSwitcher = ChannelSwitcher.instance
+		#self.ChannelSwitcher.BuildWindow(self.channelsTab)
+		#self.ChannelSwitcher.OnRefreshButton()
+		#for id in sorted(self.ChannelSwitcher.channels):
+		#	setattr(self, 'channel_' + str(id), self.ChannelSwitcher.channels[id]['btn'])
 
 
 		self.waitTimeDeadEditLine.SetText(str(FileManager.ReadConfig("timeAfterDead")))
