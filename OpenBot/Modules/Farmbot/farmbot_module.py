@@ -1,9 +1,9 @@
-from OpenBot.Modules.Actions import Action, ActionBotInterface, ActionFunctions, ActionRequirementsCheckers
+from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-from OpenBot.Modules import OpenLog, OpenLib, FileManager,ChannelSwitcher, Movement
+from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
+from OpenBot.Modules import OpenLog, OpenLib, FileManager, Movement
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules.FileManager import boolean
-import player, ui, chat, chr, net, background
+import ui, chat, chr, net
 import eXLib
 
 # STATES
@@ -15,7 +15,7 @@ EXCHANGING_ITEMS_TO_ENERGY = 4
 
 def OnDigMotionCallback(main_vid,target_ore,n):
 	global farm
-	DebugPrint(str(main_vid) + ' ' + str(net.GetMainActorVID()))
+	#DebugPrint(str(main_vid) + ' ' + str(net.GetMainActorVID()))
 	if(main_vid != net.GetMainActorVID()):
 		return
 	if farm.enabled and farm.look_for_ore:
@@ -169,9 +169,9 @@ class FarmingBot(ui.ScriptWindow):
 
 	def go_to_next_channel(self):
 		action_dict = {
-			'function_args': [ChannelSwitcher.GetNextChannel()],
+			'function_args': [channel_switcher_interface.GetNextChannel()],
 			'function': ActionFunctions.ChangeChannel,
-			'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [ChannelSwitcher.GetNextChannel()]},
+			'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: [channel_switcher_interface.GetNextChannel()]},
 			'on_success': [Action.NEXT_ACTION],
 			'callback': self.SetIsCurrActionDoneTrue,
 			#'call_only_once': True,

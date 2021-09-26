@@ -131,6 +131,25 @@ def UsingItemOnInstance(args):
                     }
     return action_dict
 
+def UseItemOnNPC(args):
+    npc_id = args[0]
+    item_slot = args[1]
+
+    npc_position = MapManager.GetNpcFromMap(background.GetCurrentMapName(), npc_id)
+
+    if not OpenLib.isPlayerCloseToPosition(npc_position[0], npc_position[1], 500):
+        action_dict = {'function_args': [(npc_position[0], npc_position[1])], # position
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position[0], npc_position[1])},
+                        'on_failed': [Action.NEXT_ACTION],
+                        }   
+        return action_dict
+
+    vid = OpenLib.GetVIDByClosestNPC(npc_id)    
+    net.SendGiveItemPacket(vid, player.SLOT_TYPE_INVENTORY, item_slot, player.GetItemCount(item_slot))
+    OpenLib.skipAnswers([0, 0], True)
+    return True         
+
 def OpenAllSeals(args):
     closest_seal = OpenLib.getClosestInstance([OpenLib.OBJECT_TYPE])
     if closest_seal < 0:
@@ -184,20 +203,68 @@ def GoBuyItemsFromNPC(args):
     NPCInteraction.RequestBusinessNPCClose(items_slots_list_to_buy, [], npc, callback)
     return True
     
+def BuyItemsForAlchemist(args):
+    npc_id = int(args[0])
+    map_name = args[1]
+    callback = args[2]
+    result = MapManager.GetNpcFromMap(map_name, npc_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1]):
+        action_dict = {'function_args': [(result[0], result[1]), map_name], # position
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (result[0], result[1])}
+                        }
+        return action_dict
+    items_to_buy = [4 for x in range(OpenLib.GetNumberOfFreeSlots())]    
+    npc = NPCAction(npc_id, event_answer=[1])
+    NPCInteraction.RequestBusinessNPCClose(items_to_buy, [], npc, callback)
+    return True  
+
+def ExchangeItemsForAlchemist(args):
+    item_list = args[0]
+    npc_id = int(args[1])
+    map_name = args[2]
+    result = MapManager.GetNpcFromMap(map_name, npc_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1]):
+        action_dict = {'function_args': [(result[0], result[1]), map_name], # position
+                        'function': MoveToPosition,
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (result[0], result[1])}
+                        }
+        return action_dict
+    for _id in item_list:
+        item_slot = OpenLib.GetItemByID(int(_id))
+        if item_slot < 0:
+            continue
+        alchemist_vid = OpenLib.GetInstanceByID(npc_id)
+        if alchemist_vid != -1:
+            action_dict = {'function_args': [alchemist_vid, item_slot], # position
+                            'function': UsingItemOnInstance,
+                            'on_success': [Action.NEXT_ACTION],
+                            'on_failed': [Action.NEXT_ACTION],
+                            }
+            return action_dict
+    return Action.NEXT_ACTION
+
 def GetEnergyFromAlchemist(args):
     items_id_to_use = args[0]
-    alchemist_id = args[1]
-    position_x, position_y = args[2]
-    if not OpenLib.isPlayerCloseToPosition(position_x, position_y):
-        action_dict = {'function_args': [(position_x, position_y), OpenLib.GetPlayerEmpireFirstMap()], # position
+    alchemist_id = int(args[1])
+    map_name = args[2]
+    result = MapManager.GetNpcFromMap(map_name, alchemist_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1]):
+        action_dict = {'function_args': [(result[0], result[1]), map_name], # position
                         'function': MoveToPosition,
-                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (position_x, position_y)}
+                        'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (result[0], result[1])}
                         }
         return action_dict
     
 
     for _id in items_id_to_use:
-        item_slot = OpenLib.GetItemByID(_id)
+        item_slot = OpenLib.GetItemByID(int(_id))
         if item_slot < 0:
             continue
         alchemist_vid = OpenLib.GetInstanceByID(alchemist_id)
@@ -465,8 +532,7 @@ def ChangeMap(args):
 def ChangeChannel(args):
     channel_id = args[0]
 
-    from OpenBot.Modules import ChannelSwitcher
-    ChannelSwitcher.instance.GetChannels()
+    from OpenBot.Modules.ChannelSwitcher import channel_switcher_interface
 
     if not channel_id:
         DebugPrint('Channel id is ' + str(channel_id))
@@ -475,13 +541,13 @@ def ChangeChannel(args):
     if OpenLib.GetCurrentChannel() == channel_id:
         return Action.NEXT_ACTION
 
-    if 0 < channel_id > len(ChannelSwitcher.instance.channels):
+    if 0 < channel_id > len(channel_switcher_interface.channel_switcher_interface.GetChannels()):
         return Action.ERROR
     
 
-    if ChannelSwitcher.instance.currState != ChannelSwitcher.STATE_CHANGING_CHANNEL:
+    if channel_switcher_interface.channel_switcher_interface.GetCurrentState() != channel_switcher_interface.STATE_CHANGING_CHANNEL:
         DebugPrint('Changing channel to ' + str(channel_id) )
-        ChannelSwitcher.instance.ChangeChannelById(channel_id)
+        channel_switcher_interface.channel_switcher_interface.ConnectToChannelByID(channel_id)
         return {
             'name': 'Waiting to change channel',
             'function': WaitFor,

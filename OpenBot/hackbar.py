@@ -1,12 +1,8 @@
-from OpenBot.Modules.Actions import ActionBot
-from OpenBot.Modules import EnergyBot
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot #, Settings, 
-from OpenBot.Modules.Farmbot.farmbot_ui import farmbot_ui
-from OpenBot.Modules.Skillbot.skillbot_ui import instance as skillbot_ui
-from OpenBot.Modules import Radar, ChannelSwitcher, AutoDungeon
+
+from OpenBot.Modules import Radar
 from OpenBot.Modules.Radar import Radar
-from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules.Networking import NetworkingWebsockets
 DEBUG = True
 if DEBUG:
@@ -21,8 +17,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
     comp = UIComponents.Component()
     #buff = Buffbot.BuffDialog()
     spam = Spambot.SpamDialog()
-    action_bot = ActionBot.instance
-    energy_bot = EnergyBot.instance
     radar = Radar()
     tele = Telehack.TeleportHackDialog()
     python_manager = PythonManager.PythonManagerDialog()
@@ -79,15 +73,11 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         self.InventoryButton = self.comp.Button(self.OpenBotBoard, '', 'Manager', 10, 183, self.InventoryManager, 'OpenBot/Images/Hackbar/inventory_0.tga', 'OpenBot/Images/Hackbar/inventory_1.tga', 'OpenBot/Images/Hackbar/inventory_0.tga')
         self.RunPythonButton = self.comp.Button(self.OpenBotBoard, '', 'Run-Python', 10, 288, self.RunPython, 'OpenBot/Images/Shortcuts/loadpy_0.tga', 'OpenBot/Images/Shortcuts/loadpy_1.tga', 'OpenBot/Images/Shortcuts/loadpy_0.tga')
         self.RadarButton = self.comp.Button(self.OpenBotBoard, '', 'Radar', 8, 323, self.OnRadar, 'OpenBot/Images/Hackbar/radar_0.tga', 'OpenBot/Images/Hackbar/radar_1.tga', 'OpenBot/Images/Hackbar/radar_0.tga')
-        self.SkillbotButton = self.comp.Button(self.OpenBotBoard, '', 'Skillbot', 8, 358, self.OnSkillbot, 'OpenBot/Images/Hackbar/skill_0.tga', 'OpenBot/Images/Hackbar/skill_1.tga', 'OpenBot/Images/Hackbar/skill_0.tga')
-        self.FarmbotButton = self.comp.Button(self.OpenBotBoard, '', 'Farmbot', 8, 393, self.OnFarmingBot, 'OpenBot/Images/Hackbar/farm_0.tga', 'OpenBot/Images/Hackbar/farm_1.tga', 'OpenBot/Images/Hackbar/farm_0.tga')
-        self.AutoDungeonButton = self.comp.Button(self.OpenBotBoard, '', 'AutoDungeon', 8, 428, self.OnAutoDungeon, 'OpenBot/Images/Hackbar/dt_0.tga', 'OpenBot/Images/Hackbar/dt_1.tga', 'OpenBot/Images/Hackbar/dt_0.tga')
-        self.EnergyBotButton = self.comp.Button(self.OpenBotBoard, '', 'EnergyBot', 8, 463, self.OnEnergyBot, 'OpenBot/Images/Hackbar/energy_0.tga', 'OpenBot/Images/Hackbar/energy_1.tga', 'OpenBot/Images/Hackbar/energy_0.tga')
-        self.ActionBotButton = self.comp.Button(self.OpenBotBoard, '', 'ActionBot', 8, 498, self.OnActionBot, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
         self.networkButton = self.comp.Button(self.OpenBotBoard, '', 'network', 8, 533, self.OnNetworkButton, 'OpenBot/Images/Hackbar/action_0.tga', 'OpenBot/Images/Hackbar/action_1.tga', 'OpenBot/Images/Hackbar/action_0.tga')
 
         if DEBUG:
-            self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
+            pass
+            #self.AnalyzerButton = self.comp.Button(self.OpenBotBoard, '', 'Packet Analyzer', 8, 358, self.PacketAnalyzer, 'OpenBot/Images/Hackbar/analyzer_0.tga', 'OpenBot/Images/Hackbar/analyzer_1.tga', 'OpenBot/Images/Hackbar/analyzer_0.tga')
         else:
             self.CopyrightLabel = self.comp.TextLine(self.OpenBotBoard, '', 3, 320, self.comp.RGB(255, 255, 0))
         #self.InfoButton = self.comp.Button(self.OpenBotBoard, '', 'Info', 10, 500, self.Info, 'OpenBot/Images/Hackbar/info_0.tga', 'OpenBot/Images/Hackbar/info_1.tga', 'OpenBot/Images/Hackbar/info_0.tga')
@@ -141,8 +131,9 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
             self.SpamTextButton.Show()
             self.SpamtextCombo.Show()
 
-    def Generel(self):
-        Settings.switch_state()
+    #def Generel(self):
+    #    Settings.switch_state()
+
     def OnLevelbot(self):
         Levelbot.switch_state()
     #def BuffBot(self):
@@ -162,18 +153,6 @@ class OpenBotHackbarDialog(ui.ScriptWindow):
         Shopcreator.switch_state()
     def TeleportHack(self):
         self.tele.switch_state()
-
-    def OnFarmingBot(self):
-        farmbot_ui.switch_state()
-
-    def OnAutoDungeon(self):
-        AutoDungeon.switch_state()
-
-    def OnChannelSwitcher(self):
-        ChannelSwitcher.switch_state()
-
-    def OnSkillbot(self):
-        skillbot_ui.switch_state()
 
     def OnNetworkButton(self):
         NetworkingWebsockets.instance.switch_state()

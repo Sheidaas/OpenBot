@@ -64,12 +64,12 @@ def OnMessage(id, message):
 
         elif cleaned_message['data']['module'] == 'Inventory':
             from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
-            OpenLog.DebugPrint(str(cleaned_message['data']['message']))
+            #OpenLog.DebugPrint(str(cleaned_message['data']['message']))
             inventory_interface.SetStatus(cleaned_message['data']['message'])
             instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
         
         elif cleaned_message['data']['module'] == 'PickupFilter':
-            OpenLog.DebugPrint(str(cleaned_message['data']['message']['pickup_filter']))
+            #OpenLog.DebugPrint(str(cleaned_message['data']['message']['pickup_filter']))
             settings_interface.SetPickupFilter(cleaned_message['data']['message']['pickup_filter'])
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
 
@@ -77,8 +77,13 @@ def OnMessage(id, message):
         if cleaned_message['data']['action'] == 'GET_INVENTORY_STATUS':
             instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
         
-        if cleaned_message['data']['action'] == 'GET_PICKUP_FILTER':
+        elif cleaned_message['data']['action'] == 'GET_PICKUP_FILTER':
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
+        
+        elif cleaned_message['data']['action'] == 'SET_NEW_SCHEMA':
+            from OpenBot.Modules.Schema.SchemaLoader import schemaLoader
+            from OpenBot.Modules.Schema.schema_runner_interface import schema_runner_interface
+            schema_runner_interface.SetNewSchema(schemaLoader.LoadSchema(cleaned_message['data']['message']))
 
 
 class NetworkingWebsockets(ui.ScriptWindow):
@@ -179,10 +184,14 @@ class NetworkingWebsockets(ui.ScriptWindow):
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
     def UpdateActionbotStatus(self):
-        parsed_hack_status = net_parser.parse_action_bot_status()
-        if parsed_hack_status:
-            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+        try:
+            parsed_hack_status = net_parser.parse_action_bot_status()
+            if parsed_hack_status:
+                data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+                respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+        except:
+            OpenLog.DebugPrint('ERROR')
+            OpenLog.DebugPrint(str(net_parser.parse_action_bot_status()))
     
     def UpdateWaithackStatus(self):
         parsed_hack_status = net_parser.parse_wait_hack_status()
