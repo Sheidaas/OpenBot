@@ -136,6 +136,19 @@ def GetSkillIconPath(id,grade=3):
 	skill_icon_name = skill["icon"]
 	return "d:/ymir work/ui/skill/" + skill_class + "/" + skill_icon_name + "_0"+str(grade)+".sub"
 
+def GetVIDByClosestNPC(npc_id):
+	npcs = dict()
+	for vid in eXLib.InstancesList:
+		chr.SelectInstance(vid)
+		curr_race = chr.GetRace()
+		if npc_id == curr_race:
+			dist = player.GetCharacterDistance(vid)
+			npcs[vid] = dist
+	if len(npcs) == 0:
+		return None
+	min_vid = min(npcs.keys(), key=(lambda k: npcs[k]))
+	return min_vid
+
 def GetClassSkillIDs(_class):
 	"""
 	Returns all skill ids of each class.

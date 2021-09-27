@@ -11,6 +11,7 @@ class ActionBotInterface:
         if status['AlwaysUseWaithack'] != instance.showAlwaysWaithackButton: self.SwitchAlwaysUseWaithack()
         if status['DontUseWaithack'] != instance.showOffWaithackButton: self.SwitchDontUseWaithack()
 
+        DebugPrint(str(status))
         if 'ClearActions' in status.keys():
             self.ClearActions()
         if 'ClearWaiters' in status.keys():
@@ -22,6 +23,7 @@ class ActionBotInterface:
         return {
             'Enabled': instance.enabled,
             'Actions': self.GetActions(),
+            'Waiters': self.GetWaiters(),
             'AlwaysUseWaithack': instance.showAlwaysWaithackButton,
             'DontUseWaithack': instance.showOffWaithackButton,
         }
@@ -30,16 +32,17 @@ class ActionBotInterface:
         actions = []
         if instance.currActionObject == None:
             return actions
+
         actions.append({
-            'name': instance.currActionObject.name
+            'name': str(instance.currActionObject.name)
         })
 
-        for action in instance.currActionsQueue:
-            actions.append({
-            'name': action.name
-            })
+        [actions.append({'name': str(action.name)}) for action in instance.currActionsQueue]
 
         return actions  
+
+    def GetWaiters(self):
+        return [waiter['name'] for waiter in instance.waiters]
 
     def SwitchEnabled(self):
         if instance.enabled:
@@ -69,6 +72,7 @@ class ActionBotInterface:
 
     def AddWaiter(self, timeToWait, callback):
         instance.waiters.append({
+            'name': callback.__name__,
             'timeToWait': timeToWait,
             'callback': callback,
             'launching_time': OpenLib.GetTime(),
@@ -81,8 +85,8 @@ class ActionBotInterface:
         for action in instance.currActionsQueue:
             action.CallCallback()
         
-        self.currActionObject = None
-        self.currActionsQueue = []
+        instance.currActionObject = None
+        instance.currActionsQueue = []
     
     def ClearWaiters(self):
         for waiter in instance.waiters:

@@ -4,26 +4,32 @@ from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsC
 
 
 functions_args_pattern = {
-'ClearFloor': [(0, 0)],
-'Destroy': [0, 0],
-'Find': [0],
-'MoveToPosition': [[0, 0], ''],
-'MoveToVID': [0],
-'UsingItemOnInstance': [0, 0],
-'OpenAllSeals': [(0, 0)],
-'UpgradeDeamonTower': [0],
-'GoBuyItemsFromNPC': [[], 0, (0, 0)],#, function
-'GetEnergyFromAlchemist': [[], 0, (0, 0)],
-'ChangeEnergyToCrystal': (0, (0 ,0), ''),
-'TalkWithNPC': [0, (0, 0), [], ''],
-'MineOre': [0],#, function
-'LookForBlacksmithInDeamonTower': [True, 0],
-'FindMapInDT': [(0, 0)],
-'OpenASealInMonument':[(0, 0)],
-'ExchangeTrashItemsToEnergyFragments': [],
+    'BuyItemsForAlchemist': [0, ''],
+    'ExchangeItemsForAlchemist': [[], 0, ''],
+    'ExchangeEnergyFragmentsToCrystal': [0, ''],
+    'ClearFloor': [(0, 0)],
+    'Destroy': [0, 0],
+    'Find': [0],
+    'MoveToPosition': [[0, 0], ''],
+    'MoveToVID': [0],
+    'UsingItemOnInstance': [0, 0],
+    'OpenAllSeals': [(0, 0)],
+    'UpgradeDeamonTower': [0],
+    'GoBuyItemsFromNPC': [[], 0, (0, 0)],#, function
+    'GetEnergyFromAlchemist': [[], 0, (0, 0)],
+    'MineOre': [0],#, function
+    'LookForBlacksmithInDeamonTower': [True, 0],
+    'FindMapInDT': [(0, 0)],
+    'OpenASealInMonument':[(0, 0)],
+    'ExchangeTrashItemsToEnergyFragments': [],
+    'ChangeChannel': [0],   
 'ChangeChannel': [0],   
+    'ChangeChannel': [0],   
 }
 functions_methods = {
+    'BuyItemsForAlchemist': ActionFunctions.BuyItemsForAlchemist,
+    'ExchangeItemsForAlchemist': ActionFunctions.ExchangeItemsForAlchemist,
+    'ExchangeEnergyFragmentsToCrystal': ActionFunctions.ExchangeEnergyFragmentsToCrystal,
     'ClearFloor': ActionFunctions.ClearFloor,
     'Destroy': ActionFunctions.Destroy,
     'Find': ActionFunctions.Find,
@@ -44,8 +50,6 @@ functions_methods = {
     'ChangeChannel': ActionFunctions.ChangeChannel,
 }
 class ActionLoader:
-    def __init__(self):
-        pass
 
     def LoadActionsFromFile(self, file_name):
         json_data = FileManager.LoadActionsDict(file_name)
@@ -95,7 +99,8 @@ class ActionLoader:
             
             # Name checking
             try:
-                name = loaded_action['name']
+                DebugPrint(str(loaded_action['name']))
+                name = str(loaded_action['name'])
             except KeyError:
                 name = 'None'
                 DebugPrint('Name is None')
@@ -128,7 +133,8 @@ class ActionLoader:
             return None
 
         for arg_to_check in range(len(function_args_to_check)):
-            
+            #DebugPrint(str(function_args_to_check[arg_to_check]))
+            #DebugPrint(str(correct_args[arg_to_check]))
             if type(function_args_to_check[arg_to_check]) == int:
                 if type(correct_args[arg_to_check]) is not int:
                     DebugPrint('['+str(arg_to_check)+'] + This argument should be type int!')
@@ -159,27 +165,28 @@ class ActionLoader:
                         return None
 
             elif type(function_args_to_check[arg_to_check]) == list:
-                DebugPrint(str(type(correct_args[arg_to_check])))
+                #DebugPrint(str(type(correct_args[arg_to_check])))
                 if not type(correct_args[arg_to_check]) is list:
                     DebugPrint('['+str(arg_to_check)+'] + This argument should be type list!')
                     return None            
 
-                if len(function_args_to_check[arg_to_check]) != len(correct_args[arg_to_check]):
-                    DebugPrint('Length of args_to_check' + '[' + str(arg_to_check) + ']' + ' is different than pattern!')
-                    return None
+                #if len(function_args_to_check[arg_to_check]) != len(correct_args[arg_to_check]):
+                #    DebugPrint('Length of args_to_check' + '[' + str(arg_to_check) + ']' + ' is different than pattern!')
+                #    return None
 
             #elif callable(function_args_to_check[arg_to_check])
 
 
-        #if function_name == 'MoveToPosition':
-        #    if type(function_args_to_check[1]) == str:
-        #        function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
-        #    else:
-        #        return None
-                
+        if function_name == 'BuyItemsForAlchemist':
+            function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
+        if function_name == 'GetEnergyFromAlchemist':
+            function_args_to_check[2] = self.CheckMap(function_args_to_check[2])               
+        if function_name == 'ExchangeEnergyFragmentsToCrystal':
+            function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
         return function_args_to_check
 
     def CheckMap(self, map_name):
+        DebugPrint(str(map_name))
         if map_name == 'metin2_first_city':
             return OpenLib.GetPlayerEmpireFirstMap()
         elif map_name == 'metin2_second_city':

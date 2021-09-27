@@ -22,7 +22,7 @@ class Action:
         self.id = _id
         self.call_only_once = call_only_once
         self.called = False
-        if name == 'None':
+        if not type(name) == str or name == 'None':
             self.name = function.__name__
         else:
             self.name = name
