@@ -277,6 +277,27 @@ def GetEnergyFromAlchemist(args):
             return action_dict
     return True
 
+def ExchangeEnergyFragmentsToCrystal(args):
+    npc_id = int(args[0])
+    map_name = args[1]
+    result = MapManager.GetNpcFromMap(map_name, npc_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    energy_crystals = OpenLib.GetItemsSlotsByID([51001])
+    if not energy_crystals:
+        return Action.NEXT_ACTION
+    for energy_crystal in energy_crystals[51001]:
+        if player.GetItemCount(energy_crystal) >= 30:
+            answer = [5,254,254,0,254]
+            action_dict = { 'function_args': [npc_id, (result[0], result[1]), answer, map_name], # ID, event_answer, posiiton of npc, npc's map
+                            'function': TalkWithNPC,
+                            'on_success': [Action.NEXT_ACTION],
+                            'requirements': {},
+
+                }
+            return action_dict
+    return Action.NEXT_ACTION
+
 def ChangeEnergyToCrystal(args):
     alchemist_id = args[0]
     npc_position_x, npc_position_y = args[1]

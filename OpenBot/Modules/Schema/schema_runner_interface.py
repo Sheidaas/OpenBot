@@ -2,6 +2,12 @@ from OpenBot.Modules.Schema.schema_runner_module import instance
 
 class SchemaRunnerInterface:
 
+    def SetStatus(self, status):
+        pass
+
+    def GetStatus(self):
+        pass
+
     def SetNewSchema(self, schema):
         instance.currStage = 0
         instance.currAction = 0

@@ -6,6 +6,7 @@ from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsC
 functions_args_pattern = {
     'BuyItemsForAlchemist': [0, ''],
     'ExchangeItemsForAlchemist': [[], 0, ''],
+    'ExchangeEnergyFragmentsToCrystal': [0, ''],
     'ClearFloor': [(0, 0)],
     'Destroy': [0, 0],
     'Find': [0],
@@ -28,6 +29,7 @@ functions_args_pattern = {
 functions_methods = {
     'BuyItemsForAlchemist': ActionFunctions.BuyItemsForAlchemist,
     'ExchangeItemsForAlchemist': ActionFunctions.ExchangeItemsForAlchemist,
+    'ExchangeEnergyFragmentsToCrystal': ActionFunctions.ExchangeEnergyFragmentsToCrystal,
     'ClearFloor': ActionFunctions.ClearFloor,
     'Destroy': ActionFunctions.Destroy,
     'Find': ActionFunctions.Find,
@@ -179,6 +181,8 @@ class ActionLoader:
             function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
         if function_name == 'GetEnergyFromAlchemist':
             function_args_to_check[2] = self.CheckMap(function_args_to_check[2])               
+        if function_name == 'ExchangeEnergyFragmentsToCrystal':
+            function_args_to_check[1] = self.CheckMap(function_args_to_check[1])
         return function_args_to_check
 
     def CheckMap(self, map_name):
