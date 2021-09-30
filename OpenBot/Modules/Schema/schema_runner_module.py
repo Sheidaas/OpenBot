@@ -16,13 +16,6 @@ class SchemaRunnerModule(ui.ScriptWindow):
         self.currRepeat = 0
         self.lastTime = 0
 
-    def DiscardCurrentSchema(self):
-        self.currSchema = None
-        self.currStage = 0
-        self.currAction = 0
-        self.isCurrActionDone = True
-        self.currRepeat = 0
-
     def SetIsCurrActionDoneTrue(self):
         self.GoToNextAction()
         self.isCurrActionDone = True
