@@ -4,15 +4,16 @@ from OpenBot.Modules.Schema.Schema import Schema
 
 SCHEMA_KEYS = {'REQUIREMENTS': 'REQUIREMENTS',
                 'OPTIONS': 'OPTIONS',
-                'SCHEMA_OPTIONS': 'SCHEMA_OPTIONS',
+                'NEEDED_OPTIONS': 'NEEDED_OPTIONS',
+                'STAGES_RECOGNIZES': 'STAGES_RECOGNIZES',
                 'NAME': 'NAME',
                 'STAGES': 'STAGES'}
 
-SCHEMA_OPTIONS = {'ITEMS_SLOTS': []}
+SCHEMA_OPTIONS = {'ITEMS_TO_UPGRADE': []}
 
 OPTIONS_KEYS = {'Repeats': 0}
 
-REQUIREMENTS_KEYS = {'MAPS': [], 'LVL': 0}
+REQUIREMENTS_KEYS = {'IS_IN_MAP': [], 'LVL': 0}
 
 
 class SchemaLoader:
@@ -42,6 +43,11 @@ class SchemaLoader:
             DebugPrint('options are invalid')
             return False
         
+        self.schema_options = self.CheckSchemaNeededOptions(raw_schema[SCHEMA_KEYS['NEEDED_OPTIONS']])
+        if self.schema_options is False:
+            DebugPrint('schema_options are invalid')
+            return False
+
         self.stages = self.CheckSchemaStages(raw_schema[SCHEMA_KEYS['STAGES']])
         if self.stages is False:
             DebugPrint('stages are invalid')
@@ -52,7 +58,9 @@ class SchemaLoader:
             DebugPrint('requirements are invalid')
             return False
 
-        schema.options, schema.stages, schema.requirements, schema.name = self.options, self.stages, self.requirements, raw_schema[SCHEMA_KEYS['NAME']]
+    
+
+        schema.options, schema.stages, schema.requirements, schema.name, schema.schema_options = self.options, self.stages, self.requirements, raw_schema[SCHEMA_KEYS['NAME']], self.schema_options
         DebugPrint(str(schema.stages))
         return schema 
 
@@ -84,7 +92,7 @@ class SchemaLoader:
                 DebugPrint(str(needed_option) + ' is not in needed_options_keys')
                 return False
 
-            if not isinstance(type(schema_options[needed_option]), type(SCHEMA_OPTIONS[needed_option])):
+            if not type(schema_options[needed_option]) == type(SCHEMA_OPTIONS[needed_option]):
                 DebugPrint(str(needed_option) + ' type has different than expected')
                 return False
         return schema_options
@@ -95,11 +103,12 @@ class SchemaLoader:
             for index, argument in enumerate(action['function_args']):
                 if type(argument) == str:
                     if argument.find('OPTION.'):
-                        argument = argument.replace('OPTION.', '')
+                        new_argument = argument.replace('OPTION.', '')
+                        DebugPrint(str(new_argument))
                         if argument in self.schema_options.keys():
-                            action['function_args'][index] = self.schema_options[argument]
+                            action['function_args'][index] = new_argument
                         else:
-                            DebugPrint(str(argument) + ' is not in schema_options.keys()')
+                            DebugPrint(str(new_argument) + ' is not in schema_options.keys()')
 
             new_actions.append(action)
 
@@ -135,8 +144,8 @@ class SchemaLoader:
             if str(index) not in schema_stages_keys:
                 DebugPrint(str(index) + 'is not in schema stages keys')
                 return False
-            schema_stages[str(index)]['ACTIONS'] = actionLoader.ValidateRawActions({'actions':schema_stages[str(index)]['ACTIONS']})
             schema_stages[str(index)]['ACTIONS'] = self.FullActionsWithProperty(schema_stages[str(index)]['ACTIONS'])
+            schema_stages[str(index)]['ACTIONS'] = actionLoader.ValidateRawActions({'actions':schema_stages[str(index)]['ACTIONS']})
             if not schema_stages[str(index)]['ACTIONS']:
                 DebugPrint(str(schema_stages[schema_stages_keys[index]]['ACTIONS']) + ' in stage ' + str(index))
                 return False

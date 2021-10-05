@@ -177,6 +177,32 @@ def TalkWithNPC(args):
         OpenLib.skipAnswers(event_answer, True)
         return Action.NEXT_ACTION
     return False
+   
+def ChangeChannel(args):
+    channel_id = args[0]
+
+    from OpenBot.Modules.ChannelSwitcher import channel_switcher_interface
+
+    if not channel_id:
+        DebugPrint('Channel id is ' + str(channel_id))
+        return Action.ERROR
+
+    if OpenLib.GetCurrentChannel() == channel_id:
+        return Action.NEXT_ACTION
+
+    if 0 < channel_id > len(channel_switcher_interface.channel_switcher_interface.GetChannels()):
+        return Action.ERROR
+    
+
+    if channel_switcher_interface.channel_switcher_interface.GetCurrentState() != channel_switcher_interface.STATE_CHANGING_CHANNEL:
+        DebugPrint('Changing channel to ' + str(channel_id) )
+        channel_switcher_interface.channel_switcher_interface.ConnectToChannelByID(channel_id)
+        return {
+            'name': 'Waiting to change channel',
+            'function': WaitFor,
+            'function_args': [0],
+            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: channel_id}
+        }
     
 # Utils
 def ChangeMap(args):
@@ -207,38 +233,13 @@ def ChangeMap(args):
     if map_destination_name != background.GetCurrentMapName():
         DebugPrint('Returning talk with npc')
         return {
-            'function_args': [npc_id,(0, 0), event_answer],
+            'function_args': [npc_id, event_answer, background.GetCurrentMapName()],
             'name': 'Talking to teleport',
             'function': TalkWithNPC,
             'on_success': [Action.NEXT_ACTION],
         }
     return True
     
-def ChangeChannel(args):
-    channel_id = args[0]
-
-    from OpenBot.Modules.ChannelSwitcher import channel_switcher_interface
-
-    if not channel_id:
-        DebugPrint('Channel id is ' + str(channel_id))
-        return Action.ERROR
-
-    if OpenLib.GetCurrentChannel() == channel_id:
-        return Action.NEXT_ACTION
-
-    if 0 < channel_id > len(channel_switcher_interface.channel_switcher_interface.GetChannels()):
-        return Action.ERROR
-    
-
-    if channel_switcher_interface.channel_switcher_interface.GetCurrentState() != channel_switcher_interface.STATE_CHANGING_CHANNEL:
-        DebugPrint('Changing channel to ' + str(channel_id) )
-        channel_switcher_interface.channel_switcher_interface.ConnectToChannelByID(channel_id)
-        return {
-            'name': 'Waiting to change channel',
-            'function': WaitFor,
-            'function_args': [0],
-            'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: channel_id}
-        }
 
 def WaitFor(args):
     if not len(args) > 1:
@@ -285,14 +286,12 @@ def ExchangeItemsForAlchemist(args):
         item_slot = OpenLib.GetItemByID(int(_id))
         if item_slot < 0:
             continue
-        alchemist_vid = OpenLib.GetInstanceByID(npc_id)
-        if alchemist_vid != -1:
-            action_dict = {'function_args': [alchemist_vid, item_slot], # position
-                            'function': UsingItemOnInstance,
-                            'on_success': [Action.NEXT_ACTION],
-                            'on_failed': [Action.NEXT_ACTION],
-                            }
-            return action_dict
+        action_dict = {'function_args': [npc_id, item_slot], # position
+                        'function': UseItemOnNPC,
+                        'on_success': [Action.NEXT_ACTION],
+                        'on_failed': [Action.NEXT_ACTION],
+                        }
+        return action_dict
     return Action.NEXT_ACTION
 
 def GetEnergyFromAlchemist(args):
@@ -314,14 +313,12 @@ def GetEnergyFromAlchemist(args):
         item_slot = OpenLib.GetItemByID(int(_id))
         if item_slot < 0:
             continue
-        alchemist_vid = OpenLib.GetInstanceByID(alchemist_id)
-        if alchemist_vid != -1:
-            action_dict = {'function_args': [alchemist_vid, item_slot], # position
-                            'function': UsingItemOnInstance,
-                            'on_success': [Action.NEXT_ACTION],
-                            'on_failed': [Action.NEXT_ACTION],
-                            }
-            return action_dict
+        action_dict = {'function_args': [alchemist_id, item_slot], # position
+                        'function': UseItemOnNPC,
+                        'on_success': [Action.NEXT_ACTION],
+                        'on_failed': [Action.NEXT_ACTION],
+                        }
+        return action_dict
     return True
 
 # Farmbot
@@ -372,8 +369,9 @@ def OpenAllSeals(args):
 
     slot_with_key = OpenLib.GetItemByID(50084)
     if slot_with_key >= 0:
-        action_dict = {'function_args': [closest_seal, slot_with_key], # position
-                        'function': UsingItemOnInstance,
+        chr.SelectInstance(closest_seal)
+        action_dict = {'function_args': [chr.GetRace(), slot_with_key], # position
+                        'function': UseItemOnNPC,
                         'on_success': [Action.NEXT_ACTION],
                         'on_failed': [Action.NEXT_ACTION],
 
@@ -396,11 +394,6 @@ def OpenAllSeals(args):
         return action_dict
     return Action.NOTHING
 
-def UpgradeDeamonTower(args):
-    item_slot = args[0]
-    net.SendRefinePacket(item_slot, 4)
-    return True
-
 def OpenASealInMonument(args):
     center_position = args[0]
     player_x, player_y, player_z = player.GetMainCharacterPosition()
@@ -410,8 +403,9 @@ def OpenASealInMonument(args):
     correct_key = OpenLib.GetItemByID(30304)
     if correct_key >=0:
         monument = OpenLib.getClosestInstance([OpenLib.OBJECT_TYPE])
-        action_dict = {'function_args': [monument, correct_key], # position
-                        'function': UsingItemOnInstance,
+        chr.SelectInstance(monument)
+        action_dict = {'function_args': [chr.GetRace(), correct_key], # position
+                        'function': UseItemOnNPC,
                         'on_success': [Action.NEXT_ACTION],
                         'on_failed': [Action.NEXT_ACTION],
                         }
@@ -427,10 +421,11 @@ def OpenASealInMonument(args):
             }
 
     return action_dict  
-  
-def LookForBlacksmithInDeamonTower(args):
-    item_upgrades_list = args[1]
-    blacksmith_vid, blacksmith_id = OpenLib.GetDemonTowerBlacksmith()
+
+
+def UpgradeItemInDemonTower(args):
+    item_upgrades_list = args[0]
+    blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
     blacksmithX, blacksmithY, blacksmithZ = chr.GetPixelPosition(blacksmith_vid)
     if not OpenLib.isPlayerCloseToPosition(blacksmithX, blacksmithY, 500):
         action_dict = {
@@ -442,12 +437,12 @@ def LookForBlacksmithInDeamonTower(args):
         return action_dict
     
     # Upgrading item
-    if not item_upgrades_list:
-        UpgradeDeamonTower(item_upgrades_list.pop(0))
+    if item_upgrades_list:
+        net.SendRefinePacket(item_upgrades_list.pop(0), 4)
     return Action.NEXT_ACTION
     
-def ExitDT(args):
-    blacksmith_vid, blacksmith_id = OpenLib.GetDemonTowerBlacksmith()
+def ExitDT():
+    blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
     #Creating answer which exit deamon tower
     if player.GetStatus(player.LEVEL) < 75:
         answer = [1, 1, 1]
@@ -461,7 +456,7 @@ def ExitDT(args):
     return action_dict    
     
 def GoToSeventhFloor(args):
-    blacksmith_vid, blacksmith_id = OpenLib.GetDemonTowerBlacksmith()
+    blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
     if player.GetStatus(player.LEVEL) < 75:
         answer = [1, 1, 1]
     else:
