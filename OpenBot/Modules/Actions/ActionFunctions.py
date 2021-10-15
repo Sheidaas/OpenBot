@@ -584,3 +584,30 @@ def WaitFor(args):
     if 'waithack' in modules_to_switch_off:
         waithack_interface.Stop()
     return True
+
+
+##############################
+# Fishbot Functions
+##############################
+
+## TODO : EARLY STAGE in DEV
+
+def goFishing(args):
+    center_position = args[0] # Fishing Location
+    player_x, player_y, player_z = player.GetMainCharacterPosition()
+
+    if not eXLib.FindPath(player_x, player_y, center_position[0], center_position[1]):
+        return True
+        
+    
+    
+    action_dict = { 'function_args': [(center_position[0], center_position[1])], # center position of area 
+                'function': ClearFloor,
+                'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1], 100)},
+                'on_success': [Action.NEXT_ACTION],
+                'interrupt_function': lambda: Action.NEXT_ACTION,
+                'interruptors': [ActionRequirementsCheckers.HasItem],
+                'interruptors_args': [30304]
+            }
+
+    return action_dict
