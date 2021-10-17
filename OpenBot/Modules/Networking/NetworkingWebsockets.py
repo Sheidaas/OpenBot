@@ -147,52 +147,63 @@ class NetworkingWebsockets(ui.ScriptWindow):
             packet_to_send()
 
     def SetClientTypeAsMetin(self):
-        data = {'type': 'set_role', 'data': {'message': 'metin2_client'}},
-        respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+        #read encoding: 
+        try:
+            file = open(eXLib.PATH+'loca.cfg') 
+            enc = file.readlines()[0].split[' '][0]
+        except:
+            file = open(eXLib.PATH+'loca.cfg') 
+            enc = file.readlines()[0].split[' '][1]
+        
+        if(len(enc)!= 4):
+            print('Cannot Read Encoding from File!')
+        data = {'type': 'set_role', 'data': {'message': 'metin2_client', 'data': enc}}
+        respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateInventoryStatus(self):
         iventory_staus = net_parser.parse_inventory_status()
         #OpenLog.DebugPrint(str(iventory_staus))
         if iventory_staus:
             data = {'type': 'information', 'data': {'message': iventory_staus, 'action': 'set_inventory_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))         
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))         
 
     def UpdatePickupFilter(self):
         pickup_filter = net_parser.parse_pickup_filter()
         if pickup_filter:
             data = {'type': 'information', 'data': {'message': pickup_filter, 'action': 'set_pickup_filter'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))  
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))  
 
     def UpdateBasicCharacterInformation(self):
         parsed_character_status = net_parser.parse_character_status_info()
         if parsed_character_status:
             data = {'type': 'information', 'data': {'message': parsed_character_status, 'action': 'set_character_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))        
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))        
 
     def UpdateCharacterStatus(self):
         parsed_character_status = net_parser.parse_character_status_info()
+	    #OpenLog.DebugPrint(str(parsed_character_status))
         if parsed_character_status:
             data = {'type': 'information', 'data': {'message': parsed_character_status, 'action': 'set_character_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateInstancesListOnServer(self):
         parsed_instances_list = net_parser.parse_instances_list()
         if parsed_instances_list:
             data = {'type': 'information', 'data': {'message': parsed_instances_list, 'action': 'set_vids'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateSkillbotStatus(self):
         parsed_hack_status = net_parser.parse_skill_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateActionbotStatus(self):
         try:
             parsed_hack_status = net_parser.parse_action_bot_status()
             if parsed_hack_status:
                 data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-                respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+                respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
         except:
             OpenLog.DebugPrint('ERROR')
             OpenLog.DebugPrint(str(net_parser.parse_action_bot_status()))
@@ -201,25 +212,25 @@ class NetworkingWebsockets(ui.ScriptWindow):
         parsed_hack_status = net_parser.parse_wait_hack_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateSettingsStatus(self):
         parsed_hack_status = net_parser.parse_settings_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateFarmbotStatus(self):
         parsed_hack_status = net_parser.parse_farm_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
     
     def UpdateChannelSwitcherStatus(self):
         parsed_hack_status = net_parser.parse_channel_switcher_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateHackStatus(self):
         self.packetToSendQueue.append(self.UpdateSkillbotStatus)
@@ -244,6 +255,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
         if not OpenLib.IsInGamePhase():
             self.settedBasicInformation = False
+
 
 
 instance = NetworkingWebsockets()
