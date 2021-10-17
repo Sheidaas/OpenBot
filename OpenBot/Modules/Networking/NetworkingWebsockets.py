@@ -144,61 +144,63 @@ class NetworkingWebsockets(ui.ScriptWindow):
             packet_to_send()
 
     def SetClientTypeAsMetin(self):
-        data = {'type': 'set_role', 'data': {'message': 'metin2_client'}},
-        data = convertToUTF8(data)
-        respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+        #read encoding: 
+        try:
+            file = open(eXLib.PATH+'loca.cfg') 
+            enc = file.readlines()[0].split[' '][0]
+        except:
+            file = open(eXLib.PATH+'loca.cfg') 
+            enc = file.readlines()[0].split[' '][1]
+        
+        if(len(enc)!= 4):
+            print('Cannot Read Encoding from File!')
+        data = {'type': 'set_role', 'data': {'message': 'metin2_client', 'data': enc}}
+        respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateInventoryStatus(self):
         iventory_staus = net_parser.parse_inventory_status()
-        OpenLog.DebugPrint(str(iventory_staus))
+        #OpenLog.DebugPrint(str(iventory_staus))
         if iventory_staus:
             data = {'type': 'information', 'data': {'message': iventory_staus, 'action': 'set_inventory_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))         
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))         
 
     def UpdatePickupFilter(self):
         pickup_filter = net_parser.parse_pickup_filter()
         if pickup_filter:
             data = {'type': 'information', 'data': {'message': pickup_filter, 'action': 'set_pickup_filter'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))  
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))  
 
     def UpdateBasicCharacterInformation(self):
         parsed_character_status = net_parser.parse_character_status_info()
         if parsed_character_status:
             data = {'type': 'information', 'data': {'message': parsed_character_status, 'action': 'set_character_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))        
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))        
 
     def UpdateCharacterStatus(self):
         parsed_character_status = net_parser.parse_character_status_info()
-	OpenLog.DebugPrint(str(parsed_character_status))
+	    #OpenLog.DebugPrint(str(parsed_character_status))
         if parsed_character_status:
             data = {'type': 'information', 'data': {'message': parsed_character_status, 'action': 'set_character_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateInstancesListOnServer(self):
         parsed_instances_list = net_parser.parse_instances_list()
         if parsed_instances_list:
             data = {'type': 'information', 'data': {'message': parsed_instances_list, 'action': 'set_vids'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateSkillbotStatus(self):
         parsed_hack_status = net_parser.parse_skill_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateActionbotStatus(self):
         try:
             parsed_hack_status = net_parser.parse_action_bot_status()
             if parsed_hack_status:
                 data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-                data = convertToUTF8(data)
-                respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+                respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
         except:
             OpenLog.DebugPrint('ERROR')
             OpenLog.DebugPrint(str(net_parser.parse_action_bot_status()))
@@ -207,29 +209,25 @@ class NetworkingWebsockets(ui.ScriptWindow):
         parsed_hack_status = net_parser.parse_wait_hack_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateSettingsStatus(self):
         parsed_hack_status = net_parser.parse_settings_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateFarmbotStatus(self):
         parsed_hack_status = net_parser.parse_farm_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
     
     def UpdateChannelSwitcherStatus(self):
         parsed_hack_status = net_parser.parse_channel_switcher_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = convertToUTF8(data)
-            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+            respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data, ensure_ascii=False))
 
     def UpdateHackStatus(self):
         self.packetToSendQueue.append(self.UpdateSkillbotStatus)
@@ -254,66 +252,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         if not OpenLib.IsInGamePhase():
             self.settedBasicInformation = False
 
-#####
-# Converting to UTF 8 Methods
-#ignoring ints, floats and other numbers in this conversion. only texts relevant.
 
-def convertToUTF8(data):
-    if (isinstance(data,dict)):
-        return dictToUtf8(data)
-    elif (isinstance(data,tuple)):
-        return tupleToUtf8(data)
-    elif (isinstance(data,list)):
-        return listToUtf8(data)
-    elif (isinstance(data,str)):
-        return stringToUTF8(data)
-    return data
-
-def dictToUtf8(dic):
-    for key in dic:
-        if (isinstance(dic[key],dict)):
-            dic[key] = dictToUtf8(dic[key])
-        elif (isinstance(dic[key],tuple)):
-            dic[key] = tupleToUtf8(dic[key])
-        elif (isinstance(dic[key],list)):
-            dic[key] = listToUtf8(dic[key])
-        elif (isinstance(dic[key],str)):
-            dic[key] = stringToUTF8(dic[key])
-    return dic
-
-def tupleToUtf8(tupl):
-    tupl_new=[]
-    for item in tupl:
-        if(isinstance(item,str)):
-            item=stringToUTF8(item)
-        elif(isinstance(item,dict)):
-            item=dictToUtf8(item)
-        elif(isinstance(item,list)):
-            item=listToUtf8(item)
-        elif(isinstance(item,tuple)):
-            item=tupleToUtf8(item)
-        tupl_new.append(item)
-    return tuple(tupl_new)
-
-def listToUtf8(lis):
-    lis_new=[]
-    for item in lis:
-        if(isinstance(item,str)):
-            item=stringToUTF8(item)
-        elif(isinstance(item,dict)):
-            item=dictToUtf8(item)
-        elif(isinstance(item,list)):
-            item=listToUtf8(item)
-        elif(isinstance(item,tuple)):
-            item=tupleToUtf8(item)
-        lis_new.append(item)
-    return lis_new
-    
-
-def stringToUTF8(s): #ISSUE: the Codec is not found, any codec is not found! only a single Korean encoding is found. - wasnt able to find a fix.
-    s=s.decode('cp1252')  #read number from File later on only tmp !! TODO Read File; TODO Find encoding, or provide manually 
-    s=s.encode('utf-8')
-    return s
 
 instance = NetworkingWebsockets()
 instance.Show()
