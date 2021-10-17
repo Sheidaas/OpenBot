@@ -31,6 +31,7 @@ def OnMessage(id, message):
             'actions': cleaned_message['data']['message']
         }
         OpenLog.DebugPrint(str(type(raw_action_dict['actions'])))
+        OpenLog.DebugPrint(str(raw_action_dict['actions']))
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
         print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
@@ -83,7 +84,10 @@ def OnMessage(id, message):
         elif cleaned_message['data']['action'] == 'SET_NEW_SCHEMA':
             from OpenBot.Modules.Schema.SchemaLoader import schemaLoader
             from OpenBot.Modules.Schema.schema_runner_interface import schema_runner_interface
-            schema_runner_interface.SetNewSchema(schemaLoader.LoadSchema(cleaned_message['data']['message']))
+            schema = schemaLoader.LoadSchema(cleaned_message['data']['message'])
+            if schema:
+                OpenLog.DebugPrint(str(schema))
+                schema_runner_interface.SetNewSchema(schema)
 
 
 class NetworkingWebsockets(ui.ScriptWindow):
@@ -235,6 +239,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
         val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
         if val:
+            #OpenLog.DebugPrint(str(self.packetToSendQueue))
             self.SendPacketFromQueue()
 
         if not OpenLib.IsInGamePhase():

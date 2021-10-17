@@ -131,7 +131,7 @@ class ActionBot(ui.ScriptWindow):
                 if self.showAlwaysWaithackButton:
                     waithack_interface.Start()
                 else:
-                    if self.currActionObject.function.__name__ in ['Destroy', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                    if self.currActionObject.function.__name__ in ['DestroyByID', 'DestroyByVID', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
                                                                 'FindMapInDT', 'OpenASealInMonument'] or \
                         self.currActionObject.name in names:
                         waithack_interface.Start()

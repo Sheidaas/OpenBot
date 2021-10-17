@@ -164,6 +164,6 @@ class Skillbot(ui.ScriptWindow):
             chat.AppendChat(3, 'Cannot set cooldown')
 
 
-instance = Skillbot()
-instance.Show()
-Hooks.registerPhaseCallback("skillCallback", __PhaseChangeSkillCallback)
+#instance = Skillbot()
+#instance.Show()
+#Hooks.registerPhaseCallback("skillCallback", __PhaseChangeSkillCallback)

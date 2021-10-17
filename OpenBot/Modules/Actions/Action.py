@@ -59,6 +59,7 @@ class Action:
 
 
     def CallFunction(self):
+
         if self.interruptors:
             if len(self.interruptors_args) == len(self.interruptors):
                 for interruptor in range(len(self.interruptors)):
@@ -72,28 +73,12 @@ class Action:
                 else:
                     OpenLog.DebugPrint('There is different length in interruptors_args and interruptors')
 
-        if self.call_only_once and not self.called:
-            OpenLog.DebugPrint('Executing action function')
-            if self.function_args:
-                action_result = self.function(self.function_args)
-            else:
-                action_result = self.function()
-            self.called = True
 
-        elif self.call_only_once and self.called:
-            on_success = self.CheckOnSuccesList()
-            requirements_done = self.CheckRequirements()
-            if on_success:
-                if requirements_done:
-                    return on_success
-                return REQUIREMENTS_NOT_DONE
-
-        elif not self.call_only_once:
-            OpenLog.DebugPrint('Executing action function')
-            if self.function_args:
-                action_result = self.function(self.function_args)
-            else:
-                action_result = self.function()
+        OpenLog.DebugPrint('Executing action function')
+        if self.function_args:
+            action_result = self.function(self.function_args)
+        else:
+            action_result = self.function()
        
         if type(action_result) == bool:
             if action_result:

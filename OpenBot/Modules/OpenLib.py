@@ -15,7 +15,6 @@ METIN_TYPE = 2
 MONSTER_TYPE = 0
 PLAYER_TYPE = 6
 BOSS_TYPE = -1
-ORE_TYPE = -2
 
 BOSS_IDS = dict()
 ORES_IDS = dict()
@@ -194,7 +193,14 @@ def GetClass():
 		return (2*race)+group
 	
 	return 0
-		
+
+def GetBlacksmithFromDemonTower():
+	for vid in eXLib.InstancesList:
+		chr.SelectInstance(vid)
+		for _id in [20074, 20075, 20076]:
+			if chr.GetRace() == _id:
+				return (vid, _id)
+				
 #Skip python select answers
 def skipAnswers(event_answers, hook=False):
 	"""
