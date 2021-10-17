@@ -7,6 +7,7 @@ from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
 import player, net, chr, chat, background, item
 
+
 # Standard
 def ClearFloor(args):
     player.SetAttackKeyState(False)
@@ -39,8 +40,9 @@ def ClearFloor(args):
     }
     return action_dict
 
+
 def DestroyByVID(args):
-    instance_vid = args[1]
+    instance_vid = args[0]
     if instance_vid not in eXLib.InstancesList:
         return False
 
@@ -69,8 +71,9 @@ def DestroyByVID(args):
     
     return False
 
+
 def DestroyByID(args):
-    instance_id = args[1]
+    instance_id = args[0]
     instance_vid = OpenLib.GetVIDByClosestNPC(instance_id)
     if instance_vid not in eXLib.InstancesList:
         return False
@@ -78,6 +81,7 @@ def DestroyByID(args):
     if eXLib.IsDead(instance_vid):
         player.SetAttackKeyState(False)
         return True
+
     if not OpenLib.isPlayerCloseToInstance(instance_vid):
         x, y, z = chr.GetPixelPosition(instance_vid)
         action_dict = {
@@ -101,6 +105,7 @@ def DestroyByID(args):
     
     return False
 
+
 def MoveToPosition(args):
     position = args[0]
     if len(args) > 1:
@@ -119,6 +124,7 @@ def MoveToPosition(args):
 
 
     #DebugPrint('Going to ' + str(position))
+
 
 def UseItemOnNPC(args):
     npc_id = args[0]
@@ -139,6 +145,7 @@ def UseItemOnNPC(args):
     OpenLib.skipAnswers([0, 0], True)
     return True         
 
+
 def GoBuyItemsFromNPC(args):
     items_slots_list_to_buy = args[0]
     npc_id = args[1]
@@ -155,7 +162,8 @@ def GoBuyItemsFromNPC(args):
     npc = NPCAction(npc_id, event_answer=[1])
     NPCInteraction.RequestBusinessNPCClose(items_slots_list_to_buy, [], npc, callback)
     return True
-    
+
+
 def TalkWithNPC(args):
     npc_id = args[0]
     event_answer = args[1]
@@ -177,7 +185,8 @@ def TalkWithNPC(args):
         OpenLib.skipAnswers(event_answer, True)
         return Action.NEXT_ACTION
     return False
-   
+
+
 def ChangeChannel(args):
     channel_id = args[0]
 
@@ -422,7 +431,6 @@ def OpenASealInMonument(args):
 
     return action_dict  
 
-
 def UpgradeItemInDemonTower(args):
     item_upgrades_list = args[0]
     blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
@@ -441,7 +449,7 @@ def UpgradeItemInDemonTower(args):
         net.SendRefinePacket(item_upgrades_list.pop(0), 4)
     return Action.NEXT_ACTION
     
-def ExitDT():
+def ExitDT(args):
     blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
     #Creating answer which exit deamon tower
     if player.GetStatus(player.LEVEL) < 75:
@@ -454,7 +462,7 @@ def ExitDT():
             'on_success': [Action.NEXT_ACTION]
         }
     return action_dict    
-    
+
 def GoToSeventhFloor(args):
     blacksmith_vid, blacksmith_id = OpenLib.GetBlacksmithFromDemonTower()
     if player.GetStatus(player.LEVEL) < 75:

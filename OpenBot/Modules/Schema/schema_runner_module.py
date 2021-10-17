@@ -58,7 +58,7 @@ class SchemaRunnerModule(ui.ScriptWindow):
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
-        if val and OpenLib.IsInGamePhase() and self.enabled and self.isCurrActionDone and self.currSchema != None:
+        if val and OpenLib.IsInGamePhase() and self.enabled and self.isCurrActionDone and self.currSchema is not None:
             action = self.GetCurrentAction()
             OpenLog.DebugPrint(str(action['name']) + ' is currently running')
             if action['function'].__name__ == 'BuyItemsForAlchemist':

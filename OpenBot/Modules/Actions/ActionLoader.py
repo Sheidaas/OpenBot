@@ -17,6 +17,7 @@ functions_args_pattern = {
     'BuyItemsForAlchemist': [0, ''],
     'ExchangeItemsForAlchemist': [[], 0, ''],
     'ExchangeEnergyFragmentsToCrystal': [0, ''],
+    'GetEnergyFromAlchemist': [0, 0, ''],
 
     # Demon Tower
     'OpenAllSeals': [[0, 0]],
@@ -24,7 +25,7 @@ functions_args_pattern = {
     'ExitDT': [],
     'GoToSeventhFloor': [],
     'FindMapInDT': [[0, 0]],
-    'OpenASealInMonument':[[0, 0]],
+    'OpenASealInMonument': [[0, 0]],
 
     # Farmbot
     'ExchangeTrashItemsToEnergyFragments': [],
@@ -125,7 +126,8 @@ class ActionLoader:
         return actions
 
     def LoadFunction(self, function_name):
-        if function_name not in functions_methods.keys():
+        DebugPrint(str(function_name) + str(functions_methods.keys()))
+        if str(function_name) not in functions_methods.keys():
             DebugPrint('Function name does not exist in function_names pattern')
             return None
         return functions_methods[function_name]
@@ -134,13 +136,14 @@ class ActionLoader:
         correct_args = functions_args_pattern[function_name]
         
         #DebugPrint(str(function_args_to_check))
+        DebugPrint(str(function_name))
         if not len(function_args_to_check) == len( function_args_to_check):
             DebugPrint('Length of args_to_check is different than pattern!')
             return None
 
         for arg_to_check in range(len(function_args_to_check)):
-            #DebugPrint(str(function_args_to_check[arg_to_check]))
-            #DebugPrint(str(correct_args[arg_to_check]))
+            DebugPrint(str(function_args_to_check[arg_to_check]))
+            DebugPrint(str(correct_args[arg_to_check]))
             if type(function_args_to_check[arg_to_check]) == int:
                 function_args_to_check[arg_to_check] = int(function_args_to_check[arg_to_check])
                 if not type(correct_args[arg_to_check]) == int:

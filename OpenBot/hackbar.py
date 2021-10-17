@@ -4,7 +4,7 @@ from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, Py
 from OpenBot.Modules import Radar
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Networking import NetworkingWebsockets
-DEBUG = True
+DEBUG = False
 if DEBUG:
     from OpenBot.Modules import MiningBot #, Filter, 
 
