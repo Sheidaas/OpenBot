@@ -8,7 +8,6 @@ import ui, chat
 import eXLib
 from OpenBot.Modules import UIComponents, OpenLog, OpenLib
 import net_parser
-import codecs
 
 server_url = 'ws://localhost:13254'
 
