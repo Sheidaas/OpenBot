@@ -147,17 +147,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
             packet_to_send()
 
     def SetClientTypeAsMetin(self):
-        #read encoding: 
-        #try:
-        #    file = open(eXLib.PATH+'loca.cfg')
-        #    enc = file.readlines()[0].split[' '][0]
-        #except:
-        #    file = open(eXLib.PATH+'loca.cfg')
-        #    enc = file.readlines()[0].split[' '][1]
-        
-        #if(len(enc)!= 4):
-        #    print('Cannot Read Encoding from File!')
-        data = {'type': 'set_role', 'data': {'message': 'metin2_client', 'data': 1250}}
+        data = {'type': 'set_role', 'data': {'message': 'metin2_client', 'language': OpenLib.GetCurrentMetinLanguage()}}
         respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
     def UpdateInventoryStatus(self):
