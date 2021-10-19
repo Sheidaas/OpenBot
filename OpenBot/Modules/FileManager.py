@@ -219,6 +219,16 @@ def SaveAll():
 	for file in files:
 		file.SaveFile()
 
+def parseLanguage():
+	language = ''
+	try:
+		with open('loca.cfg', 'r') as file:
+			language = 'cp' + file.read().split(' ')[0]
+	except:
+		with open('locale.cfg', 'r') as file:
+			language = 'cp' + file.read().split(' ')[1]
+
+	return language
 
 #################### MAP RELATED ######################
 #Parsing of npc files
@@ -253,7 +263,6 @@ def parseNpcList(map_name):
 			npc_list[race] = []
 		npc_list[race].append((x,y))
 	return npc_list
-
 
 #Parsing of map_link
 #Returns a list of MapLinks

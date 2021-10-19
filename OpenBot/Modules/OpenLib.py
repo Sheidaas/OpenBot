@@ -820,6 +820,9 @@ def GetCurrentServer():
 		OpenLog.DebugPrint("Exception raised when trying to obtain current channel.")
 		return 0
 
+def GetCurrentMetinLanguage():
+	return FileManager.parseLanguage()
+
 def IsWeaponArch():
 	"""
 	Return true if weapon is arch
