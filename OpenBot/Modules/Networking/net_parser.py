@@ -136,5 +136,5 @@ def listToUtf8(lis,enc):
     return lis_new
     
 def stringToUTF8(s, enc):
-    s = codecs.decode(s, encoding=str(enc))
+    s = codecs.decode(s,enc)
     return s
