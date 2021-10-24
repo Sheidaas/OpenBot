@@ -1,3 +1,0 @@
-Python GraphicOnOff Destroy
-Python GraphicOnOff Clear
-Python Graphic Clear
