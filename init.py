@@ -33,6 +33,10 @@ setattr(_net, 'GetMainActorVID', _player.GetMainCharacterIndex)
 setattr(_player, 'SetSingleDIKKeyState', SetSingleDIKKeyState)
 setattr(_player, 'SetAttackKeyState', SetAttackKeyState)
 
+#Adding paths to sys.path
+
+sys.path.append(os.path.join(eXLib.PATH,'OpenBot'))
+sys.path.append(os.path.join(eXLib.PATH,'OpenBot', 'lib'))
 
 #Set Path
 folder = eXLib.PATH+"OpenBot"
