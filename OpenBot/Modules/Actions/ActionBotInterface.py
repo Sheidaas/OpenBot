@@ -16,8 +16,6 @@ class ActionBotInterface:
             self.ClearActions()
         if 'ClearWaiters' in status.keys():
             self.ClearWaiters()
-        
-            
 
     def GetStatus(self):
         return {

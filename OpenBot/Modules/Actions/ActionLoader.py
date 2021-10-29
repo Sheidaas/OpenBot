@@ -4,50 +4,57 @@ from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsC
 
 
 functions_args_pattern = {
+    # Standard
+    'ClearFloor': [[0, 0]],
+    'DestroyByVID': [0],
+    'DestroyByID': [0],
+    'MoveToPosition': [[0, 0], ''],
+    'TalkWithNPC': [0, [], ''],
+    'ChangeChannel': [0],
+    'UseItemOnNPC': [0, 0],
+
+    # Alchemist
     'BuyItemsForAlchemist': [0, ''],
     'ExchangeItemsForAlchemist': [[], 0, ''],
     'ExchangeEnergyFragmentsToCrystal': [0, ''],
-    'ClearFloor': [(0, 0)],
-    'Destroy': [0, 0],
-    'Find': [0],
-    'MoveToPosition': [[0, 0], ''],
-    'MoveToVID': [0],
-    'UsingItemOnInstance': [0, 0],
-    'OpenAllSeals': [(0, 0)],
-    'UpgradeDeamonTower': [0],
-    'GoBuyItemsFromNPC': [[], 0, (0, 0)],#, function
-    'GetEnergyFromAlchemist': [[], 0, (0, 0)],
-    'MineOre': [0],#, function
-    'LookForBlacksmithInDeamonTower': [True, 0],
-    'FindMapInDT': [(0, 0)],
-    'OpenASealInMonument':[(0, 0)],
+    'GetEnergyFromAlchemist': [0, 0, ''],
+
+    # Demon Tower
+    'OpenAllSeals': [[0, 0]],
+    'UpgradeItemInDemonTower': [[]],
+    'ExitDT': [],
+    'GoToSeventhFloor': [],
+    'FindMapInDT': [[0, 0]],
+    'OpenASealInMonument': [[0, 0]],
+
+    # Farmbot
     'ExchangeTrashItemsToEnergyFragments': [],
-    'ChangeChannel': [0],   
-'ChangeChannel': [0],   
-    'ChangeChannel': [0],   
 }
 functions_methods = {
+    # Standard
+    'ClearFloor': ActionFunctions.ClearFloor,
+    'DestroyByVID': ActionFunctions.DestroyByVID,
+    'DestroyByID': ActionFunctions.DestroyByID,
+    'MoveToPosition': ActionFunctions.MoveToPosition,
+    'TalkWithNPC': ActionFunctions.TalkWithNPC,
+    'ChangeChannel': ActionFunctions.ChangeChannel,
+    'UseItemOnNPC': ActionFunctions.UseItemOnNPC,
+
+    # Alchemist 
     'BuyItemsForAlchemist': ActionFunctions.BuyItemsForAlchemist,
     'ExchangeItemsForAlchemist': ActionFunctions.ExchangeItemsForAlchemist,
-    'ExchangeEnergyFragmentsToCrystal': ActionFunctions.ExchangeEnergyFragmentsToCrystal,
-    'ClearFloor': ActionFunctions.ClearFloor,
-    'Destroy': ActionFunctions.Destroy,
-    'Find': ActionFunctions.Find,
-    'MoveToPosition': ActionFunctions.MoveToPosition,
-    'MoveToVID': ActionFunctions.MoveToVID,
-    'UsingItemOnInstance': ActionFunctions.UsingItemOnInstance,
-    'OpenAllSeals': ActionFunctions.OpenAllSeals,
-    'UpgradeDeamonTower': ActionFunctions.UpgradeDeamonTower,
-    'GoBuyItemsFromNPC': ActionFunctions.GoBuyItemsFromNPC,
     'GetEnergyFromAlchemist': ActionFunctions.GetEnergyFromAlchemist,
-    'ChangeEnergyToCrystal': ActionFunctions.ChangeEnergyToCrystal,
-    'TalkWithNPC': ActionFunctions.TalkWithNPC,
-    'MineOre': ActionFunctions.MineOre,
-    'LookForBlacksmithInDeamonTower': ActionFunctions.LookForBlacksmithInDeamonTower,
+
+    # Demon Tower
+    'OpenAllSeals': ActionFunctions.OpenAllSeals,
+    'UpgradeItemInDemonTower': ActionFunctions.UpgradeItemInDemonTower,
+    'ExitDT': ActionFunctions.ExitDT,
+    'GoToSeventhFloor': ActionFunctions.GoToSeventhFloor,
     'FindMapInDT': ActionFunctions.FindMapInDT,
     'OpenASealInMonument': ActionFunctions.OpenASealInMonument,
+
+    # Farmbot
     'ExchangeTrashItemsToEnergyFragments': ActionFunctions.ExchangeTrashItemsToEnergyFragments,
-    'ChangeChannel': ActionFunctions.ChangeChannel,
 }
 class ActionLoader:
 
@@ -119,7 +126,8 @@ class ActionLoader:
         return actions
 
     def LoadFunction(self, function_name):
-        if function_name not in functions_methods.keys():
+        DebugPrint(str(function_name) + str(functions_methods.keys()))
+        if str(function_name) not in functions_methods.keys():
             DebugPrint('Function name does not exist in function_names pattern')
             return None
         return functions_methods[function_name]
@@ -128,47 +136,54 @@ class ActionLoader:
         correct_args = functions_args_pattern[function_name]
         
         #DebugPrint(str(function_args_to_check))
+        DebugPrint(str(function_name))
         if not len(function_args_to_check) == len( function_args_to_check):
             DebugPrint('Length of args_to_check is different than pattern!')
             return None
 
         for arg_to_check in range(len(function_args_to_check)):
-            #DebugPrint(str(function_args_to_check[arg_to_check]))
-            #DebugPrint(str(correct_args[arg_to_check]))
+            DebugPrint(str(function_args_to_check[arg_to_check]))
+            DebugPrint(str(correct_args[arg_to_check]))
             if type(function_args_to_check[arg_to_check]) == int:
-                if type(correct_args[arg_to_check]) is not int:
-                    DebugPrint('['+str(arg_to_check)+'] + This argument should be type int!')
+                function_args_to_check[arg_to_check] = int(function_args_to_check[arg_to_check])
+                if not type(correct_args[arg_to_check]) == int:
+                    try:
+                        function_args_to_check[arg_to_check] = int(function_args_to_check[arg_to_check])
+                    except Exception as e:
+                        DebugPrint('Requirement data ' + str(function_args_to_check[arg_to_check]) + ' should be int!')
+                        DebugPrint(str(e))
                     return None
             
             elif type(function_args_to_check[arg_to_check]) == str:
-                if type(correct_args[arg_to_check]) is not str:
-                    DebugPrint('['+str(arg_to_check)+'] + This argument should be type str!')
-                    return None
+                if not type(correct_args[arg_to_check]) == str:
+                    if type(correct_args[arg_to_check]) == int:
+                        try:
+                            function_args_to_check[arg_to_check] = int(function_args_to_check[arg_to_check])
+                        except Exception as e:
+                            DebugPrint('Requirement data ' + str(function_args_to_check[arg_to_check]) + ' should be int!')
+                            DebugPrint(str(e))
+                        return None
+                    else:
+                        DebugPrint('['+str(arg_to_check)+'] + This argument should be type str!')
+                        return None
             
             elif type(function_args_to_check[arg_to_check]) == bool:
-                if type(correct_args[arg_to_check]) is not bool:
+                if not type(correct_args[arg_to_check]) == bool:
                     DebugPrint('['+str(arg_to_check)+'] + This argument should be type bool!')
                     return None
 
-            elif type(function_args_to_check[arg_to_check]) == tuple:
-                if type(correct_args[arg_to_check]) is not tuple:
-                    DebugPrint('['+str(arg_to_check)+'] + This argument should be type tuple!')
-                    return None
-
-                if len(function_args_to_check[arg_to_check]) != len(correct_args[arg_to_check]):
-                    DebugPrint('Length of args_to_check' + '[' + str(arg_to_check) + ']' + ' is different than pattern!')
-                    return None
-
-                for arg_in_tuple in range(len(function_args_to_check[arg_to_check])):
-                    if type(correct_args[arg_to_check][arg_in_tuple]) is not int:
-                        DebugPrint('function_args_to_check' + '[' + str(arg_to_check) + ']' + '[' + str(arg_in_tuple) + ']' + ' This should be int!')
-                        return None
-
             elif type(function_args_to_check[arg_to_check]) == list:
                 #DebugPrint(str(type(correct_args[arg_to_check])))
-                if not type(correct_args[arg_to_check]) is list:
-                    DebugPrint('['+str(arg_to_check)+'] + This argument should be type list!')
-                    return None            
+                DebugPrint(str(function_args_to_check[arg_to_check]))
+                if type(correct_args[arg_to_check]) is not list:
+                    DebugPrint(str(arg_to_check) + 'This argument should be type list!')
+                    return None  
+
+                for arg_in_list in range(len(function_args_to_check[arg_to_check])):
+                    try:
+                        function_args_to_check[arg_to_check][arg_in_list] = int(function_args_to_check[arg_to_check][arg_in_list])
+                    except:
+                        pass
 
                 #if len(function_args_to_check[arg_to_check]) != len(correct_args[arg_to_check]):
                 #    DebugPrint('Length of args_to_check' + '[' + str(arg_to_check) + ']' + ' is different than pattern!')
@@ -203,6 +218,7 @@ class ActionLoader:
                 return None
             
             if requirement == ActionRequirementsCheckers.IS_ON_POSITION:
+                DebugPrint(str(requirements[requirement]))
                 if type(requirements[requirement]) is not list:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not list')
                     return None
@@ -211,10 +227,14 @@ class ActionLoader:
                     DebugPrint('Position tuple has diffrent size than expected! Should be 2, there are ' + str(len(requirements[requirement])))
                     return None
                 
-                for number in requirements[requirement]:
-                    if type(number) != int:
-                        DebugPrint('This should be int! ' +str(number))
+                for _digit in range(len(requirements[requirement])):
+                    try:
+                        requirements[requirement][_digit] = int(requirements[requirement][_digit])
+                    except Exception as e:
+                        DebugPrint('Requirement data ' + str(requirements[requirement][_digit]) + ' should be int!')
+                        DebugPrint(str(e))
                         return None
+
             
             elif requirement == ActionRequirementsCheckers.IS_IN_MAP:
                 if type(requirements[requirement]) is not list:
@@ -226,7 +246,8 @@ class ActionLoader:
                     return None
                 
                 for _map in range(len(requirements[requirement])):
-                    if type(requirements[requirement][_map]) is not str:
+                    DebugPrint(str(type(requirements[requirement][_map])))
+                    if not type(str(requirements[requirement][_map])) == str:
                         DebugPrint('Requirement data ' + str(requirements[requirement][_map]) + ' should be str!')
                         return None
 
@@ -242,11 +263,20 @@ class ActionLoader:
 
 
                 for _digit in range(len(requirements[requirement])):
-                    if type(requirements[requirement][_digit]) is not int:
+                    try:
+                        requirements[requirement][_digit] = int(requirements[requirement][_digit])
+                    except Exception as e:
                         DebugPrint('Requirement data ' + str(requirements[requirement][_digit]) + ' should be int!')
+                        DebugPrint(str(e))
                         return None
 
             elif requirement == ActionRequirementsCheckers.IS_ABOVE_LVL or requirement == ActionRequirementsCheckers.IS_UNDER_LVL:
+                try:
+                    requirements[requirement] = int(requirements[requirement])
+                except Exception as e:
+                    DebugPrint(str(e))
+                    return None
+
                 if type(requirements[requirement]) is not int:
                     DebugPrint('Requirement data ' + str(requirements[requirement]) + ' is not int!')
                     return None

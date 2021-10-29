@@ -20,8 +20,8 @@ SILVER_KEY = 50009
 MERMAID_KEY = 50043
 SHRIMP = 27798
 CARPA = 27806
-class FishingBotDialog(ui.Window):
 
+class FishingBotDialog(ui.Window):
 
 	STATE_WAITING= 0
 	STATE_FISHING= 1

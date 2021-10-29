@@ -277,11 +277,8 @@ class FarmingBot(ui.ScriptWindow):
 
 				elif self.CURRENT_STATE == FARMING_STATE:
 					OpenLog.DebugPrint("[Farming-bot] FARMING_STATE")
-					action_dict = {'function_args': [0, self.selectedMetin],
-								'function': ActionFunctions.Destroy,
-								'requirements': {},
-								'on_success': [Action.NEXT_ACTION],
-								'on_failed': [],
+					action_dict = {'function_args': [self.selectedMetin],
+								'function': ActionFunctions.DestroyByVID,
 								'callback': self.IsDestroyingMetinDone
 								}
 					action_bot_interface.AddAction(action_dict)
