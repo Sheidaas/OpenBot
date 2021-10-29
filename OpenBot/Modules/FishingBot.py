@@ -411,6 +411,7 @@ class FishingBotDialog(ui.Window):
 			else:
 				net.SendItemUsePacket(slot)
 				return False
+
 		#Check if rod is ready to level up
 		if self.rodBtn.isOn and self.isRodAbleToLevelUp():
 			self.state = self.STATE_IMPROVING_ROD

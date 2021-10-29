@@ -487,6 +487,15 @@ def FindMapInDT(args):
     if unknow_old_chest >=0:
         net.SendItemUsePacket(unknow_old_chest)
 
+def WaitFor(args):
+    if not len(args) > 1:
+        return True
+    from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
+    modules_to_switch_off = args[1]
+    if 'waithack' in modules_to_switch_off:
+        waithack_interface.Stop()
+    return True
+
     action_dict = { 'function_args': [(center_position[0], center_position[1])], # center position of area 
                 'function': ClearFloor,
                 'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (center_position[0], center_position[1])},

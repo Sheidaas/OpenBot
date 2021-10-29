@@ -1,8 +1,8 @@
 import UIComponents
 from BotBase import BotBase
-import ui, player, app, chat
-import OpenLib, FileManager, OpenLog, Hooks
-from OpenBot.Modules.Actions import ActionBot
+import ui, app
+import OpenLib, Hooks
+
 """
   app.DIK_0: {'function': None},
             app.DIK_1: {'function': None},
