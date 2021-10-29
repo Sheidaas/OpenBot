@@ -1,4 +1,5 @@
 from OpenBot.Modules.OpenLog import DebugPrint
+from OpenBot.Modules.Dropper import dropper
 import player, item, net, shop
 
 
@@ -71,12 +72,8 @@ class InventoryInterface:
                 
 
     def DropAllItems(self, items_list):
-        from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-        time = 0.3
         for slot in items_list:
-            DebugPrint(str(slot))
-            action_bot_interface.AddWaiter(time, lambda: net.SendItemDropPacketNew(slot,player.GetItemCount(slot)))
-            time += 0.3
+            dropper.add_new_item_to_drop(slot)
 
     def UseAllItems(self, items_list):
         from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
