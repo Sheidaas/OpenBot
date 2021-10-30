@@ -215,7 +215,7 @@ class Fishbot(ui.ScriptWindow):
                     chat.AppendChat(3, 'Going to buy some bait')
                     return
 
-                if not OpenLib.isPlayerCloseToPosition(*self.starting_position, max_dist=500):
+                if not OpenLib.isPlayerCloseToPosition(*self.starting_position, max_dist=300):
                     # Go to starting position
                     chat.AppendChat(3, 'Going to starting position')
                     action = {

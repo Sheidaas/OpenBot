@@ -1,8 +1,8 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui, chat, player, net, m2netm2g,eXLib
+import ui, chat, player, net, m2netm2g,eXLib, uiCharacter, chr
 from OpenBot.Modules import OpenLib, FileManager, Hooks
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-
+from OpenBot.Modules.Actions import ActionFunctions
 
 def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
@@ -12,7 +12,38 @@ def __PhaseChangeSkillCallback(phase,phaseWnd):
         if instance.shouldWait:
             instance.startUpWait = True
 
-
+ADD_POINT = {
+            "HP": "HP",
+            "INT": "INT",
+            "STR": "STR",
+            "DEX": "DEX",
+        }
+"""
+       # USE player.ClickSkillSlot instead of SendUseSkillPacket for sura
+        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
+        if val and OpenLib.IsInGamePhase() and self.enabled:
+            if not self.startUpWait:
+                for skill in self.currentSkillSet:
+                    if self.instant_mode:
+                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
+                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                            else:
+                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+                            skill['is_turned_on'] = True
+                            action_bot_interface.AddWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
+                    else:
+                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
+                            if not player.IsMountingHorse():
+                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
+                            else:
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+            else:
+                val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, self.TimeToWaitAfterStart)
+                if val:
+                    self.startUpWait = False
+"""
 class Skillbot(ui.ScriptWindow):
 
     ACTIVE_SKILL_IDS = [
@@ -38,14 +69,26 @@ class Skillbot(ui.ScriptWindow):
 
     def __init__(self):
         ui.Window.__init__(self)
-        self.lastTime = 0
         self.enabled = False
-        self.lastTimeStartUp = 0
-        self.TimeToWaitAfterStart = 0
         self.shouldWait = False
         self.startUpWait = False
         self.instant_mode = False
+        self.upgrade_stats = False
+        self.upgrade_skills = False
+        self.following_vid = False
+        self.unmount_horse = False
+        self.followed_vid = 0
+        self.stat_to_upgrade_order = ['DEX', 'STR', 'INT', 'HP']
+        self.skill_to_upgrade_order = []
         self.currentSkillSet = []
+
+        self.currActionDone = True
+        self.lastTime = 0
+        self.TimeToWaitAfterStart = 0
+        self.lastTimeStartUp = 0
+        self.chrwindow = uiCharacter.CharacterWindow()
+        self.add_stat = self.chrwindow._CharacterWindow__OnClickStatusPlusButton
+        #self.add_skill = self.chrwindow._CharacterWindow__OnPressedSlotButton
 
         self.resetSkills()
 
@@ -90,14 +133,16 @@ class Skillbot(ui.ScriptWindow):
         skillIds = OpenLib.GetClassSkillIDs(current_class)
         self.currentSkillSet = []
         for i, id in enumerate(skillIds):
-            if id in self.ACTIVE_SKILL_IDS:
-                self.currentSkillSet.append({
-                    'id': id,
-                    'can_cast': False,
-                    'cooldown_time_instant_mode': 0,
-                    'slot': i + 1,
-                    'is_turned_on': False,
-                })
+            #if id in self.ACTIVE_SKILL_IDS:
+            self.currentSkillSet.append({
+                'id': id,
+                'can_cast': False,
+                'cooldown_time_instant_mode': 0,
+                'slot': i + 1,
+                'is_turned_on': False,
+                'upgrade_order': i+1,
+                'lastWait': 0,
+            })
         #DebugPrint(str(self.currentSkillSet))
 
     def addCallbackToWaiter(self, skill):
@@ -106,34 +151,70 @@ class Skillbot(ui.ScriptWindow):
 
         return wait_to_use_skill
 
+    def GetRawStatsDict(self):
+        return {
+            'HP': net.GetAccountCharacterSlotDataInteger(0, m2netm2g.ACCOUNT_CHARACTER_SLOT_CON),
+            'INT': net.GetAccountCharacterSlotDataInteger(0, m2netm2g.ACCOUNT_CHARACTER_SLOT_INT),
+            'STR': net.GetAccountCharacterSlotDataInteger(0, m2netm2g.ACCOUNT_CHARACTER_SLOT_STR),
+            'DEX': net.GetAccountCharacterSlotDataInteger(0, m2netm2g.ACCOUNT_CHARACTER_SLOT_DEX),
+        }
+
+    def set_curr_action_done(self):
+        self.currActionDone = True
+
     def OnUpdate(self):
-        # USE player.ClickSkillSlot instead of SendUseSkillPacket for sura
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
         if val and OpenLib.IsInGamePhase() and self.enabled:
-            if not self.startUpWait:
+
+            statusPoint = player.GetStatus(player.STAT)
+            if statusPoint and self.upgrade_stats:
+                stats_dict = self.GetRawStatsDict()
+                for stat in self.stat_to_upgrade_order:
+                    if stats_dict[stat] < 90:
+                        self.add_stat(stat)
+                        break
+
+
+            statusPoint = player.GetStatus(player.SKILL_ACTIVE)
+            if statusPoint and self.upgrade_skills:
+                for skill in sorted(self.currentSkillSet, key=lambda item: item['upgrade_order']):
+                    if not skill.GetSkillGrade(skill['slot']) and skill.GetSkillLevel(skill['slot']) < 17:
+                        #self.add_skill(skill['slot'])
+                        break
+
+            # Following target vid
+            if self.following_vid and self.followed_vid and self.currActionDone:
+                x, y, z = chr.GetPixelPosition(self.followed_vid)
+                if not OpenLib.isPlayerCloseToPosition(x, y, 1000):
+
+                    action = {
+                        'name': '[Skillbot] - Walking to selected instance ' + chr.GetNameByVID(self.followed_vid),
+                        'function_args': [[x, y]],
+                        'function': ActionFunctions.MoveToPosition,
+                        'callback': self.set_curr_action_done,
+                    }
+                    self.currActionDone = False
+                    action_bot_interface.AddAction(action)
+                    return
+
+            if self.currActionDone:
+                # This is for using skills
+                character_class = OpenLib.GetClass()
+                if not character_class:
+                    return
+
                 for skill in self.currentSkillSet:
-                    if self.instant_mode:
-                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
-                            if not player.IsMountingHorse():
-                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
-                            else:
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-                            skill['is_turned_on'] = True
-                            action_bot_interface.AddWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
-                    else:
-                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
-                            if not player.IsMountingHorse():
-                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
-                            else:
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-            else:
-                val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, self.TimeToWaitAfterStart)
-                if val:
-                    self.startUpWait = False
+
+                    val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
+                    if val and skill['can_cast']:
+
+                        if self.unmount_horse and player.IsMountingHorse():
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
+
+                        player.ClickSkillSlot(skill['slot'])
+
+                        if self.unmount_horse and not player.IsMountingHorse():
+                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
 
     def __del__(self):
         ui.Window.__del__(self)

@@ -15,7 +15,8 @@ def parse_instances_list():
             'id': _id,
             'x': x,
             'y': y,
-            'type': _type
+            'type': _type,
+            'name': chr.GetNameByVID(vid)
         }
     return instances_list
 
@@ -28,51 +29,43 @@ def parse_static_character_status_info():
     }
 
 def parse_character_status_info():
-    status = OpenLib.getAllStatusOfMainActor()
-    #OpenLog.DebugPrint(str(status))
-    return status
+    return OpenLib.getAllStatusOfMainActor()
 
 def parse_skill_bot_status():
     from OpenBot.Modules.Skillbot.skillbot_ui import skillbot_interface
-    hack_status = {
+    return {
         'SkillBot': skillbot_interface.GetStatus(),
     }
-    return hack_status
 
 def parse_action_bot_status():
     from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-    hack_status = {
+    return {
         'ActionBot': action_bot_interface.GetStatus(),
     }
-    return hack_status
 
 def parse_wait_hack_status():
     from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
-    hack_status = {
+    return {
         'WaitHack': waithack_interface.GetStatus(),
     }
-    return hack_status
 
 def parse_settings_status():
     from OpenBot.Modules.Settings.settings_interface import settings_interface
-    hack_status = {
+    return {
         'Settings': settings_interface.GetStatus(),
     }
-    return hack_status
 
 def parse_farm_bot_status():
     from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
-    hack_status = {
+    return {
         'FarmBot': farmbot_interface.GetStatus(),
     }
-    return hack_status
 
 def parse_channel_switcher_status():
     from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
-    hack_status = {
+    return {
         'ChannelSwitcher': channel_switcher_interface.GetStatus()
     }
-    return hack_status
 
 def parse_inventory_status():
     from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
@@ -81,6 +74,12 @@ def parse_inventory_status():
 def parse_pickup_filter():
     from OpenBot.Modules.Settings.settings_interface import settings_interface
     return settings_interface.GetPickupFilter()
+
+def parse_fishbot_status():
+    from OpenBot.Modules.Fishbot.fishbot_interface import fishbot_interface
+    return {
+        'FishBot': fishbot_interface.GetStatus(),
+    }
 
 #####
 # Converting to UTF 8 Methods
