@@ -61,17 +61,18 @@ def OnMessage(id, message):
 
         elif cleaned_message['data']['module'] == 'ChannelSwitcher':
             from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
-            OpenLog.DebugPrint(str(cleaned_message['data']['message']))
             channel_switcher_interface.SetStatus(cleaned_message['data']['message'])
+
+        elif cleaned_message['data']['module'] == 'FishBot':
+            from OpenBot.Modules.Fishbot.fishbot_interface import fishbot_interface
+            fishbot_interface.SetStatus(cleaned_message['data']['message'])
 
         elif cleaned_message['data']['module'] == 'Inventory':
             from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
-            #OpenLog.DebugPrint(str(cleaned_message['data']['message']))
             inventory_interface.SetStatus(cleaned_message['data']['message'])
             instance.packetToSendQueue.append(instance.UpdateInventoryStatus)
         
         elif cleaned_message['data']['module'] == 'PickupFilter':
-            #OpenLog.DebugPrint(str(cleaned_message['data']['message']['pickup_filter']))
             settings_interface.SetPickupFilter(cleaned_message['data']['message']['pickup_filter'])
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
 
@@ -228,15 +229,22 @@ class NetworkingWebsockets(ui.ScriptWindow):
         parsed_hack_status = net_parser.parse_farm_bot_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = net_parser.convertToUTF8(data,self.encoding)
+            data = net_parser.convertToUTF8(data, self.encoding)
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
     
     def UpdateChannelSwitcherStatus(self):
         parsed_hack_status = net_parser.parse_channel_switcher_status()
         if parsed_hack_status:
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
-            data = net_parser.convertToUTF8(data,self.encoding)
+            data = net_parser.convertToUTF8(data, self.encoding)
             respond = eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+    def UpdateFishbotStatus(self):
+        parsed_hack_status = net_parser.parse_fishbot_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            data = net_parser.convertToUTF8(data, self.encoding)
+            eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
     def UpdateHackStatus(self):
         self.packetToSendQueue.append(self.UpdateSkillbotStatus)
@@ -245,6 +253,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateSettingsStatus)
         self.packetToSendQueue.append(self.UpdateFarmbotStatus)
         self.packetToSendQueue.append(self.UpdateChannelSwitcherStatus)
+        self.packetToSendQueue.append(self.UpdateFishbotStatus)
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)

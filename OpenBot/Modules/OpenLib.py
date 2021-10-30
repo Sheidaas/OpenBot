@@ -501,6 +501,7 @@ def getAllStatusOfMainActor():
 	"""
 	x, y, z = chr.GetPixelPosition(net.GetMainActorVID())
 	character_status = {
+		'vid': net.GetMainActorVID(),
 		'Position': [x, y],
 		'CurrentChannel': GetCurrentChannel(),
 		'Server': GetCurrentServer(),

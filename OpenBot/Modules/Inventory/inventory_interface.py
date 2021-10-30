@@ -66,7 +66,6 @@ class InventoryInterface:
         time = 0.3
         if shop.IsOpen():
             for slot in items_list:
-                DebugPrint(str(slot))
                 action_bot_interface.AddWaiter(time, lambda: net.SendShopSellPacketNew(slot,player.GetItemCount(slot),1))
                 time += 0.3
                 
@@ -79,7 +78,6 @@ class InventoryInterface:
         from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
         time = 0.3
         for slot in items_list:
-            DebugPrint(str(slot))
             action_bot_interface.AddWaiter(time, lambda: net.SendItemUsePacket(slot))
             time += 0.3
 
