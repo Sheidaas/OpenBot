@@ -159,9 +159,10 @@ class SkillbotInterface:
         skill_to_change = [skill for skill in instance.currentSkillSet if skill['id'] == skill_id]
         if not skill_with_old_order or not skill_to_change:
             return False
-        DebugPrint(str(skill_with_old_order) + str(skill_to_change))
+        DebugPrint(str(skill_to_change[0]['upgrade_order']) + str(skill_with_old_order[0]['upgrade_order']))
         skill_with_old_order[0]['upgrade_order'], skill_to_change[0]['upgrade_order'] = \
             skill_to_change[0]['upgrade_order'], skill_with_old_order[0]['upgrade_order']
+        DebugPrint(str(skill_with_old_order[0]['upgrade_order'])+ str(skill_to_change[0]['upgrade_order']))
         return True
 
 skillbot_interface = SkillbotInterface()
