@@ -1,5 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui, chat, player, net, m2netm2g,eXLib, uiCharacter, chr
+import ui, player, net, m2netm2g, uiCharacter, chr
+import skill as metin_skill
 from OpenBot.Modules import OpenLib, FileManager, Hooks
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.Actions import ActionFunctions
@@ -88,7 +89,7 @@ class Skillbot(ui.ScriptWindow):
         self.lastTimeStartUp = 0
         self.chrwindow = uiCharacter.CharacterWindow()
         self.add_stat = self.chrwindow._CharacterWindow__OnClickStatusPlusButton
-        #self.add_skill = self.chrwindow._CharacterWindow__OnPressedSlotButton
+
 
         self.resetSkills()
 
@@ -174,19 +175,19 @@ class Skillbot(ui.ScriptWindow):
                         self.add_stat(stat)
                         break
 
-
             statusPoint = player.GetStatus(player.SKILL_ACTIVE)
             if statusPoint and self.upgrade_skills:
-                for skill in sorted(self.currentSkillSet, key=lambda item: item['upgrade_order']):
-                    if not skill.GetSkillGrade(skill['slot']) and skill.GetSkillLevel(skill['slot']) < 17:
-                        #self.add_skill(skill['slot'])
+                for _skill in sorted(self.currentSkillSet, key=lambda item: item['upgrade_order']):
+                    if not player.GetSkillGrade(_skill['slot']) and player.GetSkillLevel(_skill['slot']) < 17:
+                        self.chrwindow._CharacterWindow__SelectSkillGroup(net.GetMainActorSkillGroup()-1)
+                        active_skill_obj = self.chrwindow.GetChild("Skill_Active_Slot")
+                        active_skill_obj.eventPressedSlotButton(_skill['slot'])
                         break
 
             # Following target vid
             if self.following_vid and self.followed_vid and self.currActionDone:
                 x, y, z = chr.GetPixelPosition(self.followed_vid)
                 if not OpenLib.isPlayerCloseToPosition(x, y, 1000):
-
                     action = {
                         'name': '[Skillbot] - Walking to selected instance ' + chr.GetNameByVID(self.followed_vid),
                         'function_args': [[x, y]],

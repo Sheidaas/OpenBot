@@ -73,7 +73,7 @@ class Fishbot(ui.ScriptWindow):
             27800: -1,
             27801: 7,
         }
-        # KEY - CATCHES ID, VALUE -
+        # KEY - NAME, VALUE - CATCHES ID
         self.catches = {
             'FUGITIVES_CAPE': 70048,
             'SAGE_KINGS_GLOVE': 70051,
