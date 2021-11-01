@@ -1,4 +1,5 @@
 from OpenBot.Modules.Fishbot.fishbot_module import fishbot_module
+from OpenBot.Modules import OpenLog
 
 STATUS_KEYS = {
     'ENABLED': 'Enabled',

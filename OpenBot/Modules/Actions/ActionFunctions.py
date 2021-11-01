@@ -149,9 +149,9 @@ def UseItemOnNPC(args):
 def GoBuyItemsFromNPC(args):
     items_slots_list_to_buy = args[0]
     npc_id = args[1]
-    npc_position_x, npc_position_y = args[2]
+    event_answer = args[2]
     callback = args[3]
-
+    npc_position_x, npc_position_y = MapManager.GetNpcFromMap(background.GetCurrentMapName(), npc_id)
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
         action_dict = {'function_args': [(npc_position_x, npc_position_y)], # position
                         'function': MoveToPosition,
