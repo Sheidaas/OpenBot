@@ -35,15 +35,7 @@ setattr(_player, 'SetAttackKeyState', SetAttackKeyState)
 
 #Adding paths to sys.path
 
+sys.path.append(os.path.join(eXLib.PATH))
 sys.path.append(os.path.join(eXLib.PATH,'OpenBot'))
 sys.path.append(os.path.join(eXLib.PATH,'OpenBot', 'lib'))
 
-#Set Path
-folder = eXLib.PATH+"OpenBot"
-command = 'mklink /d OpenBot "' + folder +'"'
-
-if os.path.isdir(folder):
-    os.system("rmdir /S /Q OpenBot")
-elif os.path.isfile(folder):
-    os.system("rmdir OpenBot")
-os.system(command)

@@ -44,12 +44,12 @@ class Radar(BotBase):
 
         # Settings Tab
         self.enableButton = comp.OnOffButton(self.settings_tab, '', '', 15, 40,
-                                             OffUpVisual='OpenBot/Images/start_0.tga',
-                                             OffOverVisual='OpenBot/Images/start_1.tga',
-                                             OffDownVisual='OpenBot/Images/start_2.tga',
-                                             OnUpVisual='OpenBot/Images/stop_0.tga',
-                                             OnOverVisual='OpenBot/Images/stop_1.tga',
-                                             OnDownVisual='OpenBot/Images/stop_2.tga',
+                                             OffUpVisual=eXLib.PATH + 'OpenBot/Images/start_0.tga',
+                                             OffOverVisual=eXLib.PATH + 'OpenBot/Images/start_1.tga',
+                                             OffDownVisual=eXLib.PATH + 'OpenBot/Images/start_2.tga',
+                                             OnUpVisual=eXLib.PATH + 'OpenBot/Images/stop_0.tga',
+                                             OnOverVisual=eXLib.PATH + 'OpenBot/Images/stop_1.tga',
+                                             OnDownVisual=eXLib.PATH + 'OpenBot/Images/stop_2.tga',
                                              funcState=self._start, defaultValue=False)
         self.showNPCButton = comp.OnOffButton(self.settings_tab,
                                               '\t\t\t\t\t\tShow npc',

@@ -3,7 +3,7 @@ from OpenBot.Modules.BotBase import BotBase
 from OpenBot.Modules.Actions import ActionBot
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
 from OpenBot.Modules.OpenLog import DebugPrint
-import player, ui, chat, chr, net, background
+import player, ui, chat, chr, net, background, eXLib
 
 
 def __PhaseTurnOnFarmbot(phase,phaseWnd):
@@ -53,12 +53,12 @@ class FarmingBotUI(BotBase):
                                              'd:/ymir work/ui/public/small_Button_03.sub')
 
         self.enableButton = comp.OnOffButton(self.moving_tab, '', 'Start', 70, 140,
-                                             OffUpVisual='OpenBot/Images/start_0.tga',
-                                             OffOverVisual='OpenBot/Images/start_1.tga',
-                                             OffDownVisual='OpenBot/Images/start_2.tga',
-                                             OnUpVisual='OpenBot/Images/stop_0.tga',
-                                             OnOverVisual='OpenBot/Images/stop_1.tga',
-                                             OnDownVisual='OpenBot/Images/stop_2.tga',
+                                             OffUpVisual=eXLib.PATH + 'OpenBot/Images/start_0.tga',
+                                             OffOverVisual=eXLib.PATH + 'OpenBot/Images/start_1.tga',
+                                             OffDownVisual=eXLib.PATH + 'OpenBot/Images/start_2.tga',
+                                             OnUpVisual=eXLib.PATH + 'OpenBot/Images/stop_0.tga',
+                                             OnOverVisual=eXLib.PATH + 'OpenBot/Images/stop_1.tga',
+                                             OnDownVisual=eXLib.PATH + 'OpenBot/Images/stop_2.tga',
                                              funcState=self.OnEnableSwitchButton, defaultValue=False)
 
         self.showMiningButton = comp.OnOffButton(self.moving_tab, '\t\t\t\t\t\tMining?',
