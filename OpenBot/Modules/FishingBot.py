@@ -82,7 +82,7 @@ class FishingBotDialog(ui.Window):
 		self.Board.Hide()
 		self.comp = UIComponents.Component()
 
-		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 165, 435, OffUpVisual='OpenBot/Images/start_0.tga', OffOverVisual='OpenBot/Images/start_1.tga', OffDownVisual='OpenBot/Images/start_2.tga',OnUpVisual='OpenBot/Images/stop_0.tga', OnOverVisual='OpenBot/Images/stop_1.tga', OnDownVisual='OpenBot/Images/stop_2.tga',funcState= self.StartStopEvent, defaultValue=False)
+		self.enableButton = self.comp.OnOffButton(self.Board, '', '', 165, 435, OffUpVisual=eXLib.PATH + 'OpenBot/Images/start_0.tga', OffOverVisual=eXLib.PATH + 'OpenBot/Images/start_1.tga', OffDownVisual=eXLib.PATH + 'OpenBot/Images/start_2.tga',OnUpVisual=eXLib.PATH + 'OpenBot/Images/stop_0.tga', OnOverVisual=eXLib.PATH + 'OpenBot/Images/stop_1.tga', OnDownVisual=eXLib.PATH + 'OpenBot/Images/stop_2.tga',funcState= self.StartStopEvent, defaultValue=False)
 		
   		#self.useFishBait = self.comp.OnOffButton(self.Board, '   Use fish as bait', '', 140, 380)
 		

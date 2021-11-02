@@ -74,16 +74,16 @@ class SettingsDialog(ui.ScriptWindow):
 		self.shopTab = self.TabWidget.GetTab(3)
 		self.channelsTab = self.TabWidget.GetTab(4)
 
-		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  'OpenBot/Images/General/dmg_0.tga', 'OpenBot/Images/General/dmg_1.tga', 'OpenBot/Images/General/dmg_0.tga')
-  		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, 'OpenBot/Images/General/onehand_0.tga', 'OpenBot/Images/General/onehand_1.tga', 'OpenBot/Images/General/onehand_0.tga')
-		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, 'OpenBot/Images/General/twohand_0.tga', 'OpenBot/Images/General/twohand_1.tga', 'OpenBot/Images/General/twohand_0.tga')
-		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Dmg on selected target (defaults to cloud damage on dagger ninja)', 28, 18,image='OpenBot/Images/General/monster_1.tga',funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
+		self.DmgMenuButton = self.comp.Button(self.attackTab, '', 'Damage Hacks', 120, 150, self.OpenDmgMenu,  eXLib.PATH + 'OpenBot/Images/General/dmg_0.tga', eXLib.PATH + 'OpenBot/Images/General/dmg_1.tga', eXLib.PATH + 'OpenBot/Images/General/dmg_0.tga')
+  		self.OneHandedButton = self.comp.Button(self.attackTab, '', 'One-Handed', 40, 150, self.SetOneHand, eXLib.PATH + 'OpenBot/Images/General/onehand_0.tga', eXLib.PATH + 'OpenBot/Images/General/onehand_1.tga', eXLib.PATH + 'OpenBot/Images/General/onehand_0.tga')
+		self.TwoHandedButton = self.comp.Button(self.attackTab, '', 'Two-Handed', 200, 150, self.SetTwoHand, eXLib.PATH + 'OpenBot/Images/General/twohand_0.tga', eXLib.PATH + 'OpenBot/Images/General/twohand_1.tga', eXLib.PATH + 'OpenBot/Images/General/twohand_0.tga')
+		self.dmgButton,self.dmgSlider,self.dmgLabel = UIComponents.GetSliderButtonLabel(self.attackTab,self.OnDmgSpeedMove, '', 'Dmg on selected target (defaults to cloud damage on dagger ninja)', 28, 18,image=eXLib.PATH + 'OpenBot/Images/General/monster_1.tga',funcState=self.OnDmgOnOff,defaultValue=int(self.useOnClickDmg),defaultSlider=float(self.onClickDmgSpeed))
 		
 		##GENERAL
 		self.loginBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Login', '', 20, 160,funcState=self.AutoLoginOnOff,defaultValue=int(self.autoLogin))
 		self.reviveBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAuto Restart', '', 20, 140,funcState=self.ReviveOnOff,defaultValue=int(self.restartHere))
 		#self.reviveInCityBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\t in city?', '', 120, 140,funcState=self.ReviveInCityOnOff,defaultValue=int(self.restartInCity))
-		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 210, 140, image='OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
+		self.WallHackBtn = self.comp.OnOffButton(self.generalTab, '', 'WallHack', 210, 140, image=eXLib.PATH + 'OpenBot/Images/General/wall.tga',funcState=self.WallHackSwich,defaultValue=int(self.wallHack))
 		self.antiExpBtn = self.comp.OnOffButton(self.generalTab, '\t\t\t\t\t\tAntiExp', '', 20, 180,funcState=self.startAntiExp,defaultValue=int(self.antiExp))
 		
 		self.redPotButton,self.SlideRedPot,self.redPotLabel = UIComponents.GetSliderButtonLabel(self.generalTab,self.SlideRedMove, '', 'Use Red Potions', 28, 18,image="icon/item/27002.tga",funcState=self.OnRedOnOff,defaultValue=int(self.redPotions),defaultSlider=float(self.minHealth/100.0))
@@ -97,7 +97,7 @@ class SettingsDialog(ui.ScriptWindow):
                                              'd:/ymir work/ui/public/Middle_Button_02.sub',
                                              'd:/ymir work/ui/public/Middle_Button_03.sub')
 		##PICKUP
-		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image="OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
+		self.pickupButton,self.SlidePickupSpeed,self.speedPickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupSpeedSlide, '', 'Enable Pickup', 30, 18,image=eXLib.PATH + "OpenBot/Images/General/pickup.tga",funcState=self.OnPickupOnOff,defaultValue=int(self.pickUp),defaultSlider=float(self.pickUpSpeed/3.0))
 		self.rangePickupButton,self.SliderangePickup,self.rangePickupLabel = UIComponents.GetSliderButtonLabel(self.pickupTab,self.pickupRangeSlide, 'Range', 'Enable Range Pickup', 15, 60,funcState=self.OnRangePickupOnOff,offsetX=30,offsetY=4,defaultValue=int(self.useRangePickup),defaultSlider=float(self.pickUpRange/10000.0))
 		self.ItemValueText = self.comp.TextLine(self.pickupTab, 'Search Item:', 15, 270, self.comp.RGB(255, 255, 255))
 		self.SearchPickItemButton = self.comp.Button(self.pickupTab, 'Search', '', 210, 268,  self.UpdatePickFilterList, 'd:/ymir work/ui/public/small_Button_01.sub', 'd:/ymir work/ui/public/small_Button_02.sub', 'd:/ymir work/ui/public/small_Button_03.sub')
