@@ -1,0 +1,82 @@
+{
+    "WaitHack": {
+        "IsWallBetween": true,
+        "Range": 6500.0,
+        "AttackBlockedMonsters": false,
+        "AvoidPlayers": false,
+        "MaxMonsters": 200.0,
+        "Speed": 0.12800000607967377,
+        "AttackPlayer": false,
+        "Enabled": false,
+        "UseCloudExploit": true
+    },
+    "SkillBot": {
+        "InstantMode": false,
+        "Enabled": true,
+        "UnmountHorse": false,
+        "UpgradeStats": false,
+        "TimeToWaitAfterLogout": 8,
+        "FollowVID": false,
+        "UpgradeSkills": false,
+        "StatToUpgradeOrder": [
+            "DEX",
+            "STR",
+            "INT",
+            "HP"
+        ],
+        "FollowedVID": 0,
+        "ShouldWaitAfterLogout": true,
+        "CurrentSkillSet": []
+    },
+    "FarmBot": {
+        "ChangeChannel": false,
+        "WaitingTime": 5,
+        "OresToMine": [],
+        "LookForOre": false,
+        "LookForMetins": false,
+        "Path": [],
+        "ExchangeItemsToEnergy": false,
+        "Enabled": false,
+        "CurrentWaypointIndex": 0
+    },
+    "FishBot": {
+        "FishIdToOpen": [],
+        "CatchesToSell": [],
+        "MaxRepetitions": 0,
+        "DeadFishIdToDrop": [],
+        "Enabled": false,
+        "MinTimeBetweenFish": 5,
+        "DeadFishIdToGrill": [],
+        "StartingPosition": [
+            0,
+            0
+        ],
+        "CheckRepetitions": false,
+        "GrillFish": true,
+        "MaxTimeBetweenFish": 10,
+        "CatchesToDrop": [],
+        "Repetitions": 0,
+        "InstantFishing": false
+    },
+    "Settings": {
+        "RestartInCity": false,
+        "SpeedHack": true,
+        "AntiExp": false,
+        "UseRangePickup": true,
+        "AvoidPlayersInPickup": false,
+        "PickupIgnorePath": false,
+        "UseWallhack": true,
+        "RestartHere": true,
+        "ExcludeInFilter": false,
+        "PickupItemFirst": false,
+        "PickupRange": 4300.0,
+        "Pickup": true,
+        "BluePotions": true,
+        "PickupSpeed": 1.0,
+        "MinHealth": 81,
+        "RedPotions": true,
+        "AutoLogin": true,
+        "MinMana": 80,
+        "SpeedMultiplier": 1.7000000476837158
+    }
+}

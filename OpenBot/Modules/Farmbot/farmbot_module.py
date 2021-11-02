@@ -73,7 +73,6 @@ class FarmingBot(ui.ScriptWindow):
 			chat.AppendChat(3, 'You need to add more than 1 waypoint!')
 			self.onStop()
 			return False
-	
 
 	def onStop(self):
 		self.isCurrActionDone = True
@@ -95,7 +94,6 @@ class FarmingBot(ui.ScriptWindow):
 		self.CURRENT_STATE = WAITING_STATE
 		self.lastTimeWaitingState = OpenLib.GetTime()
 
-
 	def IsCurrentlyDiggingDone(self):
 		self.is_currently_digging = False
 		self.isCurrActionDone = True
@@ -108,23 +106,6 @@ class FarmingBot(ui.ScriptWindow):
 
 	def IsCurrentlyDigging(self):
 		return self.is_currently_digging
-
-	def load_path(self, filename):
-		path = FileManager.FARMBOT_WAYPOINTS_LISTS + filename
-		waypoints = FileManager.LoadListFile(path)
-		self.path = []
-		for point in waypoints:
-			points = point.split(',')
-			x = points[0][1:-1]
-			y = points[1][1:-1]
-			name = points[2][2:-2]
-			self.path.append((float(x), float(y), str(name)))
-		return True
-
-	def save_path(self, filename):
-		path = FileManager.FARMBOT_WAYPOINTS_LISTS + filename
-		FileManager.SaveListFile(path, self.path)
-		return True
 
 	def add_point(self, point_dict):
 		self.path.append((point_dict['x'], point_dict['y'], point_dict['map_name']))

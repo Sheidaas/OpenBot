@@ -9,7 +9,6 @@ def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkills()
-        instance.LoadSettings()
         if instance.shouldWait:
             instance.startUpWait = True
 
@@ -99,34 +98,6 @@ class Skillbot(ui.ScriptWindow):
     def onStop(self):
         self.enabled = False
 
-    def SaveSettings(self, filename=''):
-        for skill in self.currentSkillSet:
-            FileManager.WriteConfig(str(skill['id']), str(skill['can_cast']), file=FileManager.CONFIG_SKILLBOT)
-            FileManager.WriteConfig('skillTimer'+str(skill['id']), str(skill['cooldown_time_instant_mode']), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('InstantMode', str(self.instant_mode), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('IsTurnedOn', str(self.enabled), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('ShouldWaitAfterLogout', str(self.shouldWait), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.WriteConfig('TimeToWaitAfterStart', str(self.TimeToWaitAfterStart), file=FileManager.CONFIG_SKILLBOT)
-        FileManager.Save(file=FileManager.CONFIG_SKILLBOT)
-
-    def LoadSettings(self, filename=''):
-        self.enabled = FileManager.boolean(FileManager.ReadConfig('IsTurnedOn',
-                                                                  file=FileManager.CONFIG_SKILLBOT))
-        self.instant_mode = FileManager.boolean(FileManager.ReadConfig('InstantMode',
-                                                                       file=FileManager.CONFIG_SKILLBOT))
-        self.shouldWait = FileManager.boolean(FileManager.ReadConfig('ShouldWaitAfterLogout',
-                                                                     file=FileManager.CONFIG_SKILLBOT))
-        
-        self.TimeToWaitAfterStart = int(FileManager.ReadConfig('TimeToWaitAfterStart',
-                                                                     file=FileManager.CONFIG_SKILLBOT))
-
-        for skill in self.currentSkillSet:
-            skill['can_cast'] = FileManager.boolean(FileManager.ReadConfig(str(skill['id']),
-                                                                           file=FileManager.CONFIG_SKILLBOT))
-            skill['cooldown_time_instant_mode'] = int(FileManager.ReadConfig('skillTimer' + str(skill['id']),
-                                                                         file=FileManager.CONFIG_SKILLBOT))
-                                                                         
-
     def resetSkills(self):
         current_class = OpenLib.GetClass()
         if current_class == OpenLib.SKILL_SET_NONE:
@@ -134,7 +105,6 @@ class Skillbot(ui.ScriptWindow):
         skillIds = OpenLib.GetClassSkillIDs(current_class)
         self.currentSkillSet = []
         for i, id in enumerate(skillIds):
-            #if id in self.ACTIVE_SKILL_IDS:
             self.currentSkillSet.append({
                 'id': id,
                 'can_cast': False,
@@ -144,7 +114,6 @@ class Skillbot(ui.ScriptWindow):
                 'upgrade_order': i+1,
                 'lastWait': 0,
             })
-        #DebugPrint(str(self.currentSkillSet))
 
     def addCallbackToWaiter(self, skill):
         def wait_to_use_skill():

@@ -1,0 +1,74 @@
+1 - metin2_map_a1 - Map red 1
+3 - metin2_map_a3 - Map rouge 2
+4 - metin2_map_guild_01 - Map Rouge 3
+5 - metin2_map_monkey_dungeon_11 - Easy Dungeon
+21 - metin2_map_b1 - Map 1 yellow
+23 - metin2_map_b3 - Map 2 yellow
+24 - metin2_map_guild_02 - Map 3 yellow
+25 - metin2_map_monkey_dungeon_12 - Medium Dungeon
+41 - metin2_map_c1 - Map 1 blue
+43 - metin2_map_c3 - Map 2 blue
+44 - metin2_map_guild_03 - Map 3 blue
+45 - metin2_map_monkey_dungeon_13 - Hard Dungeon
+61 - map_n_snowm_01 - Mountain map
+62 - metin2_map_n_flame_01 - Paper map
+63 - metin2_map_n_desert_01 - Desert map
+64 - map_n_threeway - Map Orc
+65 - metin2_map_milgyo - Temple
+66 - metin2_map_deviltower1 - Tower 1st floor
+67 - metin2_map_trent - Forest
+68 - metin2_map_trent02 - Redwood
+69 - metin2_map_WL_01 - Cursed map (before giant; not on)
+70 - metin2_map_nusluck01 - Giant map
+71 - metin2_map_spiderdungeon_02 - Cave (V2)
+72 - metin2_map_skipia_dungeon_01 - Atlantea map orc 1st floor
+73 - metin2_map_skipia_dungeon_02 - Atlantea map orc 2nd floor
+74 - map_n_snowm_02 - 2nd mountain map (parallel portal)
+75 - metin2_map_milgyo_a - 2nd temple map (parallel portal)
+77 - metin2_map_n_flame_02 - 2nd paper map (parallel portal)
+78 - metin2_map_a2_1 -
+81 - metin2_map_wedding_01 - Wedding Map
+100 - metin2_map_fielddungeon -
+103 - metin2_map_t1 - Temple
+104 - metin2_map_spiderdungeon - Cave (V1)
+105 - metin2_map_t2 - Temple
+107 - metin2_map_monkey_dungeon - Beginner Monkey Dungeon
+108 - metin2_map_monkey_dungeon2 - Advanced Monkey Dungeon
+109 - metin2_map_monkey_dungeon3 - Donjon Des Singes Experts
+110 - metin2_map_t3 - Temple
+111 - metin2_map_t4 - Temple
+112 - metin2_map_duel - Arena
+113 - metin2_map_oxevent - Map OX
+114 - metin2_map_sungzi - Map national war
+118 - metin2_map_sungzi_flame_hill_01 - War Flame Event 1
+119 - metin2_map_sungzi_flame_hill_02 - War Flame Event 1
+120 - metin2_map_sungzi_flame_hill_03 - War Flame Event 1
+121 - metin2_map_sungzi_snow - Map national war
+122 - metin2_map_sungzi_snow_pass01 - Snow War Event 1
+123 - metin2_map_sungzi_snow_pass02 - Snow War Event 1
+124 - metin2_map_sungzi_snow_pass03 - Snow War Event 1
+125 - metin2_map_sungzi_desert_01 - Map national war
+126 - metin2_map_sungzi_desert_hill_01 - Map Desert Event of War 1
+127 - metin2_map_sungzi_desert_hill_02 - Map Desert Event of War 2
+128 - metin2_map_sungzi_desert_hill_03 - Map Desert Event of War 3
+181 - metin2_map_empirewar01 - Map war 1
+182 - metin2_map_empirewar02 - Map war 2
+183 - metin2_map_empirewar03 - Map war 3
+200 - gm_guild_build
+184 - metin2_map_skipia_dungeon_011 - Atlantea map rouge 1st floor
+185 - metin2_map_skipia_dungeon_021 - Atlantea map rouge 2nd floor
+186 - metin2_map_skipia_dungeon_012 - Atlantea yellow map 1st floor
+187 - metin2_map_skipia_dungeon_022 - Atlantea yellow map 2nd floor
+188 - metin2_map_skipia_dungeon_013 - Atlantea map blue 1st floor
+189 - metin2_map_skipia_dungeon_023 - Atlantea map blue 2nd floor
+XXX - metin2_map_BayBlackSand = Nephrite Bay
+XXX - Metin2_map_CapeDragonHead = Dragonfire Cape
+XXX - metin2_map_Mt_Thunder = Montagne du Tonerre
+XXX - metin2_map_dawnmistwood = Gautama Cliff
+XXX - metin2_map_spiderdungeon_03 = Cave 3
+XXX - metin2_map_n_flame_dungeon_01 = Purgatory
+XXX - metin2_map_n_snow_dungeon_01 = Nemere's Observatory
+XXX - metin2_map_defensewave = Ship Defense
+XXX - metin2_map_dawnmist_dungeon_01 = Ochao Temple
+XXX - metin2_12zi_stage = Temple of the Zodiac
+XXX - metin2_map_n_flame_dragon = Meley's lair

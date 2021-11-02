@@ -21,8 +21,6 @@ class Dropper(ui.ScriptWindow):
             item_to_drop = self.items_slots_to_drop.pop()
             if player.GetItemCount(item_to_drop):
                 net.SendItemDropPacketNew(item_to_drop, player.GetItemCount(item_to_drop))
-                if player.GetItemCount(item_to_drop):
-                    self.add_new_item_to_drop(item_to_drop)
 
 dropper = Dropper()
 dropper.Show()

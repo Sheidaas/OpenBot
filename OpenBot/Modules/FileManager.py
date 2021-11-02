@@ -59,7 +59,7 @@ class FileHandler():
 
 	def CloseFile(self):
 		if self.inMemory:
-			with open(self.fileName,'w') as f:
+			with open(self.fileName, 'w') as f:
 				f.writelines(self.lines)
 	
 	def SaveFile(self):

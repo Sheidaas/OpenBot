@@ -1,7 +1,5 @@
-from OpenBot.Modules.OpenLog import DebugPrint
-import eXLib, ui, net, chr, player, chat, item, skill
-from OpenBot.Modules import OpenLib, FileManager, Movement
-from OpenBot.Modules.FileManager import boolean
+import eXLib, ui, net, chr, player, skill
+from OpenBot.Modules import OpenLib, Movement
 
 CLOUD_SKILL_STATE_WAITING = 0
 CLOUD_SKILL_STATE_READY = 1
@@ -26,31 +24,8 @@ class Waithack(ui.ScriptWindow):
         self.is_wall_between = False
         self.attack_blocked_monsters = False
 
-        self.LoadSettings()
-
     def __del__(self):
         ui.Window.__del__(self)
-
-    def LoadSettings(self):
-        self.maxMonster = float(FileManager.ReadConfig("WaitHack_MaxMonsters"))
-        self.speed = float(FileManager.ReadConfig("WaitHack_Speed"))
-        self.range = float(FileManager.ReadConfig("WaitHack_Range"))
-        self.use_cloud_exploit = boolean(FileManager.ReadConfig("WaitHack_CloudExploit"))
-        self.attackPlayer = boolean(FileManager.ReadConfig('WaitHack_attackPlayer'))
-        self.avoidPlayers = boolean(FileManager.ReadConfig("WaitHack_PlayerClose"))
-        self.is_wall_between = boolean(FileManager.ReadConfig("WaitHack_IsWallBetween"))
-        self.attack_blocked_monsters = boolean(FileManager.ReadConfig("WaitHack_AttackBlocked"))
-
-    def SaveSettings(self):
-        FileManager.WriteConfig("WaitHack_MaxMonsters", str(self.maxMonster))
-        FileManager.WriteConfig("WaitHack_Speed", str(self.speed))
-        FileManager.WriteConfig("WaitHack_Range", str(self.range))
-        FileManager.WriteConfig("WaitHack_PlayerClose", str(self.avoidPlayers))
-        FileManager.WriteConfig("WaitHack_attackPlayer", str(self.attackPlayer))
-        FileManager.WriteConfig("WaitHack_CloudExploit", str(self.use_cloud_exploit))
-        FileManager.WriteConfig("WaitHack_IsWallBetween", str(self.is_wall_between))
-        FileManager.WriteConfig("WaitHack_AttackBlocked", str(self.attack_blocked_monsters))
-        FileManager.Save()
 
     def onEnableChange(self, val):
         if val:
@@ -170,6 +145,7 @@ class Waithack(ui.ScriptWindow):
                 i += 1
             if (OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50):
                 Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
+
 
 instance = Waithack()
 instance.Show()

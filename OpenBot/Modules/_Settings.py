@@ -53,7 +53,7 @@ class SettingsDialog(ui.ScriptWindow):
 		self.timerPots = 0
 		self.timerDead = 0
 		self.pickUpTimer = 0
-		self.LoadSettings()
+		#self.LoadSettings()
 		self.BuildWindow()
 	
 	def BuildWindow(self):

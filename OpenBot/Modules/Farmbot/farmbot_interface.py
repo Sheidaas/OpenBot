@@ -47,7 +47,7 @@ class FarmbotInterface:
             self.ClearPath()
         
         self.SetWaitingTime(status['WaitingTime'])
-
+        self.SaveStatus()
 
     def GetStatus(self):
         return{
@@ -62,8 +62,11 @@ class FarmbotInterface:
             'ExchangeItemsToEnergy': farm_instance.exchange_items_to_energy
         }
 
+    def SaveStatus(self):
+        from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+        file_handler_interface.dump_other_settings()
+
     def IsOn(self):
-        DebugPrint('Farmbot is enabled ' + str(farm_instance.enabled))
         return farm_instance.enabled
 
     def Start(self):

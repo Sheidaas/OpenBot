@@ -25,6 +25,7 @@ class FishbotInterface:
 
         if status[STATUS_KEYS['ENABLED']] and status[STATUS_KEYS['ENABLED']] != fishbot_module.enabled:
             self.start()
+
         elif not status[STATUS_KEYS['ENABLED']] and status[STATUS_KEYS['ENABLED']] != fishbot_module.enabled:
             self.stop()
 
@@ -61,7 +62,7 @@ class FishbotInterface:
         if status[STATUS_KEYS['CATCHES_TO_DROP']] != fishbot_module.catches_to_drop:
             fishbot_module.catches_to_drop = status[STATUS_KEYS['CATCHES_TO_DROP']]
 
-        return
+        self.SaveStatus()
 
     def GetStatus(self):
         return {
@@ -80,6 +81,10 @@ class FishbotInterface:
             STATUS_KEYS['CATCHES_TO_SELL']: fishbot_module.catches_to_sell,
             STATUS_KEYS['CATCHES_TO_DROP']: fishbot_module.catches_to_drop,
         }
+
+    def SaveStatus(self):
+        from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+        file_handler_interface.dump_other_settings()
 
     def start(self):
         fishbot_module.start()

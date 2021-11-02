@@ -35,8 +35,11 @@ class WaithackInterface():
         if instance.attack_blocked_monsters != status['AttackBlockedMonsters']:
             self.SwitchAttackBlockedMonsters()
 
-        self.SaveSettings()
+        self.SaveStatus()
 
+    def SaveStatus(self):
+        from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+        file_handler_interface.dump_other_settings()
 
     def GetStatus(self):
         return {
@@ -58,12 +61,6 @@ class WaithackInterface():
     def Stop(self):
         instance.enabled = False
         instance.onEnableChange(False)
-
-    def LoadSettings(self):
-        instance.LoadSettings()
-    
-    def SaveSettings(self):
-        instance.SaveSettings()
     
     def SetRange(self, range_value):
         instance.range = range_value

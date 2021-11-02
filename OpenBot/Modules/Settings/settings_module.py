@@ -1,9 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules.Actions.Action import NEXT_ACTION
-from OpenBot.Modules.Actions.ActionFunctions import WaitFor
 import ui,net,player,eXLib
-from OpenBot.Modules import FileManager, Movement, OpenLib
-from OpenBot.Modules.FileManager import boolean
+from OpenBot.Modules import Movement, OpenLib
 
 
 class SettingsDialog(ui.ScriptWindow):
@@ -42,75 +39,11 @@ class SettingsDialog(ui.ScriptWindow):
         self.can_add_revive_action = True
         self.wallHack = False
         self.sellItems = set()
-
+        self.autoLogin = False
         self.can_add_waiter = True
         self.timerPots = 0
         self.timerDead = 0
         self.pickUpTimer = 0
-        self.LoadSettings()
-
-    def LoadSettings(self):
-        #OpenLog.DebugPrint("Loading Settings")
-        self.autoLogin = boolean(FileManager.ReadConfig("AutoLogin"))
-        self.restartHere = boolean(FileManager.ReadConfig("AutoRestart"))
-        self.bluePotions = boolean(FileManager.ReadConfig("UseBluePots"))
-        self.redPotions = boolean(FileManager.ReadConfig("UseRedPots"))
-        self.speedHack = boolean(FileManager.ReadConfig("SpeedHack"))
-        self.speedMultiplier = float(FileManager.ReadConfig("SpeedHackMultiplier"))
-        self.minMana = int(FileManager.ReadConfig("MinMana"))
-        self.minHealth = int(FileManager.ReadConfig("MinHealth"))
-        self.pickUp = boolean(FileManager.ReadConfig("PickupUse"))
-        self.pickUpRange = float(FileManager.ReadConfig("PickupRange"))
-        self.pickUpSpeed = float(FileManager.ReadConfig("PickupSpeed"))
-        self.excludeInFilter = boolean(FileManager.ReadConfig("FilterMode"))
-        self.useRangePickup = boolean(FileManager.ReadConfig("UseRangePickup"))
-        self.wallHack = boolean(FileManager.ReadConfig("WallHack"))
-        self.onClickDmgSpeed  = boolean(FileManager.ReadConfig("OnClickDamageSpeed"))
-        self.antiExp = boolean(FileManager.ReadConfig("antiExp"))
-        self.doNotPickupIfPlayerHere = boolean(FileManager.ReadConfig("doNotPickupIfPlayerHere"))
-        self.pickItemsFirst = boolean(FileManager.ReadConfig("pickItemsFirst"))
-        self.pickItemsIgnorePath = boolean(FileManager.ReadConfig("pickItemsIgnorePath"))
-        for i in FileManager.LoadListFile(FileManager.CONFIG_PICKUP_FILTER):
-            self.addPickFilterItem(int(i))
-        self.sellItems = {int(i) for i in FileManager.LoadListFile(FileManager.CONFIG_SELL_INVENTORY)}
-
-        if(self.pickItemsIgnorePath):
-            eXLib.ItemGrndInBlockedPath()
-        else:
-            eXLib.ItemGrndNotInBlockedPath()
-
-        if(self.pickItemsFirst):
-            eXLib.ItemGrndItemFirst()
-        else:
-            eXLib.ItemGrndNoItemFirst()
-
-        eXLib.ItemGrndSelectRange(self.pickUpRange)
-
-    def SaveSettings(self):
-        #OpenLog.DebugPrint("Saving Settings")
-        FileManager.WriteConfig("AutoLogin", str(self.autoLogin))
-        FileManager.WriteConfig("AutoRestart", str(self.restartHere))
-        FileManager.WriteConfig("UseBluePots", str(self.bluePotions))
-        FileManager.WriteConfig("UseRedPots", str(self.redPotions))
-        FileManager.WriteConfig("SpeedHack", str(self.speedHack))
-        FileManager.WriteConfig("SpeedHackMultiplier", str(self.speedMultiplier))
-        FileManager.WriteConfig("MinMana", str(self.minMana))
-        FileManager.WriteConfig("MinHealth", str(self.minHealth))
-        FileManager.WriteConfig("PickupUse", str(self.pickUp))
-        FileManager.WriteConfig("PickupRange", str(self.pickUpRange))
-        FileManager.WriteConfig("PickupSpeed", str(self.pickUpSpeed))
-        FileManager.WriteConfig("FilterMode", str(self.excludeInFilter))
-        FileManager.WriteConfig("UseRangePickup", str(self.useRangePickup))
-        FileManager.WriteConfig("WallHack", str(self.wallHack))
-        FileManager.WriteConfig("OnClickDamageSpeed", str(self.onClickDmgSpeed))
-        FileManager.WriteConfig("antiExp", str(self.antiExp))
-        FileManager.WriteConfig("doNotPickupIfPlayerHere", str(self.doNotPickupIfPlayerHere))
-        FileManager.WriteConfig("pickItemsFirst", str(self.pickItemsFirst))
-        FileManager.WriteConfig("pickItemsIgnorePath", str(self.pickItemsIgnorePath))
-        #chat.AppendChat(3,str(self.pickUp))
-        FileManager.SaveListFile(FileManager.CONFIG_PICKUP_FILTER,self.pickFilter)
-        FileManager.SaveListFile(FileManager.CONFIG_SELL_INVENTORY,self.sellItems)
-        FileManager.Save()
 
     # General
     def CheckUsePotions(self):
@@ -157,7 +90,7 @@ class SettingsDialog(ui.ScriptWindow):
             net.DirectEnter(0,0)
             #ChannelSwitcher.instance.ConnectToChannel()
     
-    def WallHackSwich(self,val):
+    def WallHackSwich(self, val):
         if bool(val):
             self.wallHack = True
             eXLib.DisableCollisions()
@@ -167,6 +100,7 @@ class SettingsDialog(ui.ScriptWindow):
 
     def antiExpFunc(self):
         from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
+
         def _anti_exp():
             self.can_add_waiter = True
             exp = player.GetEXP()
@@ -254,10 +188,6 @@ class SettingsDialog(ui.ScriptWindow):
                     #return
                     if not self.useRangePickup:
                         return
-                    
-                    #if self.checkIsWallBetweenPlayerAndItem:
-                    #    if eXLib.IsPathBlocked(x, y, itemX, itemY):
-                    #        return
 
                     Movement.TeleportStraightLine(x,y,itemX,itemY)
                     eXLib.SendPickupItem(vid)

@@ -3,6 +3,12 @@ import chr, app, item, player
 from OpenBot.Modules import OpenLib, OpenLog
 import codecs
 
+def parse_file_handler():
+    from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+    return {
+        'FileHandler': file_handler_interface.GetStatus()
+    }
+
 def parse_instances_list():
     instances_list = [None] * len(eXLib.InstancesList)
     for i,vid in enumerate(eXLib.InstancesList):

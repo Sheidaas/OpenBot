@@ -1,7 +1,11 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
-from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot #, Settings, 
+from OpenBot.Modules.WaitHack.waithack_module import instance
+from OpenBot.Modules.Farmbot.farmbot_module import farm
+from OpenBot.Modules.Fishbot.fishbot_module import fishbot_module
+from OpenBot.Modules.Settings.settings_module import instance as sett_instance
+from OpenBot.Modules.Skillbot.skillbot_module import instance as skillbot_instance
 
-from OpenBot.Modules import Radar
+from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot,  Hooks
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Networking import NetworkingWebsockets
 DEBUG = False
@@ -234,6 +238,17 @@ try:
     app.Shop.Close()
 except:
     pass
+
+def __PhaseChangeLoadSettingsCallback(phase, phaseWnd):
+    from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+    from OpenBot.Modules import OpenLib
+    if phase == OpenLib.PHASE_GAME:
+        file_handler_interface.load_last_other_settings()
+        file_handler_interface.load_last_farmbot_paths()
+        file_handler_interface.load_last_pickup_list()
+
+Hooks.registerPhaseCallback("loadingCallback", __PhaseChangeLoadSettingsCallback)
+
 app.Shop = OpenBotHackbarDialog()
 KeyBot.instance.enableButton.SetOn()
 KeyBot.instance.Start()

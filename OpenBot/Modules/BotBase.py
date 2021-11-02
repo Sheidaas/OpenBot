@@ -1,5 +1,5 @@
 import Movement
-import ui,OpenLib,NPCInteraction,DmgHacks,player,_Settings as Settings,chat,OpenLog
+import ui,OpenLib,NPCInteraction,DmgHacks,player,chat,OpenLog
 import abc
 from .Actions import ActionRequirementsCheckers
 
@@ -73,12 +73,12 @@ class BotBase(ui.ScriptWindow):
 	def SetOnlyGamePhase(self,onlyGame):
 		self.onlyGamePhase = onlyGame
 
-	def GoToShop(self):
-		if self.onInvFullCallback != None:
-			self.onInvFullCallback()
-		self.__SetStateShopping()
-		to_sell = self.shopSellSlots.union(Settings.GetSlotItemsToSell())
-		NPCInteraction.RequestBusinessNPCAwayRestorePosition(self.shopBuySlots,to_sell,NPCInteraction.GetGeneralShop(),callback=self._ResumeCallback)
+	#def GoToShop(self):
+	#	if self.onInvFullCallback != None:
+	#		self.onInvFullCallback()
+	#	self.__SetStateShopping()
+	#	to_sell = self.shopSellSlots.union(Settings.GetSlotItemsToSell())
+	#	NPCInteraction.RequestBusinessNPCAwayRestorePosition(self.shopBuySlots,to_sell,NPCInteraction.GetGeneralShop(),callback=self._ResumeCallback)
 
 	#Preform checks
 	def DoChecks(self):
@@ -86,16 +86,16 @@ class BotBase(ui.ScriptWindow):
 			self.GoToShop()
 			return True
 
-		if self.waitIsPlayerDead:
-			last_time_dead, time_wait = Settings.GetLastTimeDead()
-			if(last_time_dead+time_wait>OpenLib.GetTime()):
-				if(self.CanPause() and not self.isPaused):
-					self.isPaused = True
-					self.Pause()
-				return True
-			if(self.isPaused):
-				self.isPaused = False
-				self.Resume()
+		#if self.waitIsPlayerDead:
+		#	last_time_dead, time_wait = Settings.GetLastTimeDead()
+		#	if(last_time_dead+time_wait>OpenLib.GetTime()):
+		#		if(self.CanPause() and not self.isPaused):
+		#			self.isPaused = True
+		#			self.Pause()
+		#		return True
+		#	if(self.isPaused):
+		#		self.isPaused = False
+		#		self.Resume()
 		return False
 	
 

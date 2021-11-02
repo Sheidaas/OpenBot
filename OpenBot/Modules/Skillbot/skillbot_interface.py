@@ -42,16 +42,20 @@ class SkillbotInterface:
         if status[STATUS['STAT_TO_UPGRADE_ORDER']] != instance.stat_to_upgrade_order:
             instance.stat_to_upgrade_order = status[STATUS['STAT_TO_UPGRADE_ORDER']]
 
+        if instance.currentSkillSet:
+            for skill in range(len(status['CurrentSkillSet'])):
+                if status['CurrentSkillSet'][skill]['id'] != instance.currentSkillSet[skill]['id']:
+                    instance.resetSkills()
+                    break
 
-        for skill in range(len(status['CurrentSkillSet'])):
-            if status['CurrentSkillSet'][skill]['can_cast'] != instance.currentSkillSet[skill]['can_cast']:
-                self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
-            if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
-                self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
-            if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
-                self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
+                if status['CurrentSkillSet'][skill]['can_cast'] != instance.currentSkillSet[skill]['can_cast']:
+                    self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
+                if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
+                    self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
+                if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
+                    self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
 
-        instance.SaveSettings()
+        self.SaveStatus()
 
     def GetStatus(self):
         return {
@@ -67,6 +71,10 @@ class SkillbotInterface:
             STATUS['UNMOUNT_HORSE']: instance.unmount_horse,
             STATUS['STAT_TO_UPGRADE_ORDER']: instance.stat_to_upgrade_order
         }
+
+    def SaveStatus(self):
+        from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
+        file_handler_interface.dump_other_settings()
 
     def Start(self):
         instance.onStart()
