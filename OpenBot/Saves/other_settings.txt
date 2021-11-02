@@ -1,7 +1,7 @@
 {
     "WaitHack": {
         "IsWallBetween": true,
-        "Range": 6500.0,
+        "Range": 9000,
         "AttackBlockedMonsters": false,
         "AvoidPlayers": false,
         "MaxMonsters": 200.0,
@@ -14,9 +14,9 @@
         "InstantMode": false,
         "Enabled": true,
         "UnmountHorse": false,
-        "UpgradeStats": false,
+        "UpgradeStats": true,
         "TimeToWaitAfterLogout": 8,
-        "FollowVID": false,
+        "FollowVID": true,
         "UpgradeSkills": false,
         "StatToUpgradeOrder": [
             "DEX",
@@ -77,6 +77,6 @@
         "RedPotions": true,
         "AutoLogin": true,
         "MinMana": 80,
-        "SpeedMultiplier": 1.7000000476837158
+        "SpeedMultiplier": 6.300000190734863
     }
 }

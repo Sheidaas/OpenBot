@@ -65,6 +65,7 @@ class FarmbotInterface:
     def SaveStatus(self):
         from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
         file_handler_interface.dump_other_settings()
+        file_handler_interface.dump_farmbot_path()
 
     def IsOn(self):
         return farm_instance.enabled

@@ -152,6 +152,8 @@ class FileHandlerInterface:
                 settings_interface.SetPickupFilter([])
                 settings_interface.SetPickupFilter(json.loads(file.read()))
 
+            self.dump_pickup_list()
+
     @staticmethod
     def load_last_pickup_list():
         from OpenBot.Modules.Settings.settings_interface import settings_interface
@@ -168,6 +170,8 @@ class FileHandlerInterface:
                 status = farmbot_interface.GetStatus()
                 status['Path'] = json.loads(file.read())
                 farmbot_interface.SetStatus(status)
+
+            self.dump_farmbot_path()
 
     @staticmethod
     def load_last_farmbot_paths():

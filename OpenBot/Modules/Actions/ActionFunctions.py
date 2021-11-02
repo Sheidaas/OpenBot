@@ -114,7 +114,8 @@ def MoveToPosition(args):
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
     if error == Movement.NO_PATH_FOUND:
-        return Action.ERROR
+        DebugPrint(str(args))
+        return Action.NOTHING
     
     elif error == Movement.MOVING:
         return True
@@ -183,7 +184,7 @@ def TalkWithNPC(args):
     if vid >= 0:
         net.SendOnClickPacket(vid)
         OpenLib.skipAnswers(event_answer, True)
-        return Action.NEXT_ACTION
+        return True
     return False
 
 
@@ -245,7 +246,7 @@ def ChangeMap(args):
             'function_args': [npc_id, event_answer, background.GetCurrentMapName()],
             'name': 'Talking to teleport',
             'function': TalkWithNPC,
-            'on_success': [Action.NEXT_ACTION],
+            'requirements': { ActionRequirementsCheckers.IS_IN_MAP: [map_destination_name]}
         }
     return True
     

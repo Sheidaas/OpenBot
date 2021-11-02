@@ -137,6 +137,8 @@ class Action:
                     return NEXT_ACTION
                 elif succes_key == DISCARD_PREVIOUS:
                     return DISCARD_PREVIOUS
+            elif type(succes_key) == dict:
+                return succes_key
         return NEXT_ACTION
 
     def CheckOnFailedList(self):
