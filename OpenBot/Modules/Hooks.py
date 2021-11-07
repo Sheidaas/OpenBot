@@ -1,4 +1,4 @@
-import game,sys,chat,net
+import game,sys,chat,net, player
 import functools
 import OpenLog
 
@@ -9,6 +9,7 @@ Hooking module.
 #The current phase.
 CURRENT_PHASE = 5
 phaseCallbacks = {}
+GAME_WINDOW = 0
 
 class Hook():
 	"""
@@ -100,10 +101,18 @@ class SkipHook(Hook):
 		Hook.__init__(self,toHookFunc,skipFunc)
 
 
+def GameWindowIntercept(*args,**kwargs):
+	
+	global gameWindowHook
+	global GAME_WINDOW
+	GAME_WINDOW = args[0]
+	gameWindowHook.CallOriginalFunction(*args, **kwargs)
+
 
 debugFunc = 0
 questHook = SkipHook(game.GameWindow.OpenQuestWindow)
 phaseHook = Hook(net.SetPhaseWindow,phaseIntercept)
+gameWindowHook = Hook(player.SetGameWindow, GameWindowIntercept)
 
 def GetQuestHookObject():
 	return questHook
@@ -112,6 +121,10 @@ def GetQuestHookObject():
 def GetCurrentPhase():
 	global CURRENT_PHASE
 	return CURRENT_PHASE
+
+def GetGameWindow():
+	global GAME_WINDOW
+	return GAME_WINDOW
 
 def printFunc(*args,**kwargs):
 	"""
@@ -136,5 +149,5 @@ def _debugHookFunctionArgs(func):
 def _debugUnhookFunctionArgs():
 	debugFunc.UnhookFunction()
 
-
 phaseHook.HookFunction()
+gameWindowHook.HookFunction()
