@@ -189,7 +189,7 @@ def GetClass():
 	group = net.GetMainActorSkillGroup()
 
 	race = race % 4
-	if(group!= 0):
+	if group != 0:
 		return (2*race)+group
 	
 	return 0
@@ -340,6 +340,17 @@ def GetItemByType(_id):
 			return i
 	return -1
 
+def GetAllBonusesOfItemBySlot(item_slot):
+	idx = player.GetItemIndex(item_slot)
+	item.SelectItem(idx)
+	for bonus in range(player.ATTRIBUTE_SLOT_MAX_NUM):
+		chat.AppendChat(3, str(player.GetItemAttribute(item_slot, bonus)))
+
+	for bonus in range(player.METIN_SOCKET_MAX_NUM):
+		chat.AppendChat(3, str(skill.GetSkillName((player.GetItemMetinSocket(player.INVENTORY, item_slot, 0)))))
+		chat.AppendChat(3, str(player.GetItemMetinSocket(player.INVENTORY, item_slot, bonus)))
+
+
 def UseAnyItemByID(id_list):
 	"""
 	Use the first item found that matches any of the id specified.
@@ -481,14 +492,28 @@ def IsInGamePhase():
 def getAllSkillsInfo():
 	# This could be faster without checking is skill exist
 	skills = {}
-	for x in range(300):
+	current_skills = GetClassSkillIDs(GetClass())
+	for x in xrange(300):
 		index = player.GetSkillIndex(x)
 		if index:
-			skills[x] = {
-				'name': skill.GetSkillName(index),
-				'level': player.GetSkillLevel(player.GetSkillSlotIndex(index)),
-				'grade': player.GetSkillGrade(player.GetSkillSlotIndex(index))
-			}
+			name = skill.GetSkillName(index)
+			level = player.GetSkillLevel(player.GetSkillSlotIndex(index))
+			grade = player.GetSkillGrade(player.GetSkillSlotIndex(index))
+			if x in current_skills:
+				skills[x] = {
+							'name': name,
+							'level': level,
+							'grade': grade
+							}
+			else:
+				if level or grade:
+					skills[x] = {
+								'name': name,
+								'level': level,
+								'grade': grade
+								}
+
+
 	return skills
 
 def getAllStatusOfMainActor():

@@ -1,5 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Skillbot.skillbot_module import instance
+from OpenBot.Modules import OpenLib
 
 STATUS = {
     'ENABLED': 'Enabled',
@@ -17,7 +18,7 @@ STATUS = {
 
 class SkillbotInterface:
 
-    def SetStatus(self, status):
+    def SetStatus(self, status, save_status=True):
         if status['Enabled']:
             self.Start()
         else:
@@ -42,7 +43,16 @@ class SkillbotInterface:
         if status[STATUS['STAT_TO_UPGRADE_ORDER']] != instance.stat_to_upgrade_order:
             instance.stat_to_upgrade_order = status[STATUS['STAT_TO_UPGRADE_ORDER']]
 
-        if instance.currentSkillSet:
+        if OpenLib.GetClass() != OpenLib.SKILL_SET_NONE:
+            if not len(instance.currentSkillSet):
+                instance.resetSkills()
+
+            skill_ids = OpenLib.GetClassSkillIDs(OpenLib.GetClass())
+            for index in range(len(instance.currentSkillSet)):
+                if instance.currentSkillSet[index]['id'] != skill_ids[index]:
+                    instance.resetSkills()
+                    break
+
             for skill in range(len(status['CurrentSkillSet'])):
                 if status['CurrentSkillSet'][skill]['id'] != instance.currentSkillSet[skill]['id']:
                     instance.resetSkills()
@@ -55,7 +65,7 @@ class SkillbotInterface:
                 if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
                     self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
 
-        self.SaveStatus()
+        if save_status: self.SaveStatus()
 
     def GetStatus(self):
         return {

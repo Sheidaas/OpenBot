@@ -6,7 +6,7 @@ import chat
 """
 class SettingsInterface:
 
-    def SetStatus(self, status):
+    def SetStatus(self, status, save_status=True):
         if status['PickupRange'] != instance.pickUpRange:
             self.SetPickupRange(status['PickupRange'])
 
@@ -46,6 +46,8 @@ class SettingsInterface:
             self.SwitchAutoLogin()
         if status['PickupItemFirst'] != instance.pickItemsFirst:
             self.SwitchPickupItemFirst()
+        if status['PickupIgnorePath'] != instance.pickItemsIgnorePath:
+            self.SwitchPickupIgnorePath()
 
         #_filter = instance.pickFilter
         #for _id in _filter:
@@ -54,8 +56,7 @@ class SettingsInterface:
         #OpenLog.DebugPrint(str(status['PickupFiltersID']))
         #for _id in status['PickupFiltersID']:
         #    instance.addPickFilterItem(_id)
-
-        self.SaveStatus()
+        if save_status: self.SaveStatus()
 
     def GetStatus(self):
         return {
@@ -83,12 +84,12 @@ class SettingsInterface:
     def SaveStatus(self):
         from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
         file_handler_interface.dump_other_settings()
-        file_handler_interface.dump_pickup_list()
 
     def ReturnPickupFilter(self):
         return instance.pickFilter
 
     def SetPickupFilter(self, pickup_list):
+        from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
         for item_id in instance.pickFilter:
             instance.delPickFilterItem(item_id)
 
@@ -98,8 +99,8 @@ class SettingsInterface:
         for item_id in pickup_list:
             instance.addPickFilterItem(item_id)
 
-        chat.AppendChat(3, str(instance.pickFilter))
-        self.SaveStatus()
+        chat.AppendChat(3, str(instance.pickFilter) + 'setpickufilter')
+        file_handler_interface.dump_pickup_list()
 
     def GetPickupFilter(self):
         if not instance.pickFilter:

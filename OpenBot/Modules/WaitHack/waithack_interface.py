@@ -3,7 +3,7 @@ from OpenBot.Modules.OpenLog import DebugPrint
 
 class WaithackInterface():
 
-    def SetStatus(self, status):
+    def SetStatus(self, status, save_status=True):
         good_keys = ['Enabled', 'Range', 'Speed','MaxMonsters','AvoidPlayers','AttackBlockedMonsters','UseCloudExploit', 'AttackPlayer', 'IsWallBetween']
         if not type(status) == dict:
             return False
@@ -35,7 +35,7 @@ class WaithackInterface():
         if instance.attack_blocked_monsters != status['AttackBlockedMonsters']:
             self.SwitchAttackBlockedMonsters()
 
-        self.SaveStatus()
+        if save_status: self.SaveStatus()
 
     def SaveStatus(self):
         from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface

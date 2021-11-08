@@ -21,7 +21,7 @@ STATUS_KEYS = {
 
 class FishbotInterface:
 
-    def SetStatus(self, status):
+    def SetStatus(self, status, save_status=True):
 
         if status[STATUS_KEYS['ENABLED']] and status[STATUS_KEYS['ENABLED']] != fishbot_module.enabled:
             self.start()
@@ -62,7 +62,7 @@ class FishbotInterface:
         if status[STATUS_KEYS['CATCHES_TO_DROP']] != fishbot_module.catches_to_drop:
             fishbot_module.catches_to_drop = status[STATUS_KEYS['CATCHES_TO_DROP']]
 
-        self.SaveStatus()
+        if save_status: self.SaveStatus()
 
     def GetStatus(self):
         return {

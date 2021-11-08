@@ -138,26 +138,6 @@ class FarmingBotUI(BotBase):
 
         if status['ChangeChannel']:
             self.showChannelSwitchingButton.SetOn()
-        
-
-        
-
-
-    def load_path(self):
-        filename = self.edit_line.GetText()
-        if farmbot_interface.LoadPath(filename):
-            self.update_points_list()
-            chat.AppendChat(3, '[Farmbot] - Successfully load ' + filename)
-
-        else:
-            chat.AppendChat(3, '[Farmbot] - Cannot load ' + filename)
-
-    def save_path(self):
-        filename = self.edit_line.GetText()
-        if farmbot_interface.SavePath(filename):
-            chat.AppendChat(3, '[Farmbot] - Successfully saved ' + filename)
-        else:
-            chat.AppendChat(3, '[Farmbot] - Cannot save ' + filename)
 
     def switch_always_use_waithack(self, val):
         ActionBot.instance.showAlwaysWaithackButton = val

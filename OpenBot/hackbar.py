@@ -4,10 +4,18 @@ from OpenBot.Modules.Farmbot.farmbot_module import farm
 from OpenBot.Modules.Fishbot.fishbot_module import fishbot_module
 from OpenBot.Modules.Settings.settings_module import instance as sett_instance
 from OpenBot.Modules.Skillbot.skillbot_module import instance as skillbot_instance
-
 from OpenBot.Modules import FileManager, UIComponents, ShopSearcher,Telehack, PythonManager, Levelbot, Spambot, Shopcreator, Inventorymanager, FishingBot, KeyBot,  Hooks
 from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Networking import NetworkingWebsockets
+
+
+
+
+
+
+
+
+
 DEBUG = False
 if DEBUG:
     from OpenBot.Modules import MiningBot #, Filter, 
@@ -239,13 +247,19 @@ try:
 except:
     pass
 
+settings_loaded = False
 def __PhaseChangeLoadSettingsCallback(phase, phaseWnd):
+    global settings_loaded
     from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
     from OpenBot.Modules import OpenLib
-    if phase == OpenLib.PHASE_GAME:
-        file_handler_interface.load_last_other_settings()
-        file_handler_interface.load_last_farmbot_paths()
-        file_handler_interface.load_last_pickup_list()
+    if phase == OpenLib.PHASE_GAME and not settings_loaded:
+        def load():
+            file_handler_interface.load_last_other_settings()
+            file_handler_interface.load_last_farmbot_paths()
+            file_handler_interface.load_last_pickup_list()
+        OpenLib.SetTimerFunction(2, load)
+        settings_loaded = True
+
 
 Hooks.registerPhaseCallback("loadingCallback", __PhaseChangeLoadSettingsCallback)
 

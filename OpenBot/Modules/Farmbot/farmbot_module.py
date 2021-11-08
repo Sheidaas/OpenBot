@@ -1,7 +1,7 @@
 from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
-from OpenBot.Modules import OpenLog, OpenLib, FileManager, Movement
+from OpenBot.Modules import OpenLog, OpenLib, Movement
 from OpenBot.Modules.OpenLog import DebugPrint
 import ui, chat, chr, net
 import eXLib

@@ -1,28 +1,81 @@
 from OpenBot.Modules.OpenLog import DebugPrint
+from OpenBot.Modules import OpenLib
 from OpenBot.Modules.Dropper import dropper
-import player, item, net, shop
+import player, item, net, chat, skill
 
+STATUS = {
+    'FREE_SLOTS': 'FreeSlots',
+    'MAX_INVENTORY_SIZE': 'MaxInventorySize',
+    'INVENTORY': 'Inventory',
+    'EQUIPMENT': 'Equipment'
+}
+STATUS_ACTIONS = {
+    'UPGRADE_ITEMS': 'upgrade_items',
+    'SELL_ALL_ITEMS': 'sell_all_items',
+    'DROP_ALL_ITEMS': 'drop_all_items',
+    'USE_ALL_ITEMS': 'use_all_items',
+    'USE_ITEM_ON_EQUIPMENT': 'use_item_on_equipment'
+}
+EQUIPMENT_NAMES = {
+    'WEAPON': 'Weapon',
+    'BODY': 'Body',
+    'HEAD': 'Head',
+    'NECK': 'Neck',
+    'GLOVE': 'Glove',
+    'EAR': 'Ear',
+    'SHOES': 'Shoes',
+    'PENDANT': 'Pendant',
+    'UNIQUE1': 'Unique1',
+    'UNIQUE2': 'Unique2',
+    'COUNT': 'Count',
+    'BELT': 'Belt',
+    'ARROW': 'Arrow',
+    'WRIST': 'Wrist',
+    'SHIELD': 'Shield',
+}
+EQUIPMENT_SLOTS = {
+    EQUIPMENT_NAMES['WEAPON']: item.EQUIPMENT_WEAPON,
+    EQUIPMENT_NAMES['BODY']: item.EQUIPMENT_BODY,
+    EQUIPMENT_NAMES['HEAD']: item.EQUIPMENT_HEAD,
+    EQUIPMENT_NAMES['NECK']: item.EQUIPMENT_NECK,
+    EQUIPMENT_NAMES['GLOVE']: item.EQUIPMENT_GLOVE,
+    EQUIPMENT_NAMES['EAR']: item.EQUIPMENT_EAR,
+    EQUIPMENT_NAMES['SHOES']: item.EQUIPMENT_SHOES,
+    EQUIPMENT_NAMES['PENDANT']: item.EQUIPMENT_PENDANT,
+    EQUIPMENT_NAMES['UNIQUE1']: item.EQUIPMENT_UNIQUE1,
+    EQUIPMENT_NAMES['UNIQUE2']: item.EQUIPMENT_UNIQUE2,
+    EQUIPMENT_NAMES['COUNT']: item.EQUIPMENT_COUNT,
+    EQUIPMENT_NAMES['BELT']: item.EQUIPMENT_BELT,
+    EQUIPMENT_NAMES['ARROW']: item.EQUIPMENT_ARROW,
+    EQUIPMENT_NAMES['WRIST']: item.EQUIPMENT_WRIST,
+    EQUIPMENT_NAMES['SHIELD']: 10,
+}
 
 class InventoryInterface:
 
     def SetStatus(self, status):
         DebugPrint(str(status))
-        if status['action'] == 'upgrade_items':
+        if status['action'] == STATUS_ACTIONS['UPGRADE_ITEMS']:
             self.UpgradeListOfItems(status['items_list'], status['number_to_upgrade'], mode=status['mode'])
         
-        elif status['action'] == 'sell_all_items':
+        elif status['action'] == STATUS_ACTIONS['SELL_ALL_ITEMS']:
             self.SellListOfItems(status['items_list'])
         
-        elif status['action'] == 'drop_all_items':
+        elif status['action'] == STATUS_ACTIONS['DROP_ALL_ITEMS']:
             self.DropAllItems(status['items_list'])
 
-        elif status['action'] == 'use_all_items':
+        elif status['action'] == STATUS_ACTIONS['USE_ALL_ITEMS']:
             self.UseAllItems(status['items_list'])
+
+        elif status['action'] == STATUS_ACTIONS['USE_ITEM_ON_EQUIPMENT']:
+            self.UseItemOnEquipment(*status['items_list'])
 
     def GetStatus(self):
         return {
-             'Inventory': self.GetInventory(),
-             'Equipment': self.GetWearedItems(),
+            STATUS['FREE_SLOTS']: OpenLib.GetNumberOfFreeSlots(),
+            STATUS['MAX_INVENTORY_SIZE']: OpenLib.MAX_INVENTORY_SIZE,
+            STATUS['INVENTORY']: self.GetInventory(),
+            STATUS['EQUIPMENT']: self.GetWearedItems(),
         }
 
     def GetInventory(self):
@@ -31,54 +84,45 @@ class InventoryInterface:
             ItemIndex = player.GetItemIndex(i)
             if ItemIndex != 0:
                 ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))
+                if ItemIndex == 50300 or ItemIndex == 70037 or ItemIndex == 70055:
+                    ItemName += ' ' + str(skill.GetSkillName(player.GetItemMetinSocket(player.INVENTORY, i, 0)))
                 items.append({
+                    'name': ItemName,
                     'id': player.GetItemIndex(i),
                     'count': player.GetItemCount(i),
                     'slot': i,
+                    'icon': item.GetIconImageFileName(ItemIndex).replace("icon\item\\", '').replace('.tga', '')
                 })
         return items
     
     def GetWearedItems(self):
-        return {
-            'Weapon': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WEAPON) },
-            'Body': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_BODY) },
-            'Head': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_HEAD) },
-            'Neck': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_NECK) },
-            'Glove': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_GLOVE) },
-            'Ear': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_EAR) },
-            'Shoes': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_SHOES) },
-            'Pendant': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_PENDANT) },
-            'Unique1': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_UNIQUE1) },
-            'Unique2': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_UNIQUE2) },
-            'Count': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_COUNT) },
-            'Belt': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_BELT) },
-            'Arrow': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_ARROW) },
-            'Wrist': { 'id': player.GetItemIndex(player.EQUIPMENT, item.EQUIPMENT_WRIST) },
-        }
+        eq = {}
+        for key in EQUIPMENT_NAMES.keys():
+            itemIndex = player.GetItemIndex(player.EQUIPMENT, EQUIPMENT_SLOTS[EQUIPMENT_NAMES[key]])
+            item.SelectItem(int(itemIndex))
+            eq[EQUIPMENT_NAMES[key]] = {'id': itemIndex,
+                                        'icon': item.GetIconImageFileName(int(itemIndex)).replace("icon\item\\", '').replace('.tga', '')
+                                        }
+        return eq
 
     def UpgradeListOfItems(self, items_list, number_to_upgrade, mode=0):
         for item_slot in items_list:
             for x in range(number_to_upgrade):
                 net.SendRefinePacket(item_slot, mode)
 
+    def UseItemOnEquipment(self, key):
+        net.SendItemUsePacket(player.EQUIPMENT, EQUIPMENT_SLOTS[EQUIPMENT_NAMES[key.upper()]])
+
     def SellListOfItems(self, items_list):
-        from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-        time = 0.3
-        if shop.IsOpen():
-            for slot in items_list:
-                action_bot_interface.AddWaiter(time, lambda: net.SendShopSellPacketNew(slot,player.GetItemCount(slot),1))
-                time += 0.3
-                
+        for slot in items_list:
+            dropper.add_new_item_to_sell(slot)
 
     def DropAllItems(self, items_list):
         for slot in items_list:
             dropper.add_new_item_to_drop(slot)
 
     def UseAllItems(self, items_list):
-        from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
-        time = 0.3
         for slot in items_list:
-            action_bot_interface.AddWaiter(time, lambda: net.SendItemUsePacket(slot))
-            time += 0.3
+            dropper.add_new_item_to_use(slot)
 
 inventory_interface = InventoryInterface()

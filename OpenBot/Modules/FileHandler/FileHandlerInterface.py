@@ -3,6 +3,7 @@ import shutil
 import eXLib
 import chat
 from OpenBot import simplejson as json
+from OpenBot.Modules import OpenLog
 
 
 PATHS = {
@@ -140,7 +141,7 @@ class FileHandlerInterface:
     def del_other_settings(self, filename):
         self._scan_for_others_settings()
         if filename + '.txt' in self.other_settings:
-            os.remove(PATHS['OTHER_SETTINGS'] + filename+ '.txt')
+            os.remove(PATHS['OTHER_SETTINGS'] + filename + '.txt')
             self._scan_for_others_settings()
 
     def load_pickup_list(self, filename):
@@ -149,7 +150,6 @@ class FileHandlerInterface:
         self._scan_for_pickup_lists()
         if filename + '.txt' in self.pickup_lists:
             with open(PATHS['PICKUP_LISTS'] + filename + '.txt', 'r') as file:
-                settings_interface.SetPickupFilter([])
                 settings_interface.SetPickupFilter(json.loads(file.read()))
 
             self.dump_pickup_list()
@@ -159,7 +159,6 @@ class FileHandlerInterface:
         from OpenBot.Modules.Settings.settings_interface import settings_interface
         if os.path.isfile(os.path.join(PATHS['SAVES'], FILENAMES['PICKUP_FILTER'])):
             with open(PATHS['SAVES'] + FILENAMES['PICKUP_FILTER'], 'r') as file:
-                settings_interface.SetPickupFilter([])
                 settings_interface.SetPickupFilter(json.loads(file.read()))
 
     def load_farmbot_paths(self, filename):
@@ -180,7 +179,9 @@ class FileHandlerInterface:
             with open(PATHS['SAVES'] + FILENAMES['FARMBOT_PATH'], 'r') as file:
                 status = farmbot_interface.GetStatus()
                 status['Path'] = json.loads(file.read())
+                OpenLog.DebugPrint(str(status['Path']))
                 farmbot_interface.SetStatus(status)
+                OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
 
     def load_other_settings(self, filename):
         from OpenBot.Modules.Settings.settings_interface import settings_interface
@@ -194,7 +195,6 @@ class FileHandlerInterface:
             with open(PATHS['OTHER_SETTINGS'] + filename + '.txt', 'r') as file:
                 other_settings = json.loads(file.read())
                 for status in other_settings.keys():
-
                     if HACK_STATUS_KEYS['SETTINGS'] == status:
                         settings_interface.SetStatus(other_settings[status])
                     elif HACK_STATUS_KEYS['FARMBOT'] == status:
@@ -206,8 +206,7 @@ class FileHandlerInterface:
                     elif HACK_STATUS_KEYS['SKILLBOT'] == status:
                         skillbot_interface.SetStatus(other_settings[status])
 
-    @staticmethod
-    def load_last_other_settings():
+    def load_last_other_settings(self):
         from OpenBot.Modules.Settings.settings_interface import settings_interface
         from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
         from OpenBot.Modules.Fishbot.fishbot_interface import fishbot_interface
@@ -219,16 +218,16 @@ class FileHandlerInterface:
                 other_settings = json.loads(file.read())
                 for status in other_settings.keys():
 
-                    if HACK_STATUS_KEYS['SETTINGS'] == status:
-                        settings_interface.SetStatus(other_settings[status])
-                    elif HACK_STATUS_KEYS['FARMBOT'] == status:
-                        farmbot_interface.SetStatus(other_settings[status])
+                    if HACK_STATUS_KEYS['FARMBOT'] == status:
+                        farmbot_interface.SetStatus(other_settings[status], save_status=False)
+                    elif HACK_STATUS_KEYS['SETTINGS'] == status:
+                        settings_interface.SetStatus(other_settings[status], save_status=False)
                     elif HACK_STATUS_KEYS['FISHBOT'] == status:
-                        fishbot_interface.SetStatus(other_settings[status])
+                        fishbot_interface.SetStatus(other_settings[status], save_status=False)
                     elif HACK_STATUS_KEYS['WAITHACK'] == status:
-                        waithack_interface.SetStatus(other_settings[status])
+                        waithack_interface.SetStatus(other_settings[status], save_status=False)
                     elif HACK_STATUS_KEYS['SKILLBOT'] == status:
-                        skillbot_interface.SetStatus(other_settings[status])
+                        skillbot_interface.SetStatus(other_settings[status], save_status=False)
 
     @staticmethod
     def dump_pickup_list():
@@ -261,7 +260,7 @@ class FileHandlerInterface:
             HACK_STATUS_KEYS['SKILLBOT']: skillbot_interface.GetStatus()
         }
 
-        other_settings['FarmBot']['Path'] = []
+        other_settings[HACK_STATUS_KEYS['WAITHACK']]['Enabled'] = False
 
         with open(PATHS['SAVES'] + 'other_settings.txt', 'w') as file:
             file.write(json.dumps(other_settings, indent=4))

@@ -1,9 +1,9 @@
 {
     "WaitHack": {
         "IsWallBetween": true,
-        "Range": 6500.0,
+        "Range": 3250,
         "AttackBlockedMonsters": false,
-        "AvoidPlayers": false,
+        "AvoidPlayers": true,
         "MaxMonsters": 200.0,
         "Speed": 0.12800000607967377,
         "AttackPlayer": false,
@@ -14,7 +14,7 @@
         "InstantMode": false,
         "Enabled": true,
         "UnmountHorse": false,
-        "UpgradeStats": false,
+        "UpgradeStats": true,
         "TimeToWaitAfterLogout": 8,
         "FollowVID": false,
         "UpgradeSkills": false,
@@ -26,7 +26,62 @@
         ],
         "FollowedVID": 0,
         "ShouldWaitAfterLogout": true,
-        "CurrentSkillSet": []
+        "CurrentSkillSet": [
+            {
+                "slot": 1,
+                "can_cast": false,
+                "lastWait": 25.103105545043945,
+                "upgrade_order": 5,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 31
+            },
+            {
+                "slot": 2,
+                "can_cast": false,
+                "lastWait": 25.103107452392578,
+                "upgrade_order": 2,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 32
+            },
+            {
+                "slot": 3,
+                "can_cast": false,
+                "lastWait": 25.103107452392578,
+                "upgrade_order": 3,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 33
+            },
+            {
+                "slot": 4,
+                "can_cast": false,
+                "lastWait": 25.103107452392578,
+                "upgrade_order": 4,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 34
+            },
+            {
+                "slot": 5,
+                "can_cast": false,
+                "lastWait": 25.10310935974121,
+                "upgrade_order": 1,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 35
+            },
+            {
+                "slot": 6,
+                "can_cast": false,
+                "lastWait": 25.10310935974121,
+                "upgrade_order": 6,
+                "cooldown_time_instant_mode": 0,
+                "is_turned_on": false,
+                "id": 36
+            }
+        ]
     },
     "FarmBot": {
         "ChangeChannel": false,
@@ -77,6 +132,6 @@
         "RedPotions": true,
         "AutoLogin": true,
         "MinMana": 80,
-        "SpeedMultiplier": 1.7000000476837158
+        "SpeedMultiplier": 6.400000095367432
     }
 }

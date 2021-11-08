@@ -8,7 +8,7 @@ class FarmbotInterface:
     def __init__(self):
         pass
 
-    def SetStatus(self, status):
+    def SetStatus(self, status, save_status=True):
         good_keys = ['Enabled', 'CurrentWaypointIndex', 'Path','OresToMine','WaitingTime','ChangeChannel','LookForMetins', 'LookForOre', 'ExchangeItemsToEnergy']
         if not type(status) == dict:
             return False
@@ -27,7 +27,7 @@ class FarmbotInterface:
             self.AddPoint({
                 'x': point[0],
                 'y': point[1],
-                'map_name': point[2]
+                'map_name': str(point[2])
             })
         farm_instance.ores_to_mine = []
         for ore_id in status['OresToMine']:
@@ -47,7 +47,7 @@ class FarmbotInterface:
             self.ClearPath()
         
         self.SetWaitingTime(status['WaitingTime'])
-        self.SaveStatus()
+        if save_status: self.SaveStatus()
 
     def GetStatus(self):
         return{
@@ -65,7 +65,6 @@ class FarmbotInterface:
     def SaveStatus(self):
         from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
         file_handler_interface.dump_other_settings()
-        file_handler_interface.dump_farmbot_path()
 
     def IsOn(self):
         return farm_instance.enabled
