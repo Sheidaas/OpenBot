@@ -1,12 +1,13 @@
-import chat
-from OpenBot.Modules.Inventory import inventory_interface
-from OpenBot.Modules import OpenLib
-from OpenBot.Modules.Settings import settings_interface
+#import chat
+import eXLib
+#from OpenBot.Modules.Inventory import inventory_interface
+#from OpenBot.Modules import OpenLib
+#from OpenBot.Modules.Settings import settings_interface
 #from OpenBot.Modules.Networking import NetworkingWebsockets
 #reload(settings_interface)
 #reload(OpenLib)
-reload(inventory_interface)
-
+#reload(inventory_interface)
+#eXLib.SkipRenderer()
 #import player, item, chat,
 
 #for x in range(300):
@@ -52,7 +53,13 @@ reload(inventory_interface)
 #OpenLib.GetAllBonusesOfItemBySlot(0)
 #chat.AppendChat(3, 'dafs')
 
+import shop, chat
 
+if shop.IsOpen():
+    for slot in range(shop.SHOP_SLOT_COUNT):
+        chat.AppendChat(3, str(shop.GetItemID(slot)))
+
+shop.Close()
 
 
 

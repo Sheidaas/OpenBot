@@ -9,13 +9,6 @@ from OpenBot.Modules.Radar import Radar
 from OpenBot.Modules.Networking import NetworkingWebsockets
 
 
-
-
-
-
-
-
-
 DEBUG = False
 if DEBUG:
     from OpenBot.Modules import MiningBot #, Filter, 

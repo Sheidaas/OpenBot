@@ -9,19 +9,7 @@ class FarmbotInterface:
         pass
 
     def SetStatus(self, status, save_status=True):
-        good_keys = ['Enabled', 'CurrentWaypointIndex', 'Path','OresToMine','WaitingTime','ChangeChannel','LookForMetins', 'LookForOre', 'ExchangeItemsToEnergy']
-        if not type(status) == dict:
-            return False
-        
-        for key in status.keys():
-            if key not in good_keys:
-                return False
-        
-        if status['Enabled']:
-            self.Start()
-        else:
-            self.Stop()
-
+        DebugPrint(str(status))
         farm_instance.path = []
         for point in status['Path']:
             self.AddPoint({
@@ -29,6 +17,12 @@ class FarmbotInterface:
                 'y': point[1],
                 'map_name': str(point[2])
             })
+
+        if status['Enabled']:
+            self.Start()
+        else:
+            self.Stop()
+
         farm_instance.ores_to_mine = []
         for ore_id in status['OresToMine']:
             self.AddOreToMine(ore_id)
@@ -81,8 +75,7 @@ class FarmbotInterface:
         for key in point.keys():
             if key not in ['x', 'y', 'map_name']:
                 return False
-        if eXLib.IsPositionBlocked(point['x'], point['y']):
-            return False
+
         farm_instance.add_point(point)
         return True
     

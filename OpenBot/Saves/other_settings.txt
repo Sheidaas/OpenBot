@@ -1,7 +1,7 @@
 {
     "WaitHack": {
         "IsWallBetween": false,
-        "Range": 3250,
+        "Range": 8000,
         "AttackBlockedMonsters": true,
         "AvoidPlayers": false,
         "MaxMonsters": 200.0,
@@ -21,8 +21,8 @@
         "StatToUpgradeOrder": [
             "DEX",
             "STR",
-            "INT",
-            "HP"
+            "HP",
+            "INT"
         ],
         "FollowedVID": 0,
         "ShouldWaitAfterLogout": true,
@@ -30,7 +30,7 @@
             {
                 "slot": 1,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3134.540771484375,
                 "upgrade_order": 5,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
@@ -39,7 +39,7 @@
             {
                 "slot": 2,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3134.540771484375,
                 "upgrade_order": 2,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
@@ -48,7 +48,7 @@
             {
                 "slot": 3,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3134.540771484375,
                 "upgrade_order": 3,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
@@ -57,16 +57,16 @@
             {
                 "slot": 4,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3122.992919921875,
                 "upgrade_order": 4,
-                "cooldown_time_instant_mode": 0,
+                "cooldown_time_instant_mode": 65,
                 "is_turned_on": false,
                 "id": 34
             },
             {
                 "slot": 5,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3134.540771484375,
                 "upgrade_order": 1,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
@@ -75,7 +75,7 @@
             {
                 "slot": 6,
                 "can_cast": false,
-                "lastWait": 2109.9443359375,
+                "lastWait": 3134.540771484375,
                 "upgrade_order": 6,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
@@ -84,23 +84,112 @@
         ]
     },
     "FarmBot": {
-        "ChangeChannel": false,
+        "ChangeChannel": true,
         "WaitingTime": 5,
         "OresToMine": [],
         "LookForOre": false,
         "LookForMetins": true,
-        "Path": [],
+        "Path": [
+            [
+                66345,
+                24971,
+                "metin2_map_c3"
+            ],
+            [
+                56345,
+                18171,
+                "metin2_map_c3"
+            ],
+            [
+                30845,
+                19571,
+                "metin2_map_c3"
+            ],
+            [
+                24345,
+                19171,
+                "metin2_map_c3"
+            ],
+            [
+                15945,
+                31671,
+                "metin2_map_c3"
+            ],
+            [
+                20045,
+                46471,
+                "metin2_map_c3"
+            ],
+            [
+                17445,
+                72271,
+                "metin2_map_c3"
+            ],
+            [
+                17145,
+                84171,
+                "metin2_map_c3"
+            ],
+            [
+                36645,
+                83271,
+                "metin2_map_c3"
+            ],
+            [
+                67045,
+                87071,
+                "metin2_map_c3"
+            ],
+            [
+                80945,
+                80171,
+                "metin2_map_c3"
+            ],
+            [
+                87145,
+                85871,
+                "metin2_map_c3"
+            ],
+            [
+                84545,
+                61271,
+                "metin2_map_c3"
+            ],
+            [
+                48845,
+                71471,
+                "metin2_map_c3"
+            ],
+            [
+                71845,
+                61371,
+                "metin2_map_c3"
+            ],
+            [
+                68945,
+                43371,
+                "metin2_map_c3"
+            ],
+            [
+                64045,
+                35371,
+                "metin2_map_c3"
+            ]
+        ],
         "ExchangeItemsToEnergy": false,
         "Enabled": false,
-        "CurrentWaypointIndex": 0
+        "CurrentWaypointIndex": 8
     },
     "FishBot": {
-        "FishIdToOpen": [],
+        "FishIdToOpen": [
+            27804,
+            27803
+        ],
         "CatchesToSell": [],
         "MaxRepetitions": 0,
         "DeadFishIdToDrop": [],
         "Enabled": false,
-        "MinTimeBetweenFish": 5,
+        "MinTimeBetweenFish": 8,
         "DeadFishIdToGrill": [],
         "StartingPosition": [
             0,
@@ -108,30 +197,31 @@
         ],
         "CheckRepetitions": false,
         "GrillFish": true,
-        "MaxTimeBetweenFish": 10,
+        "MaxTimeBetweenFish": 11,
         "CatchesToDrop": [],
         "Repetitions": 0,
         "InstantFishing": false
     },
     "Settings": {
         "RestartInCity": false,
-        "SpeedHack": false,
-        "AntiExp": false,
+        "SpeedHack": true,
+        "AntiExp": true,
         "UseRangePickup": true,
         "AvoidPlayersInPickup": false,
+        "RenderTextures": true,
         "PickupIgnorePath": false,
         "UseWallhack": true,
         "RestartHere": true,
         "ExcludeInFilter": false,
         "PickupItemFirst": true,
-        "PickupRange": 4300.0,
+        "PickupRange": 8000,
         "Pickup": true,
         "BluePotions": true,
         "PickupSpeed": 1.0,
-        "MinHealth": 81,
+        "MinHealth": 79,
         "RedPotions": true,
-        "AutoLogin": false,
-        "MinMana": 80,
-        "SpeedMultiplier": 1.7999999523162842
+        "AutoLogin": true,
+        "MinMana": 46,
+        "SpeedMultiplier": 1.5
     }
 }

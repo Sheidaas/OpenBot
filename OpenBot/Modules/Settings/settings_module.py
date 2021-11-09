@@ -11,6 +11,7 @@ class SettingsDialog(ui.ScriptWindow):
 
     def __init__(self):
         ui.ScriptWindow.__init__(self)
+        self.renderTextures = True
         self.restartHere = False
         self.restartInCity = False
         self.bluePotions = True
@@ -57,6 +58,14 @@ class SettingsDialog(ui.ScriptWindow):
 
     def revive_callback(self):
         self.can_add_revive_action = True
+
+    def switch_render_textures(self):
+        if self.renderTextures:
+            self.renderTextures = False
+            eXLib.SkipRenderer()
+        else:
+            self.renderTextures = True
+            eXLib.UnskipRender()
 
     def checkReviveAndLogin(self):
         val, self.timerDead = OpenLib.timeSleep(self.timerDead,self.TIME_DEAD)

@@ -6,25 +6,27 @@ from OpenBot.Modules import OpenLib, UIComponents
 from OpenBot.Modules import Hooks
 import ui, chat
 
-# STATES
-STATE_CANCELING = -1
-STATE_STOP = 0
+STATES = {
+    'WAITING': 'waiting',
+    'RUNNING': 'running'
+}
 
-# STAGES OPTIONS
-STAGE_REPEAT = 'stage_reapat'
 
-def _afterLoadPhase(phase,phaseWnd):
+def _afterLoadPhase(phase, phaseWnd):
     global instance
-    if phase == OpenLib.PHASE_LOGIN or phase==OpenLib.PHASE_GAME:
+    if OpenLib.IsInGamePhase():
         for waiter in instance.waiters:
             waiter['callback']()
         instance.waiters = []
+
+        instance.currentState = STATES['WAITING']
 
 
 class ActionBot(ui.ScriptWindow):
 
     def __init__(self):
         ui.Window.__init__(self)
+        self.currentState = STATES['WAITING']
         self.lastTime = 0
         self.enabled = True
         self.currActionObject = None
@@ -111,36 +113,42 @@ class ActionBot(ui.ScriptWindow):
             self.NewActionReturned(action_result)
 
     def OnUpdate(self):
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
-        if val and OpenLib.IsInGamePhase() and self.enabled:
-            self.rendered_actions = []
-            self.rendered_waiters = []
-            names = ['Going to enemy']
+        if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, 2)
+            if val:
+                self.currentState = STATES['RUNNING']
 
-            this_time = OpenLib.GetTime()
-            for waiter in self.waiters:
-                if this_time >= waiter['timeToWait'] + waiter['launching_time']:
-                    waiter['callback']()
-                    self.waiters.remove(waiter)
+        if self.currentState == STATES['RUNNING']:
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
+            if val and OpenLib.IsInGamePhase() and self.enabled:
+                self.rendered_actions = []
+                self.rendered_waiters = []
+                names = ['Going to enemy']
 
-            if self.currActionObject == None:
-                if not self.CheckIsThereNewAction():
-                    return
+                this_time = OpenLib.GetTime()
+                for waiter in self.waiters:
+                    if this_time >= waiter['timeToWait'] + waiter['launching_time']:
+                        waiter['callback']()
+                        self.waiters.remove(waiter)
 
-            if not self.showOffWaithackButton:
-                if self.showAlwaysWaithackButton:
-                    waithack_interface.Start()
-                else:
-                    if self.currActionObject.function.__name__ in ['DestroyByID', 'DestroyByVID', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
-                                                                'FindMapInDT', 'OpenASealInMonument'] or \
-                        self.currActionObject.name in names:
+                if self.currActionObject == None:
+                    if not self.CheckIsThereNewAction():
+                        return
+
+                if not self.showOffWaithackButton:
+                    if self.showAlwaysWaithackButton:
                         waithack_interface.Start()
                     else:
-                        waithack_interface.Stop()
-            else:
-                waithack_interface.Start()
-            
-            self.FrameDoAction()
+                        if self.currActionObject.function.__name__ in ['DestroyByID', 'DestroyByVID', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                                                                    'FindMapInDT', 'OpenASealInMonument'] or \
+                            self.currActionObject.name in names:
+                            waithack_interface.Start()
+                        else:
+                            waithack_interface.Stop()
+                else:
+                    waithack_interface.Start()
+
+                self.FrameDoAction()
 
 instance = ActionBot()
 instance.Show()

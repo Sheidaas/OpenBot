@@ -48,6 +48,8 @@ class SettingsInterface:
             self.SwitchPickupItemFirst()
         if status['PickupIgnorePath'] != instance.pickItemsIgnorePath:
             self.SwitchPickupIgnorePath()
+        if status['RenderTextures'] != instance.renderTextures:
+            instance.switch_render_textures()
 
         #_filter = instance.pickFilter
         #for _id in _filter:
@@ -60,6 +62,7 @@ class SettingsInterface:
 
     def GetStatus(self):
         return {
+            'RenderTextures': instance.renderTextures,
             'RestartHere': instance.restartHere,
             'RestartInCity': instance.restartInCity,
             'BluePotions': instance.bluePotions,

@@ -114,8 +114,7 @@ def MoveToPosition(args):
         error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
     if error == Movement.NO_PATH_FOUND:
-        DebugPrint(str(args))
-        return Action.NOTHING
+        return Action.ERROR
     
     elif error == Movement.MOVING:
         return True
@@ -234,7 +233,6 @@ def ChangeMap(args):
                 'function_args': [(move_position_x, move_position_y), map_name],
                 'name': 'Going to teleport point',
                 'function': MoveToPosition,
-                #'on_success': [Action.NEXT_ACTION],
                 'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [move_position_x, move_position_y]}
             }
         DebugPrint('going to next actions')
@@ -242,12 +240,23 @@ def ChangeMap(args):
 
     if map_destination_name != background.GetCurrentMapName():
         DebugPrint('Returning talk with npc')
-        return {
-            'function_args': [npc_id, event_answer, background.GetCurrentMapName()],
-            'name': 'Talking to teleport',
-            'function': TalkWithNPC,
-            'requirements': { ActionRequirementsCheckers.IS_IN_MAP: [map_destination_name]}
-        }
+        result = MapManager.GetNpcFromMap(map_name, npc_id)
+        if result is None:
+            return Action.NEXT_ACTION
+        if not OpenLib.isPlayerCloseToPosition(result[0], result[1], 1000):
+            action_dict = {'function_args': [(result[0], result[1]), map_name],  # position
+                           'function': MoveToPosition,
+                           'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (result[0], result[1], 1000),
+                                            ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
+                           }
+            return action_dict
+
+        vid = OpenLib.GetInstanceByID(npc_id)
+        if vid >= 0:
+            net.SendOnClickPacket(vid)
+            OpenLib.skipAnswers(event_answer, True)
+            return True
+        return False
     return True
     
 

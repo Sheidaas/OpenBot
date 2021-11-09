@@ -9,6 +9,11 @@ from OpenBot.Modules import UIComponents, OpenLog, OpenLib
 import net_parser
 import encodings,imp, os # Import for Encoding Load
 
+STATES = {
+    'WAITING': 'WAITING',
+    'SENDING_PACKETS': 'SENDING_PACKETS',
+}
+
 server_url = 'ws://localhost:13254'
 
 def OnMessage(id, message):
@@ -18,10 +23,6 @@ def OnMessage(id, message):
     if not instance.settedClientType:
         instance.SetClientTypeAsMetin()
         instance.settedClientType = True
-    
-    if not instance.settedBasicInformation:
-        instance.settedBasicInformation = True
-        pass
 
     cleaned_message = json.loads(message)
     #OpenLog.DebugPrint(str(cleaned_message))
@@ -30,8 +31,8 @@ def OnMessage(id, message):
         raw_action_dict = {
             'actions': cleaned_message['data']['message']
         }
-        OpenLog.DebugPrint(str(type(raw_action_dict['actions'])))
-        OpenLog.DebugPrint(str(raw_action_dict['actions']))
+        #.DebugPrint(str(type(raw_action_dict['actions'])))
+        #OpenLog.DebugPrint(str(raw_action_dict['actions']))
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
         print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
@@ -98,6 +99,7 @@ def OnMessage(id, message):
 class NetworkingWebsockets(ui.ScriptWindow):
 
     def __init__(self):
+        self.currentState = STATES['WAITING']
         ui.Window.__init__(self)
         self.lastTimeSendPacket = 0
         self.lastTime = 0
@@ -106,12 +108,12 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.isConnected = False
         self.settedBasicInformation = False
         self.settedClientType = False
-        self.socket_to_server = eXLib.OpenWebsocket(server_url, OnMessage)
+        self.socket_to_server = None
         self.encoding = OpenLib.GetCurrentMetinLanguage()
 
         ##
         # loading correct encoding into python
-        encoding = imp.load_source(self.encoding, os.path.join(eXLib.PATH,'OpenBot', 'lib', 'encodings', self.encoding+'.py'))
+        encoding = imp.load_source(self.encoding, os.path.join(eXLib.PATH, 'OpenBot', 'lib', 'encodings', self.encoding+'.py'))
         encodings._cache[self.encoding] = encoding.getregentry()
 
         self.packetToSendQueue = []
@@ -267,19 +269,27 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateFileHandler)
 
     def OnUpdate(self):
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
-        if val:
-            if self.settedClientType and self.isConnected:
-                self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
-                self.packetToSendQueue.append(self.UpdateCharacterStatus)
-                self.packetToSendQueue.append(self.UpdateHackStatus)
+        if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, 3)
+            if val:
+                if self.socket_to_server is None:
+                    self.socket_to_server = eXLib.OpenWebsocket(server_url, OnMessage)
+                self.currentState = STATES['SENDING_PACKETS']
 
-        val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
-        if val:
-            #OpenLog.DebugPrint(str(self.packetToSendQueue))
-            self.SendPacketFromQueue()
+        elif self.currentState == STATES['SENDING_PACKETS'] and OpenLib.IsInGamePhase():
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
+            if val:
+                if self.settedClientType and self.isConnected:
+                    self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
+                    self.packetToSendQueue.append(self.UpdateCharacterStatus)
+                    self.packetToSendQueue.append(self.UpdateHackStatus)
 
-        if not OpenLib.IsInGamePhase():
+            val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
+            if val:
+                self.SendPacketFromQueue()
+
+        else:
+            self.currentState = STATES['WAITING']
             self.settedBasicInformation = False
 
 

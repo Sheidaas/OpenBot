@@ -198,19 +198,6 @@ class FarmingBot(ui.ScriptWindow):
 
 				if self.CURRENT_STATE == WALKING_STATE:
 					OpenLog.DebugPrint("[Farming-bot] WALKING_STATE")
-					
-					if OpenLib.isInventoryFull():
-						from OpenBot.Modules import _Settings as Settings
-						if self.exchange_items_to_energy:
-							for item in Settings.instance.sellItems:
-								slot=OpenLib.GetItemByID(item)
-								if slot > -1:
-									OpenLog.DebugPrint('changing state to exchaning items')
-									self.CURRENT_STATE = EXCHANGING_ITEMS_TO_ENERGY
-									return
-					else:
-						OpenLog.DebugPrint('inventory is not full')
-					OpenLog.DebugPrint('No trash items')
 
 					interruptors_args = []
 					interruptors = []
