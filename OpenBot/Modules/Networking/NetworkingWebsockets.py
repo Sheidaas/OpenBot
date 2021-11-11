@@ -1,7 +1,8 @@
 from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
 from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
 from OpenBot.Modules.Settings.settings_interface import settings_interface
-from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface 
+from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
+from OpenBot.Modules.InstanceInteractions.InstanceInteractionsInterface import instance_interactions_interface
 from OpenBot import simplejson as json
 import ui, chat
 import eXLib
@@ -79,6 +80,9 @@ def OnMessage(id, message):
         elif cleaned_message['data']['module'] == 'PickupFilter':
             settings_interface.SetPickupFilter(cleaned_message['data']['message']['pickup_filter'])
             instance.packetToSendQueue.append(instance.UpdatePickupFilter)
+
+        elif cleaned_message['data']['module'] == 'InstanceInteractions':
+            instance_interactions_interface.SetStatus(cleaned_message['data']['message'])
 
     elif cleaned_message['type'] == 'update_request':
         if cleaned_message['data']['action'] == 'GET_INVENTORY_STATUS':
@@ -251,6 +255,13 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = net_parser.convertToUTF8(data, self.encoding)
             eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
+    def UpdateInstanceInteractionsStatus(self):
+        parsed_hack_status = net_parser.parse_instance_interaction_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            data = net_parser.convertToUTF8(data, self.encoding)
+            eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
     def UpdateFileHandler(self):
         parsed_hack_status = net_parser.parse_file_handler()
         if parsed_hack_status:
@@ -267,6 +278,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateChannelSwitcherStatus)
         self.packetToSendQueue.append(self.UpdateFishbotStatus)
         self.packetToSendQueue.append(self.UpdateFileHandler)
+        self.packetToSendQueue.append(self.UpdateInstanceInteractionsStatus)
 
     def OnUpdate(self):
         if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():

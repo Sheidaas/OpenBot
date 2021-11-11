@@ -133,12 +133,16 @@ class SettingsInterface:
             instance.restartHere = False
         else:
             instance.restartHere = True
+            if instance.restartInCity:
+                self.SwitchRestartInCity()
 
     def SwitchRestartInCity(self):
         if instance.restartInCity:
             instance.restartInCity = False
         else:
             instance.restartInCity = True
+            if instance.restartHere:
+                self.SwitchRestartHere()
 
     def SwitchBluePotions(self):
         if instance.bluePotions:

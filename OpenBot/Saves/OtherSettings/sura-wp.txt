@@ -1,7 +1,7 @@
 {
     "WaitHack": {
         "IsWallBetween": true,
-        "Range": 6000,
+        "Range": 4000,
         "AttackBlockedMonsters": false,
         "AvoidPlayers": false,
         "MaxMonsters": 200.0,
@@ -30,56 +30,56 @@
             {
                 "slot": 1,
                 "can_cast": false,
-                "lastWait": 2126.7802734375,
-                "upgrade_order": 1,
+                "lastWait": 831.6324462890625,
+                "upgrade_order": 5,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
-                "id": 31
+                "id": 61
             },
             {
                 "slot": 2,
                 "can_cast": false,
-                "lastWait": 2126.7802734375,
-                "upgrade_order": 2,
+                "lastWait": 831.6324462890625,
+                "upgrade_order": 4,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
-                "id": 32
+                "id": 62
             },
             {
                 "slot": 3,
-                "can_cast": false,
-                "lastWait": 2126.7802734375,
+                "can_cast": true,
+                "lastWait": 795.1336059570312,
                 "upgrade_order": 3,
-                "cooldown_time_instant_mode": 0,
+                "cooldown_time_instant_mode": 100,
                 "is_turned_on": false,
-                "id": 33
+                "id": 63
             },
             {
                 "slot": 4,
                 "can_cast": false,
-                "lastWait": 2126.7802734375,
-                "upgrade_order": 4,
+                "lastWait": 831.6324462890625,
+                "upgrade_order": 2,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
-                "id": 34
+                "id": 64
             },
             {
                 "slot": 5,
-                "can_cast": false,
-                "lastWait": 2126.7802734375,
-                "upgrade_order": 5,
-                "cooldown_time_instant_mode": 0,
+                "can_cast": true,
+                "lastWait": 797.972900390625,
+                "upgrade_order": 1,
+                "cooldown_time_instant_mode": 100,
                 "is_turned_on": false,
-                "id": 35
+                "id": 65
             },
             {
                 "slot": 6,
                 "can_cast": false,
-                "lastWait": 2126.7802734375,
+                "lastWait": 831.6324462890625,
                 "upgrade_order": 6,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
-                "id": 36
+                "id": 66
             }
         ]
     },
@@ -91,69 +91,29 @@
         "LookForMetins": false,
         "Path": [
             [
-                32948.8515625,
-                38896.2734375,
-                "metin2_map_guild_03"
+                28750.0703125,
+                106201.75,
+                "metin2_map_c1"
             ],
             [
-                42648.8515625,
-                40296.27734375,
-                "metin2_map_guild_03"
+                41450.0703125,
+                102401.75,
+                "metin2_map_c1"
             ],
             [
-                32048.849609375,
-                30096.2734375,
-                "metin2_map_guild_03"
+                43950.0703125,
+                108601.75,
+                "metin2_map_c1"
             ],
             [
-                36748.8515625,
-                26096.2734375,
-                "metin2_map_guild_03"
-            ],
-            [
-                25248.8515625,
-                20696.275390625,
-                "metin2_map_guild_03"
-            ],
-            [
-                29548.8515625,
-                17696.2734375,
-                "metin2_map_guild_03"
-            ],
-            [
-                18648.8515625,
-                12296.2744140625,
-                "metin2_map_guild_03"
-            ],
-            [
-                15648.8515625,
-                24896.275390625,
-                "metin2_map_guild_03"
-            ],
-            [
-                6548.8515625,
-                28196.2734375,
-                "metin2_map_guild_03"
-            ],
-            [
-                7948.8515625,
-                12296.2744140625,
-                "metin2_map_guild_03"
-            ],
-            [
-                24248.8515625,
-                7496.2744140625,
-                "metin2_map_guild_03"
-            ],
-            [
-                8448.8515625,
-                6796.2744140625,
-                "metin2_map_guild_03"
+                52550.0703125,
+                110101.75,
+                "metin2_map_c1"
             ]
         ],
         "ExchangeItemsToEnergy": false,
         "Enabled": false,
-        "CurrentWaypointIndex": 10
+        "CurrentWaypointIndex": 3
     },
     "FishBot": {
         "FishIdToOpen": [
@@ -226,7 +186,7 @@
     "Settings": {
         "RestartInCity": false,
         "SpeedHack": true,
-        "AntiExp": true,
+        "AntiExp": false,
         "UseRangePickup": true,
         "AvoidPlayersInPickup": false,
         "RenderTextures": true,

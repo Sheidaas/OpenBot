@@ -44,7 +44,7 @@ def ClearFloor(args):
 def DestroyByVID(args):
     instance_vid = args[0]
     if instance_vid not in eXLib.InstancesList:
-        return False
+        return True
 
     if eXLib.IsDead(instance_vid):
         player.SetAttackKeyState(False)

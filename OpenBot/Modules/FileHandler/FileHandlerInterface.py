@@ -263,6 +263,7 @@ class FileHandlerInterface:
         other_settings[HACK_STATUS_KEYS['WAITHACK']]['Enabled'] = False
         other_settings[HACK_STATUS_KEYS['FARMBOT']]['Enabled'] = False
         other_settings[HACK_STATUS_KEYS['SETTINGS']]['RenderTextures'] = True
+        other_settings[HACK_STATUS_KEYS['FISHBOT']]['Enabled'] = False
 
         with open(PATHS['SAVES'] + 'other_settings.txt', 'w') as file:
             file.write(json.dumps(other_settings, indent=4))

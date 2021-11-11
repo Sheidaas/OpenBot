@@ -1,6 +1,6 @@
 from OpenBot.Modules.OpenLog import DebugPrint
 import ui,net,player,eXLib
-from OpenBot.Modules import Movement, OpenLib
+from OpenBot.Modules import Movement, OpenLib, Hooks
 
 
 class SettingsDialog(ui.ScriptWindow):
@@ -94,7 +94,10 @@ class SettingsDialog(ui.ScriptWindow):
 
             else:
                 OpenLib.Revive(in_city=True)
-        
+
+        elif self.restartInCity and player.GetStatus(player.HP) <= 0:
+            Hooks.GetGameWindow().interface.dlgRestart.RestartTown()
+
         if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
             net.DirectEnter(0,0)
             #ChannelSwitcher.instance.ConnectToChannel()
@@ -121,7 +124,7 @@ class SettingsDialog(ui.ScriptWindow):
                 return
         
         if self.antiExp and self.can_add_waiter:
-            action_bot_interface.AddWaiter(3, _anti_exp)
+            action_bot_interface.AddWaiter(0.5, _anti_exp)
             self.can_add_waiter = False
 
     def SetSpeedHackMultiplier(self, new_speed_multiplier):

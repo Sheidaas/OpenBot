@@ -10,6 +10,7 @@ ATTACK_RANGE = 270
 
 #Types
 NONE_TYPE = -99
+GUILD_OBJECTS = 5
 OBJECT_TYPE = 1
 METIN_TYPE = 2
 MONSTER_TYPE = 0
@@ -238,6 +239,11 @@ def GetSelectedIndex(self):
 
 def IsThisNPC(vid):
 	if chr.GetInstanceType(vid) == OBJECT_TYPE:
+		return True
+	return False
+
+def IsThisGuildObject(vid):
+	if chr.GetInstanceType(vid) == GUILD_OBJECTS:
 		return True
 	return False
 
@@ -501,17 +507,19 @@ def getAllSkillsInfo():
 			grade = player.GetSkillGrade(player.GetSkillSlotIndex(index))
 			if x in current_skills:
 				skills[x] = {
-							'name': name,
-							'level': level,
-							'grade': grade
-							}
+					'id': index,
+					'name': name,
+					'level': level,
+					'grade': grade
+					}
 			else:
 				if level or grade:
 					skills[x] = {
-								'name': name,
-								'level': level,
-								'grade': grade
-								}
+						'id': index,
+						'name': name,
+						'level': level,
+						'grade': grade
+						}
 
 
 	return skills

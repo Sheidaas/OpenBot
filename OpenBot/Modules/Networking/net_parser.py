@@ -87,6 +87,12 @@ def parse_fishbot_status():
         'FishBot': fishbot_interface.GetStatus(),
     }
 
+def parse_instance_interaction_status():
+    from OpenBot.Modules.InstanceInteractions.InstanceInteractionsInterface import instance_interactions_interface
+    return {
+        'InstanceInteractions': instance_interactions_interface.GetStatus()
+    }
+
 #####
 # Converting to UTF 8 Methods
 # ignoring ints, floats and other numbers in this conversion. only texts of values relevant.

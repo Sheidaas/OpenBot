@@ -113,7 +113,7 @@ class Waithack(ui.ScriptWindow):
                 if self.avoidPlayers and OpenLib.IsThisPlayer(vid):
                     return
 
-                if OpenLib.IsThisNPC(vid):
+                if OpenLib.IsThisNPC(vid) or OpenLib.IsThisGuildObject(vid):
                     continue
 
                 if self.attackPlayer and OpenLib.IsThisPlayer(vid):
