@@ -139,6 +139,18 @@ def printFunc(*args,**kwargs):
 		f.write("\n")
 	debugFunc.CallOriginalFunction(*args,**kwargs)
 
+def printFuncNC(*args,**kwargs):
+	"""
+	Print the arguments of a function to a debug.txt file.(In the game folder)
+	This happens without Calling the Original.
+	"""
+	with open("debug.txt","a") as f:
+		#chat.AppendChat(3,"[DebugHook] Function called arguments:")
+		f.write("[DebugHook] Function called arguments:\n")
+		for i,arg in enumerate(args):
+			f.write("[DebugHook] Arg "+ str(i) + ": "+ str(arg)+"\n")
+			#chat.AppendChat(3,"[DebugHook] Arg "+ str(i) + ": "+ str(arg))
+		f.write("\n")
 
 #Print arguments of a function
 def _debugHookFunctionArgs(func):
