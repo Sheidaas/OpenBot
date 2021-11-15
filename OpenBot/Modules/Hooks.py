@@ -79,6 +79,7 @@ def skipFunc(*args):
 	pass 
 
 def phaseIntercept(*args,**kwargs):
+	#printFuncNC(*args,**kwargs)
 	global CURRENT_PHASE
 	if len(args)>1 and args[1] != 0:
 		CURRENT_PHASE = args[0]
@@ -102,7 +103,9 @@ class SkipHook(Hook):
 
 
 def GameWindowIntercept(*args,**kwargs):
-	
+	if args[0] == 0:
+		return
+	#printFuncNC(*args,**kwargs)
 	global gameWindowHook
 	global GAME_WINDOW
 	GAME_WINDOW = args[0]
