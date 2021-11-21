@@ -9,7 +9,8 @@ class FarmbotInterface:
         pass
 
     def SetStatus(self, status, save_status=True):
-        DebugPrint(str(status))
+
+
         farm_instance.path = []
         for point in status['Path']:
             self.AddPoint({

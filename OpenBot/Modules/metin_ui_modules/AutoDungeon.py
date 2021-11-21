@@ -1,10 +1,10 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-from OpenBot.Modules._Settings import ItemListDialog
+from OpenBot.Modules.metin_ui_modules._Settings import ItemListDialog
 from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from BotBase import BotBase
 import UIComponents, OpenLib
-import ui, player, background, chat, item, eXLib
+import ui, background, chat, item, eXLib
 
 #
 #DT Blacksmith 20074

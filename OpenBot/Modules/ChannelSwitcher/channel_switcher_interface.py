@@ -1,4 +1,6 @@
 from OpenBot.Modules.ChannelSwitcher.channel_switcher_module import instance
+from OpenBot.Modules.Actions import Action, ActionRequirementsCheckers, ActionFunctions
+from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules import OpenLib
 
 STATE_NONE = 0
@@ -8,7 +10,14 @@ class ChannelSwitcherInterface:
 
     def SetStatus(self, status):
         if 'ChangeChannel' in status.keys():
-            self.ConnectToChannelByID(status['ChangeChannel'])
+            action_dict = {
+                'function_args': [status['ChangeChannel']],
+                'function': ActionFunctions.ChangeChannel,
+                'requirements': {
+                    ActionRequirementsCheckers.IS_IN_CHANNEL: [status['ChangeChannel']]},
+                'on_success': [Action.NEXT_ACTION],
+            }
+            action_bot_interface.AddAction(action_dict)
 
     def GetStatus(self):
         return {

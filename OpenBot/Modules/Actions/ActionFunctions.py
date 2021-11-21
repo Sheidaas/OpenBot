@@ -1,11 +1,10 @@
-from time import sleep, time
 from OpenBot.Modules import MapManager, Movement, OpenLib
 from OpenBot.Modules.Actions import Action, ActionRequirementsCheckers
 from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, net, chr, chat, background, item
+import player, net, chr, background, item
 
 
 # Standard
@@ -371,7 +370,7 @@ def MineOre(args):
         return False
 
 def ExchangeTrashItemsToEnergyFragments(args):
-    from OpenBot.Modules import _Settings as Settings
+    from OpenBot.Modules.metin_ui_modules import _Settings as Settings
     first_map = OpenLib.GetPlayerEmpireFirstMap()
 
     x, y = MapManager.GetNpcFromMap(first_map, 20001)

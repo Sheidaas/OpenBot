@@ -84,10 +84,17 @@ class InventoryInterface:
             ItemIndex = player.GetItemIndex(i)
             if ItemIndex != 0:
                 ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))
-                if ItemIndex == 50300 or ItemIndex == 70037 or ItemIndex == 70055:
-                    ItemName += ' ' + str(skill.GetSkillName(player.GetItemMetinSocket(player.INVENTORY, i, 0)))
+                if ItemIndex in [50300, 70037, 70055, 70104, 71093]:
+                    slot = player.GetItemMetinSocket(player.INVENTORY, i, 0)
+                else:
+                    slot = False
+                if slot:
+                    book_name = slot
+                else:
+                    book_name = 'none'
                 items.append({
                     'name': ItemName,
+                    'book_name': book_name,
                     'id': player.GetItemIndex(i),
                     'count': player.GetItemCount(i),
                     'slot': i,

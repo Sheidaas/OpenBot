@@ -1,5 +1,7 @@
 from OpenBot.Modules import OpenLib, Hooks
+from OpenBot.Modules.OpenLog import DebugPrint
 import serverInfo, background, ui, chat, net, app, introLogin # introLogin gives ServerStateChecker module
+from OpenBot.Modules.Settings.settings_interface import settings_interface
 
 
 def __PhaseChangeChannelCallback(phase,phaseWnd):
@@ -10,7 +12,7 @@ def __PhaseChangeChannelCallback(phase,phaseWnd):
         if phase == OpenLib.PHASE_GAME:
             instance.SetStateNone()
         elif phase == OpenLib.PHASE_SELECT:
-            OpenLib.SetTimerFunction(0.5,phaseWnd.SelectStart)
+            OpenLib.SetTimerFunction(instance.break_between_logins, phaseWnd.SelectStart)
 
 
 def getCallBackWithArg(func, arg):
@@ -19,13 +21,18 @@ def getCallBackWithArg(func, arg):
 STATE_NONE = 0
 STATE_CHANGING_CHANNEL = 1
 
-class ChannelSwitcher:
+class ChannelSwitcher(ui.ScriptWindow):
 
     def __init__(self):
+        ui.Window.__init__(self)
         self.channels = {}
         self.currChannel = 0
         self.currState = STATE_NONE
         self.selectedChannel = 0
+        self.current_channel = 0
+        self.break_between_logins = 0.5
+        self.last_time_break_between_logins = 0
+        self.last_time = 0
 
     def GetRegionID(self):
         # FOR EU IS 0
@@ -75,7 +82,6 @@ class ChannelSwitcher:
             "metin2_map_skipia_dungeon_boss",
             "metin2_map_skipia_dungeon_boss2",
             "metin2_map_devilsCatacomb",
-            "metin2_map_deviltower1",
             "metin2_map_t1",
             "metin2_map_t2",
             "metin2_map_t3",
@@ -89,8 +95,9 @@ class ChannelSwitcher:
         return False
 
     def ConnectToChannel(self):
-        net.Disconnect()
-        net.ConnectTCP(self.selectedChannel["ip"],self.selectedChannel["port"])
+        if OpenLib.IsInGamePhase():
+            net.Disconnect()
+        net.ConnectTCP(self.selectedChannel["ip"], self.selectedChannel["port"])
 
     def ConnectToGame(self):
         net.SendEnterGamePacket()
@@ -111,6 +118,22 @@ class ChannelSwitcher:
     def SetStateNone(self):
         self.selectedChannel = 0
         self.currState = STATE_NONE
+
+    def OnUpdate(self):
+        val, self.last_time = OpenLib.timeSleep(self.last_time, 0.1)
+        if not val:
+            return
+
+        if OpenLib.IsInGamePhase():
+            self.current_channel = OpenLib.GetCurrentChannel()
+
+        if OpenLib.IsInLoginPhase():
+            DebugPrint('LOGIN PHASE')
+            if self.currState == STATE_CHANGING_CHANNEL:
+                self.ConnectToChannel()
+
+            if settings_interface.GetStatus()['AutoLogin'] and self.currState == STATE_NONE:
+                self.ChangeChannelById(self.current_channel)
 
     def __del__(self):
         Hooks.deletePhaseCallback("channelCallback")

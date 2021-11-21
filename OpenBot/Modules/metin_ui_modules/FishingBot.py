@@ -233,7 +233,7 @@ class FishingBotDialog(ui.Window):
 		#Unequip weapon if it is a rod
 		val = OpenLib.isItemTypeOnSlot(item.ITEM_TYPE_ROD,player.EQUIPMENT,item.EQUIPMENT_WEAPON)
 		if val:
-			chat.AppendChat(3,"[Fishing-Bot] Removing fishing rod from main weapon")
+			chat.AppendChat(3, "[Fishing-Bot] Removing fishing rod from main weapon")
 			net.SendItemUsePacket(player.EQUIPMENT,item.EQUIPMENT_WEAPON)
 			return
 		

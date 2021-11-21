@@ -1,7 +1,7 @@
 from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
-from OpenBot.Modules import OpenLog, OpenLib, Movement
+from OpenBot.Modules import OpenLog, OpenLib, Movement, Hooks
 from OpenBot.Modules.OpenLog import DebugPrint
 import ui, chat, chr, net
 import eXLib
@@ -12,6 +12,11 @@ WALKING_STATE = 1
 MINING_STATE = 2
 FARMING_STATE = 3
 EXCHANGING_ITEMS_TO_ENERGY = 4
+
+def OnLoginPhase(phase, phaseWnd):
+	global farm
+	if OpenLib.IsInGamePhase():
+		farm.CURRENT_STATE = WAITING_STATE
 
 def OnDigMotionCallback(main_vid,target_ore,n):
 	global farm
@@ -193,8 +198,6 @@ class FarmingBot(ui.ScriptWindow):
 					if val:
 						self.lastTimeWaitingState = 0
 						self.CURRENT_STATE = WALKING_STATE
-					else:
-						self.search_for_farm()
 
 				if self.CURRENT_STATE == WALKING_STATE:
 					OpenLog.DebugPrint("[Farming-bot] WALKING_STATE")
@@ -265,3 +268,5 @@ class FarmingBot(ui.ScriptWindow):
 
 farm = FarmingBot()
 farm.Show()
+
+Hooks.registerPhaseCallback('pauseFarmbot', OnLoginPhase)

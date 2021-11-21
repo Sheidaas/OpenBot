@@ -68,7 +68,7 @@ class SettingsDialog(ui.ScriptWindow):
             eXLib.UnskipRender()
 
     def checkReviveAndLogin(self):
-        val, self.timerDead = OpenLib.timeSleep(self.timerDead,self.TIME_DEAD)
+        val, self.timerDead = OpenLib.timeSleep(self.timerDead, self.TIME_DEAD)
 
         if not val:
             return
@@ -96,10 +96,13 @@ class SettingsDialog(ui.ScriptWindow):
                 OpenLib.Revive(in_city=True)
 
         elif self.restartInCity and player.GetStatus(player.HP) <= 0:
-            Hooks.GetGameWindow().interface.dlgRestart.RestartTown()
+            try:
+                Hooks.GetGameWindow().interface.dlgRestart.RestartTown()
+            except:
+                pass
 
         if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
-            net.DirectEnter(0,0)
+            net.DirectEnter(0, 0)
             #ChannelSwitcher.instance.ConnectToChannel()
     
     def WallHackSwich(self, val):

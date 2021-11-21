@@ -233,7 +233,6 @@ class FileHandlerInterface:
     def dump_pickup_list():
         from OpenBot.Modules.Settings.settings_interface import settings_interface
         pickup_filter = settings_interface.ReturnPickupFilter()
-        chat.AppendChat(3, str(pickup_filter))
         with open(PATHS['SAVES'] + FILENAMES['PICKUP_FILTER'], 'w') as file:
             file.write(json.dumps(pickup_filter))
 

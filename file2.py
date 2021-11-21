@@ -3,8 +3,8 @@ import eXLib
 #from OpenBot.Modules.Inventory import inventory_interface
 #from OpenBot.Modules import OpenLib
 #from OpenBot.Modules.Settings import settings_interface
-#from OpenBot.Modules.Networking import NetworkingWebsockets
-#reload(settings_interface)
+from OpenBot.Modules.Networking import NetworkingWebsockets
+#reload(NetworkingWebsockets)
 #reload(OpenLib)
 #reload(inventory_interface)
 #eXLib.SkipRenderer()
@@ -53,14 +53,12 @@ import eXLib
 #OpenLib.GetAllBonusesOfItemBySlot(0)
 #chat.AppendChat(3, 'dafs')
 
-import shop, chat
+#from OpenBot.Modules.InstanceInteractions.shopper_module import shopper_module
+#shopper_module.npc_id_to_open = 0
 
-if shop.IsOpen():
-    for slot in range(shop.SHOP_SLOT_COUNT):
-        chat.AppendChat(3, str(shop.GetItemID(slot)))
+#import localeInfo
 
-shop.Close()
-
-
-
-
+from OpenBot.Modules import pshop
+reload(pshop)
+shop = pshop.PrivateShopSeachWindow()
+shop.Open(False)

@@ -18,32 +18,7 @@ ADD_POINT = {
             "STR": "STR",
             "DEX": "DEX",
         }
-"""
-       # USE player.ClickSkillSlot instead of SendUseSkillPacket for sura
-        val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
-        if val and OpenLib.IsInGamePhase() and self.enabled:
-            if not self.startUpWait:
-                for skill in self.currentSkillSet:
-                    if self.instant_mode:
-                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
-                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
-                            else:
-                                eXLib.SendUseSkillPacket(skill['id'], net.GetMainActorVID())
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-                            skill['is_turned_on'] = True
-                            action_bot_interface.AddWaiter(skill['cooldown_time_instant_mode'], self.addCallbackToWaiter(skill))
-                    else:
-                        if not skill['is_turned_on'] and skill['can_cast'] and not player.IsSkillCoolTime(skill['slot']):
-                            if not player.IsMountingHorse():
-                                eXLib.SendUseSkillPacketBySlot(skill['slot'])
-                            else:
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
-                                net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
-            else:
-                val, self.startUpWaitTime = OpenLib.timeSleep(self.startUpWaitTime, self.TimeToWaitAfterStart)
-                if val:
-                    self.startUpWait = False
-"""
+
 class Skillbot(ui.ScriptWindow):
 
     ACTIVE_SKILL_IDS = [

@@ -495,6 +495,12 @@ def IsInGamePhase():
 	"""
 	return GetCurrentPhase() == PHASE_GAME
 
+def IsInLoginPhase():
+	return GetCurrentPhase() == PHASE_LOGIN
+
+def IsInSelectPhase():
+	return GetCurrentPhase() == PHASE_SELECT
+
 def getAllSkillsInfo():
 	# This could be faster without checking is skill exist
 	skills = {}
