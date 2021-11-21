@@ -29,10 +29,11 @@ def OnMessage(id, message):
     cleaned_message = json.loads(message)
     #OpenLog.DebugPrint(str(cleaned_message))
     if cleaned_message['type'] == 'actions':
-        if cleaned_message['data']['message']['function'] == 'TeleportToPosition':
-            x = cleaned_message['data']['message']['function_args'][0]
-            y = cleaned_message['data']['message']['function_args'][1]
-            map_name = cleaned_message['data']['message']['function_args'][2]
+        chat.AppendChat(3, str(cleaned_message))
+        if cleaned_message['data']['message'][0]['function'] == 'TeleportToPosition':
+            x = cleaned_message['data']['message'][0]['function_args'][0][0]
+            y = cleaned_message['data']['message'][0]['function_args'][0][1]
+            map_name = cleaned_message['data']['message'][0]['function_args'][1]
             Movement.TeleportToPosition(x, y)
 
 
