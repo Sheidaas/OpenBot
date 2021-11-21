@@ -4,6 +4,7 @@ from OpenBot.Modules.Settings.settings_interface import settings_interface
 from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
 from OpenBot.Modules.InstanceInteractions.InstanceInteractionsInterface import instance_interactions_interface
 from OpenBot import simplejson as json
+from OpenBot.Modules import Movement
 import ui, chat
 import eXLib
 from OpenBot.Modules import UIComponents, OpenLog, OpenLib
@@ -28,12 +29,17 @@ def OnMessage(id, message):
     cleaned_message = json.loads(message)
     #OpenLog.DebugPrint(str(cleaned_message))
     if cleaned_message['type'] == 'actions':
+        if cleaned_message['data']['message']['function'] == 'TeleportToPosition':
+            x = cleaned_message['data']['message']['function_args'][0]
+            y = cleaned_message['data']['message']['function_args'][1]
+            map_name = cleaned_message['data']['message']['function_args'][2]
+            Movement.TeleportToPosition(x, y)
+
+
         from OpenBot.Modules.Actions import ActionLoader
         raw_action_dict = {
             'actions': cleaned_message['data']['message']
         }
-        #.DebugPrint(str(type(raw_action_dict['actions'])))
-        #OpenLog.DebugPrint(str(raw_action_dict['actions']))
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
         print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
