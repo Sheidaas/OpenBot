@@ -195,16 +195,16 @@ class FileHandlerInterface:
             with open(PATHS['OTHER_SETTINGS'] + filename + '.txt', 'r') as file:
                 other_settings = json.loads(file.read())
                 for status in other_settings.keys():
-                    if HACK_STATUS_KEYS['SETTINGS'] == status:
-                        settings_interface.SetStatus(other_settings[status])
-                    elif HACK_STATUS_KEYS['FARMBOT'] == status:
-                        farmbot_interface.SetStatus(other_settings[status])
+                    if HACK_STATUS_KEYS['FARMBOT'] == status:
+                        farmbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT']), save_status=False)
+                    elif HACK_STATUS_KEYS['SETTINGS'] == status:
+                        settings_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SETTINGS']), save_status=False)
                     elif HACK_STATUS_KEYS['FISHBOT'] == status:
-                        fishbot_interface.SetStatus(other_settings[status])
+                        fishbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FISHBOT']), save_status=False)
                     elif HACK_STATUS_KEYS['WAITHACK'] == status:
-                        waithack_interface.SetStatus(other_settings[status])
+                        waithack_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['WAITHACK']), save_status=False)
                     elif HACK_STATUS_KEYS['SKILLBOT'] == status:
-                        skillbot_interface.SetStatus(other_settings[status])
+                        skillbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SKILLBOT']), save_status=False)
 
     def load_last_other_settings(self):
         from OpenBot.Modules.Settings.settings_interface import settings_interface
@@ -219,15 +219,40 @@ class FileHandlerInterface:
                 for status in other_settings.keys():
 
                     if HACK_STATUS_KEYS['FARMBOT'] == status:
-                        farmbot_interface.SetStatus(other_settings[status], save_status=False)
+                        farmbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT']), save_status=False)
                     elif HACK_STATUS_KEYS['SETTINGS'] == status:
-                        settings_interface.SetStatus(other_settings[status], save_status=False)
+                        settings_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SETTINGS']), save_status=False)
                     elif HACK_STATUS_KEYS['FISHBOT'] == status:
-                        fishbot_interface.SetStatus(other_settings[status], save_status=False)
+                        fishbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FISHBOT']), save_status=False)
                     elif HACK_STATUS_KEYS['WAITHACK'] == status:
-                        waithack_interface.SetStatus(other_settings[status], save_status=False)
+                        waithack_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['WAITHACK']), save_status=False)
                     elif HACK_STATUS_KEYS['SKILLBOT'] == status:
-                        skillbot_interface.SetStatus(other_settings[status], save_status=False)
+                        skillbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SKILLBOT']), save_status=False)
+
+    def return_dict_with_diff(self, new_status, status):
+        from OpenBot.Modules.Settings.settings_interface import settings_interface
+        from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
+        from OpenBot.Modules.Fishbot.fishbot_interface import fishbot_interface
+        from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
+        from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
+
+        diff_dict = {}
+        if HACK_STATUS_KEYS['FARMBOT'] == status:
+            old_status = farmbot_interface.GetStatus()
+        elif HACK_STATUS_KEYS['SETTINGS'] == status:
+            old_status = settings_interface.GetStatus()
+        elif HACK_STATUS_KEYS['FISHBOT'] == status:
+            old_status = fishbot_interface.GetStatus()
+        elif HACK_STATUS_KEYS['WAITHACK'] == status:
+            old_status = waithack_interface.GetStatus()
+        elif HACK_STATUS_KEYS['SKILLBOT'] == status:
+            old_status = skillbot_interface.GetStatus()
+
+
+        for key in old_status.keys():
+            if new_status[key] != old_status[key]:
+                diff_dict[key] = new_status[key]
+        return diff_dict
 
     @staticmethod
     def dump_pickup_list():

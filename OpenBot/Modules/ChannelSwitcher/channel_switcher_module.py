@@ -4,6 +4,7 @@ import serverInfo, background, ui, chat, net, app, introLogin # introLogin gives
 from OpenBot.Modules.Settings.settings_interface import settings_interface
 
 
+
 def __PhaseChangeChannelCallback(phase,phaseWnd):
     global instance
     if instance.currState == STATE_NONE:
@@ -12,7 +13,8 @@ def __PhaseChangeChannelCallback(phase,phaseWnd):
         if phase == OpenLib.PHASE_GAME:
             instance.SetStateNone()
         elif phase == OpenLib.PHASE_SELECT:
-            OpenLib.SetTimerFunction(instance.break_between_logins, phaseWnd.SelectStart)
+            from OpenBot.Modules.Protector.protector_module import protector_module
+            OpenLib.SetTimerFunction(protector_module.time_to_wait_in_login_phase, phaseWnd.SelectStart)
 
 
 def getCallBackWithArg(func, arg):
@@ -30,7 +32,6 @@ class ChannelSwitcher(ui.ScriptWindow):
         self.currState = STATE_NONE
         self.selectedChannel = 0
         self.current_channel = 0
-        self.break_between_logins = 0.5
         self.last_time_break_between_logins = 0
         self.last_time = 0
 

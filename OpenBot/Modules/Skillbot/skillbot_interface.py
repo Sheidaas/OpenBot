@@ -19,29 +19,35 @@ STATUS = {
 class SkillbotInterface:
 
     def SetStatus(self, status, save_status=True):
-        if status['Enabled']:
-            self.Start()
-        else:
-            self.Stop()
+        for status_key in status.keys():
+            if STATUS['ENABLED'] == status_key:
+                self.SwitchEnabled()
+            elif STATUS['TIME_TO_WAIT_AFTER_LOGOUT'] == status_key:
+                self.SetTimeToWaitAfterLogout(status[STATUS['TIME_TO_WAIT_AFTER_LOGOUT']])
 
-        if status[STATUS['TIME_TO_WAIT_AFTER_LOGOUT']] != instance.TimeToWaitAfterStart:
-            self.SetTimeToWaitAfterLogout(status[STATUS['TIME_TO_WAIT_AFTER_LOGOUT']])
-        if status[STATUS['SHOULD_WAIT_AFTER_LOGOUT']] != instance.shouldWait:
-            self.SwitchShouldWaitAfterLogout()
-        if status[STATUS['INSTANT_MODE']] != instance.instant_mode:
-            self.SwitchInstantMode()
-        if status[STATUS['UPGRADE_SKILLS']] != instance.upgrade_skills:
-            self.SwitchUpgradeSkills()
-        if status[STATUS['UPGRADE_STATES']] != instance.upgrade_stats:
-            self.SwitchUpgradeStats()
-        if status[STATUS['FOLLOW_VID']] != instance.following_vid:
-            self.SwitchFollowVID()
-        if status[STATUS['FOLLOWED_VID']] != instance.followed_vid:
-            instance.followed_vid = status[STATUS['FOLLOWED_VID']]
-        if status[STATUS['UNMOUNT_HORSE']] != instance.unmount_horse:
-            instance.unmount_horse = status[STATUS['UNMOUNT_HORSE']]
-        if status[STATUS['STAT_TO_UPGRADE_ORDER']] != instance.stat_to_upgrade_order:
-            instance.stat_to_upgrade_order = status[STATUS['STAT_TO_UPGRADE_ORDER']]
+            elif STATUS['SHOULD_WAIT_AFTER_LOGOUT'] == status_key:
+                self.SwitchShouldWaitAfterLogout()
+
+            elif STATUS['INSTANT_MODE'] == status_key:
+                self.SwitchInstantMode()
+
+            elif STATUS['UPGRADE_SKILLS'] == status_key:
+                self.SwitchUpgradeSkills()
+
+            elif STATUS['UPGRADE_STATES'] == status_key:
+                self.SwitchUpgradeStats()
+
+            elif STATUS['FOLLOW_VID'] == status_key:
+                self.SwitchFollowVID()
+
+            elif STATUS['FOLLOWED_VID'] == status_key:
+                instance.followed_vid = status[STATUS['FOLLOWED_VID']]
+
+            elif STATUS['UNMOUNT_HORSE'] == status_key:
+                instance.unmount_horse = status[STATUS['UNMOUNT_HORSE']]
+
+            elif STATUS['STAT_TO_UPGRADE_ORDER'] == status_key:
+                instance.stat_to_upgrade_order = status[STATUS['STAT_TO_UPGRADE_ORDER']]
 
         if OpenLib.GetClass() != OpenLib.SKILL_SET_NONE:
             if not len(instance.currentSkillSet):
@@ -53,17 +59,18 @@ class SkillbotInterface:
                     instance.resetSkills()
                     break
 
-            for skill in range(len(status['CurrentSkillSet'])):
-                if status['CurrentSkillSet'][skill]['id'] != instance.currentSkillSet[skill]['id']:
-                    instance.resetSkills()
-                    break
+            if STATUS['CURRENT_SKILL_SET'] in status.keys():
+                for skill in range(len(status['CurrentSkillSet'])):
+                    if status['CurrentSkillSet'][skill]['id'] != instance.currentSkillSet[skill]['id']:
+                        instance.resetSkills()
+                        break
 
-                if status['CurrentSkillSet'][skill]['can_cast'] != instance.currentSkillSet[skill]['can_cast']:
-                    self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
-                if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
-                    self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
-                if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
-                    self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
+                    if status['CurrentSkillSet'][skill]['can_cast'] != instance.currentSkillSet[skill]['can_cast']:
+                        self.SwitchSkill(status['CurrentSkillSet'][skill]['id'])
+                    if status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'] != instance.currentSkillSet[skill]['cooldown_time_instant_mode']:
+                        self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
+                    if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
+                        self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
 
         if save_status: self.SaveStatus()
 
@@ -92,18 +99,6 @@ class SkillbotInterface:
     def Stop(self):
         instance.onStop()
 
-    def SaveSettings(self, filename=''):
-        if not type(filename) == str:
-            return False
-        instance.SaveSettings(filename)
-        return True
-
-    def LoadSettings(self, filename=''):
-        if not type(filename) == str:
-            return False
-        instance.LoadSettings(filename)
-        return True
-
     def ResetSkills(self):
         instance.resetSkills()
     
@@ -116,6 +111,12 @@ class SkillbotInterface:
 
     def SetTimeToWaitAfterLogout(self, time):
         instance.TimeToWaitAfterStart = time
+
+    def SwitchEnabled(self):
+        if instance.enabled:
+            self.Stop()
+        else:
+            self.Start()
 
     def SwitchSkill(self, skill_id):
         if not type(skill_id) == int:
@@ -177,10 +178,8 @@ class SkillbotInterface:
         skill_to_change = [skill for skill in instance.currentSkillSet if skill['id'] == skill_id]
         if not skill_with_old_order or not skill_to_change:
             return False
-        DebugPrint(str(skill_to_change[0]['upgrade_order']) + str(skill_with_old_order[0]['upgrade_order']))
         skill_with_old_order[0]['upgrade_order'], skill_to_change[0]['upgrade_order'] = \
             skill_to_change[0]['upgrade_order'], skill_with_old_order[0]['upgrade_order']
-        DebugPrint(str(skill_with_old_order[0]['upgrade_order'])+ str(skill_to_change[0]['upgrade_order']))
         return True
 
 skillbot_interface = SkillbotInterface()

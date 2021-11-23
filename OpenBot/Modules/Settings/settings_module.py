@@ -26,7 +26,7 @@ class SettingsDialog(ui.ScriptWindow):
 
         self.pickUp = False
         self.pickUpRange = 290.0
-        self.pickUpSpeed = 0.5
+        self.pickUpSpeed = 0.3
         self.pickFilter = []
         self.excludeInFilter = True
         self.useRangePickup = False
@@ -45,6 +45,7 @@ class SettingsDialog(ui.ScriptWindow):
         self.timerPots = 0
         self.timerDead = 0
         self.pickUpTimer = 0
+        self.autoLoginTimer = 0
 
     # General
     def CheckUsePotions(self):
@@ -65,7 +66,7 @@ class SettingsDialog(ui.ScriptWindow):
             eXLib.SkipRenderer()
         else:
             self.renderTextures = True
-            eXLib.UnskipRender()
+            #eXLib.UnskipRender()
 
     def checkReviveAndLogin(self):
         val, self.timerDead = OpenLib.timeSleep(self.timerDead, self.TIME_DEAD)
@@ -76,7 +77,6 @@ class SettingsDialog(ui.ScriptWindow):
         if self.restartHere and player.GetStatus(player.HP) <= 0:
 
             self.lastTimeDead = OpenLib.GetTime()
-            DebugPrint(str(self.can_add_revive_action))
             if self.can_add_revive_action:
                 self.can_add_revive_action = False
                 from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
@@ -102,8 +102,11 @@ class SettingsDialog(ui.ScriptWindow):
                 pass
 
         if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
+            from OpenBot.Modules.Protector.protector_module import protector_module
+            val, self.autoLoginTimer = OpenLib.timeSleep(self.autoLoginTimer,
+                                                         protector_module.time_to_wait_in_login_phase)
+            if not val: return
             net.DirectEnter(0, 0)
-            #ChannelSwitcher.instance.ConnectToChannel()
     
     def WallHackSwich(self, val):
         if bool(val):

@@ -1,40 +1,49 @@
 from OpenBot.Modules.WaitHack.waithack_module import instance
-from OpenBot.Modules.OpenLog import DebugPrint
 
-class WaithackInterface():
+
+STATUS_KEYS = {
+    'ENABLED': 'Enabled',
+    'RANGE': 'Range',
+    'SPEED': 'Speed',
+    'MAX_MONSTERS': 'MaxMonsters',
+    'AVOID_PLAYERS': 'AvoidPlayers',
+    'ATTACK_BLOCKED_MONSTERS': 'AttackBlockedMonsters',
+    'USE_CLOUD_EXPLOIT': 'UseCloudExploit',
+    'IS_WALL_BETWEEN': 'IsWallBetween',
+    'ATTACK_PLAYER': 'AttackPlayer'
+}
+
+
+class WaithackInterface:
 
     def SetStatus(self, status, save_status=True):
-        good_keys = ['Enabled', 'Range', 'Speed','MaxMonsters','AvoidPlayers','AttackBlockedMonsters','UseCloudExploit', 'AttackPlayer', 'IsWallBetween']
-        if not type(status) == dict:
-            return False
-        
-        for key in status.keys():
-            if key not in good_keys:
-                return False
+        for status_key in status:
 
-        if status['Enabled']:
-            self.Start()
-        else:
-            self.Stop()
-        
-        DebugPrint(str(status))
-        if instance.range != status['Range']:
-            self.SetRange(status['Range'])
-        if instance.speed != status['Speed']:
-            self.SetSpeed(status['Speed'])
-        if instance.maxMonster != status['MaxMonsters']:
-            self.SetMaxMonsters(status['MaxMonsters'])
-        if instance.avoidPlayers != status['AvoidPlayers']:
-            self.SwitchAvoidPlayers()
-        if instance.use_cloud_exploit != status['UseCloudExploit']:
-            self.SwitchUseCloudExploit()
-        if instance.attackPlayer != status['AttackPlayer']:
-            self.SwitchAttackPlayer()
-        if instance.is_wall_between != status['IsWallBetween']:
-            self.SwitchIsWallBetween()
-        if instance.attack_blocked_monsters != status['AttackBlockedMonsters']:
-            self.SwitchAttackBlockedMonsters()
+            if STATUS_KEYS['ENABLED'] == status_key:
+                self.SwitchEnabled()
+            elif STATUS_KEYS['RANGE'] == status_key:
+                self.SetRange(status[status_key])
 
+            elif STATUS_KEYS['SPEED'] == status_key:
+                self.SetSpeed(status[status_key])
+
+            elif STATUS_KEYS['MAX_MONSTERS'] == status_key:
+                self.SetMaxMonsters(status[status_key])
+
+            elif STATUS_KEYS['AVOID_PLAYERS'] == status_key:
+                self.SwitchAvoidPlayers()
+
+            elif STATUS_KEYS['ATTACK_BLOCKED_MONSTERS'] == status_key:
+                self.SwitchAttackBlockedMonsters()
+
+            elif STATUS_KEYS['USE_CLOUD_EXPLOIT'] == status_key:
+                self.SwitchUseCloudExploit()
+
+            elif STATUS_KEYS['IS_WALL_BETWEEN'] == status_key:
+                self.SwitchIsWallBetween()
+
+            elif STATUS_KEYS['ATTACK_PLAYER'] == status_key:
+                self.SwitchAttackPlayer()
         if save_status: self.SaveStatus()
 
     def SaveStatus(self):
@@ -43,25 +52,31 @@ class WaithackInterface():
 
     def GetStatus(self):
         return {
-            'Enabled': instance.enabled,
-            'Range': instance.range,
-            'Speed': instance.speed,
-            'MaxMonsters': instance.maxMonster,
-            'AvoidPlayers': instance.avoidPlayers,
-            'UseCloudExploit': instance.use_cloud_exploit,
-            'AttackPlayer': instance.attackPlayer,
-            'IsWallBetween': instance.is_wall_between,
-            'AttackBlockedMonsters': instance.attack_blocked_monsters
+            STATUS_KEYS['ENABLED']: instance.enabled,
+            STATUS_KEYS['RANGE']: instance.range,
+            STATUS_KEYS['SPEED']: instance.speed,
+            STATUS_KEYS['MAX_MONSTERS']: instance.maxMonster,
+            STATUS_KEYS['AVOID_PLAYERS']: instance.avoidPlayers,
+            STATUS_KEYS['USE_CLOUD_EXPLOIT']: instance.use_cloud_exploit,
+            STATUS_KEYS['ATTACK_PLAYER']: instance.attackPlayer,
+            STATUS_KEYS['IS_WALL_BETWEEN']: instance.is_wall_between,
+            STATUS_KEYS['ATTACK_BLOCKED_MONSTERS']: instance.attack_blocked_monsters
         }
-    
+
+    def SwitchEnabled(self):
+        if instance.enabled:
+            self.Stop()
+        else:
+            self.Start()
+
     def Start(self):
         instance.enabled = True
         instance.onEnableChange(True)
-    
+
     def Stop(self):
         instance.enabled = False
         instance.onEnableChange(False)
-    
+
     def SetRange(self, range_value):
         instance.range = range_value
         

@@ -23,44 +23,42 @@ class FishbotInterface:
 
     def SetStatus(self, status, save_status=True):
 
-        if status[STATUS_KEYS['ENABLED']] and status[STATUS_KEYS['ENABLED']] != fishbot_module.enabled:
-            self.start()
+        for status_key in status.keys():
+            if STATUS_KEYS['ENABLED'] == status_key:
+                self.switch_enabled()
 
-        elif not status[STATUS_KEYS['ENABLED']] and status[STATUS_KEYS['ENABLED']] != fishbot_module.enabled:
-            self.stop()
+            elif STATUS_KEYS['GRILL_FISH'] == status_key:
+                self.switch_grill_fish()
 
-        if status[STATUS_KEYS['GRILL_FISH']] != fishbot_module.grill_fish:
-            self.switch_grill_fish()
+            elif STATUS_KEYS['INSTANT_FISHING'] == status_key:
+                self.switch_instant_fishing()
 
-        if status[STATUS_KEYS['INSTANT_FISHING']] != fishbot_module.instant_fishing:
-            self.switch_instant_fishing()
+            elif STATUS_KEYS['CHECK_REPETITIONS'] == status_key:
+                self.switch_repetitions()
 
-        if status[STATUS_KEYS['CHECK_REPETITIONS']] != fishbot_module.check_repetitions:
-            self.switch_repetitions()
+            elif STATUS_KEYS['MAX_REPETITIONS'] == status_key:
+                self.set_max_repetitions(status[status_key])
 
-        if status[STATUS_KEYS['MAX_REPETITIONS']] != fishbot_module.max_repetitions:
-            self.set_max_repetitions(status[STATUS_KEYS['MAX_REPETITIONS']])
+            elif STATUS_KEYS['MIN_TIME_BETWEEN_FISH'] == status_key:
+                self.set_min_time_between_fish(status[status_key])
 
-        if status[STATUS_KEYS['MIN_TIME_BETWEEN_FISH']] != fishbot_module.min_time_between_fish:
-            self.set_min_time_between_fish(status[STATUS_KEYS['MIN_TIME_BETWEEN_FISH']])
+            elif STATUS_KEYS['MAX_TIME_BETWEEN_FISH'] == status_key:
+                self.set_max_time_between_fish(status[status_key])
 
-        if status[STATUS_KEYS['MAX_TIME_BETWEEN_FISH']] != fishbot_module.max_time_between_fish:
-            self.set_max_time_between_fish(status[STATUS_KEYS['MAX_TIME_BETWEEN_FISH']])
+            elif STATUS_KEYS['FISH_ID_TO_OPEN'] == status_key:
+                fishbot_module.fish_id_to_open = status[status_key]
 
-        if status[STATUS_KEYS['FISH_ID_TO_OPEN']] != fishbot_module.fish_id_to_open:
-            fishbot_module.fish_id_to_open = status[STATUS_KEYS['FISH_ID_TO_OPEN']]
+            elif STATUS_KEYS['DEAD_FISH_ID_TO_GRILL'] == status_key:
+                fishbot_module.dead_fish_id_to_grill = status[status_key]
 
-        if status[STATUS_KEYS['DEAD_FISH_ID_TO_GRILL']] != fishbot_module.dead_fish_id_to_grill:
-            fishbot_module.dead_fish_id_to_grill = status[STATUS_KEYS['DEAD_FISH_ID_TO_GRILL']]
+            elif STATUS_KEYS['DEAD_FISH_ID_TO_DROP'] == status_key:
+                fishbot_module.dead_fish_it_to_drop = status[status_key]
 
-        if status[STATUS_KEYS['DEAD_FISH_ID_TO_DROP']] != fishbot_module.dead_fish_it_to_drop:
-            fishbot_module.dead_fish_it_to_drop = status[STATUS_KEYS['DEAD_FISH_ID_TO_DROP']]
+            elif STATUS_KEYS['CATCHES_TO_SELL'] == status_key:
+                fishbot_module.catches_to_sell = status[status_key]
 
-        if status[STATUS_KEYS['CATCHES_TO_SELL']] != fishbot_module.catches_to_sell:
-            fishbot_module.catches_to_sell = status[STATUS_KEYS['CATCHES_TO_SELL']]
-
-        if status[STATUS_KEYS['CATCHES_TO_DROP']] != fishbot_module.catches_to_drop:
-            fishbot_module.catches_to_drop = status[STATUS_KEYS['CATCHES_TO_DROP']]
+            elif STATUS_KEYS['CATCHES_TO_DROP'] == status_key:
+                fishbot_module.catches_to_drop = status[status_key]
 
         if save_status: self.SaveStatus()
 
@@ -86,11 +84,11 @@ class FishbotInterface:
         from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
         file_handler_interface.dump_other_settings()
 
-    def start(self):
-        fishbot_module.start()
-
-    def stop(self):
-        fishbot_module.stop()
+    def switch_enabled(self):
+        if fishbot_module.enabled:
+            fishbot_module.stop()
+        else:
+            fishbot_module.start()
 
     def switch_grill_fish(self):
         if fishbot_module.grill_fish:

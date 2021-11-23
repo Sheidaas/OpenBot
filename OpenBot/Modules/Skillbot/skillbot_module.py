@@ -1,7 +1,6 @@
-from OpenBot.Modules.OpenLog import DebugPrint
+from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
 import ui, player, net, m2netm2g, uiCharacter, chr
-import skill as metin_skill
-from OpenBot.Modules import OpenLib, FileManager, Hooks
+from OpenBot.Modules import OpenLib, Hooks
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.Actions import ActionFunctions
 
@@ -9,6 +8,7 @@ def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkills()
+        OpenLib.SetTimerFunction(4, file_handler_interface.load_last_other_settings)
         if instance.shouldWait:
             instance.startUpWait = True
 
@@ -59,6 +59,7 @@ class Skillbot(ui.ScriptWindow):
 
         self.currActionDone = True
         self.lastTime = 0
+        self.lastTimeUpgradedSkills = 0
         self.TimeToWaitAfterStart = 0
         self.lastTimeStartUp = 0
         self.chrwindow = uiCharacter.CharacterWindow()
@@ -120,9 +121,11 @@ class Skillbot(ui.ScriptWindow):
                         break
 
             statusPoint = player.GetStatus(player.SKILL_ACTIVE)
-            if statusPoint and self.upgrade_skills:
+            val, self.lastTimeUpgradedSkills = OpenLib.timeSleep(self.lastTimeUpgradedSkills, 2)
+            if statusPoint and self.upgrade_skills and val:
                 for _skill in sorted(self.currentSkillSet, key=lambda item: item['upgrade_order']):
                     if not player.GetSkillGrade(_skill['slot']) and player.GetSkillLevel(_skill['slot']) < 17:
+
                         self.chrwindow._CharacterWindow__SelectSkillGroup(net.GetMainActorSkillGroup()-1)
                         active_skill_obj = self.chrwindow.GetChild("Skill_Active_Slot")
                         active_skill_obj.eventPressedSlotButton(_skill['slot'])
@@ -156,7 +159,8 @@ class Skillbot(ui.ScriptWindow):
                         if self.unmount_horse and player.IsMountingHorse():
                             net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
 
-                        player.ClickSkillSlot(skill['slot'])
+                        if not player.IsMountingHorse():
+                            player.ClickSkillSlot(skill['slot'])
 
                         if self.unmount_horse and not player.IsMountingHorse():
                             net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)

@@ -84,7 +84,7 @@
         ]
     },
     "FarmBot": {
-        "ChangeChannel": false,
+        "ChangeChannels": false,
         "WaitingTime": 5,
         "OresToMine": [],
         "LookForOre": false,
@@ -113,7 +113,7 @@
         ],
         "ExchangeItemsToEnergy": false,
         "Enabled": false,
-        "CurrentWaypointIndex": 3
+        "CurrentPoint": 3
     },
     "FishBot": {
         "FishIdToOpen": [
@@ -185,7 +185,7 @@
     },
     "Settings": {
         "RestartInCity": false,
-        "SpeedHack": true,
+        "Speedhack": true,
         "AntiExp": false,
         "UseRangePickup": true,
         "AvoidPlayersInPickup": false,
@@ -203,6 +203,7 @@
         "RedPotions": true,
         "AutoLogin": true,
         "MinMana": 46,
-        "SpeedMultiplier": 1.100000023841858
+        "SpeedMultiplier": 1.100000023841858,
+	"RenderTextures": true
     }
 }

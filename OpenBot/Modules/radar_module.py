@@ -1,6 +1,8 @@
 import chr
 import eXLib
 import ui
+import net
+import chat
 from OpenBot.Modules import OpenLib
 
 STATES = {
@@ -24,6 +26,9 @@ class Radar(ui.ScriptWindow):
         self.last_time = 0
 
     def add_new_entity(self, entity):
+        if chr.GetNameByVID(entity) == 'None':
+            return
+
         if OpenLib.IsThisPlayer(entity):
             self.players.append(entity)
         elif OpenLib.IsThisOre(entity):
@@ -43,18 +48,24 @@ class Radar(ui.ScriptWindow):
             if val:
 
                 # Refreshing lists
-                self.players = self.ores = self.metins = []
-
+                self.players = []
+                self.metins = []
+                self.ores = []
                 # Adding new entities to selected lists
                 for vid in eXLib.InstancesList:
+
+                    if vid == net.GetMainActorVID():
+                        continue
 
                     if chr.GetInstanceType(vid) == OpenLib.MONSTER_TYPE:
                         continue
 
-                    if self.is_vid_familiar(vid):
+                    if vid in self.players + self.ores + self.metins:
                         continue
 
                     self.add_new_entity(vid)
+
+                #chat.AppendChat(3, str([(chr.GetNameByVID(player), chr.GetInstanceType(player)) for player in self.players]))
 
 
 radar_module = Radar()

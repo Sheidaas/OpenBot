@@ -10,20 +10,20 @@ def parse_file_handler():
     }
 
 def parse_instances_list():
-    instances_list = [None] * len(eXLib.InstancesList)
+    instances_list = []
     for i,vid in enumerate(eXLib.InstancesList):
         chr.SelectInstance(vid)
         x, y, z = chr.GetPixelPosition(vid)
         _id = chr.GetRace()
         _type = chr.GetInstanceType(vid)
-        instances_list[i] = {
+        instances_list.append({
             'vid': vid,
             'id': _id,
             'x': x,
             'y': y,
             'type': _type,
             'name': chr.GetNameByVID(vid)
-        }
+        })
     return instances_list
 
 def parse_static_character_status_info():
@@ -91,6 +91,12 @@ def parse_instance_interaction_status():
     from OpenBot.Modules.InstanceInteractions.InstanceInteractionsInterface import instance_interactions_interface
     return {
         'InstanceInteractions': instance_interactions_interface.GetStatus()
+    }
+
+def parse_protector_status():
+    from OpenBot.Modules.Protector.protector_interface import protector_interface
+    return {
+        'Protector': protector_interface.GetStatus()
     }
 
 #####

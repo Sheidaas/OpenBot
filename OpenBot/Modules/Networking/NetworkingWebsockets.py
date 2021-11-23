@@ -115,7 +115,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.lastTimeSendPacket = 0
         self.lastTime = 0
         self.timeLastUpdate = 0
-        self.timeToUpdateBasicInformation = 1
+        self.timeToUpdateBasicInformation = 0.3
         self.isConnected = False
         self.settedBasicInformation = False
         self.settedClientType = False
@@ -276,7 +276,26 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = net_parser.convertToUTF8(data, self.encoding)
             eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
+    def UpdateProtector(self):
+        parsed_hack_status = net_parser.parse_protector_status()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            data = net_parser.convertToUTF8(data, self.encoding)
+            eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
     def UpdateHackStatus(self):
+
+        self.UpdateSkillbotStatus()
+        self.UpdateActionbotStatus()
+        self.UpdateWaithackStatus()
+        self.UpdateSettingsStatus()
+        self.UpdateFarmbotStatus()
+        self.UpdateChannelSwitcherStatus()
+        self.UpdateFishbotStatus()
+        self.UpdateFileHandler()
+        self.UpdateInstanceInteractionsStatus()
+        self.UpdateProtector()
+        return
         self.packetToSendQueue.append(self.UpdateSkillbotStatus)
         self.packetToSendQueue.append(self.UpdateActionbotStatus)
         self.packetToSendQueue.append(self.UpdateWaithackStatus)
@@ -286,6 +305,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateFishbotStatus)
         self.packetToSendQueue.append(self.UpdateFileHandler)
         self.packetToSendQueue.append(self.UpdateInstanceInteractionsStatus)
+        self.packetToSendQueue.append(self.UpdateProtector)
 
     def OnUpdate(self):
         if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():
