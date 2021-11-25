@@ -94,7 +94,7 @@ class Action:
                     return REQUIREMENTS_NOT_DONE
             else:
                 on_failed = self.CheckOnFailedList()
-                if on_failed == None:
+                if on_failed is None:
                     return NOTHING
         else:
             return action_result

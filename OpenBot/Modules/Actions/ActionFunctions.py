@@ -220,8 +220,6 @@ def ChangeMap(args):
     event_answer = args[3]
     map_destination_name = args[4]
 
-    if map_destination_name == map_name:
-        return True
 
     DebugPrint('Changing the map')
     if map_name == background.GetCurrentMapName() and not npc_id and not event_answer:
@@ -237,7 +235,8 @@ def ChangeMap(args):
         DebugPrint('going to next actions')
         return True
 
-    if map_destination_name != background.GetCurrentMapName():
+    elif map_name == background.GetCurrentMapName() and npc_id and event_answer:
+        DebugPrint(map_destination_name + ' ' + map_name + ' ' + background.GetCurrentMapName())
         DebugPrint('Returning talk with npc')
         result = MapManager.GetNpcFromMap(map_name, npc_id)
         if result is None:
@@ -256,7 +255,7 @@ def ChangeMap(args):
             OpenLib.skipAnswers(event_answer, True)
             return True
         return False
-    return True
+    return Action.NEXT_ACTION
     
 
 def WaitFor(args):

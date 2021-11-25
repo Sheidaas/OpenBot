@@ -35,9 +35,6 @@ class FarmbotInterface:
                 for ore_id in status['OresToMine']:
                     self.AddOreToMine(ore_id)
 
-            elif STATUS_KEYS['WAITING_TIME'] == status_key:
-                self.SwitchEnabled()
-
             elif STATUS_KEYS['CHANGE_CHANNELS'] == status_key:
                 self.SwitchChangeChannel()
 
@@ -52,7 +49,6 @@ class FarmbotInterface:
 
             elif STATUS_KEYS['WAITING_TIME'] == status_key:
                 self.SetWaitingTime(status[status_key])
-
 
             elif STATUS_KEYS['CLEAR_PATH'] == status_key:
                 self.ClearPath()

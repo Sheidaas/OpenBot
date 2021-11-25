@@ -45,9 +45,6 @@
 1477 1357 metin2_map_n_desert_01 metin2_map_WL_01 0
 161 943 metin2_map_milgyo map_a2 0
 #532 595 metin2_map_milgyo metin2_map_deviltower1
-73 120 metin2_map_monkeydungeon metin2_map_c3 0
-73 120 metin2_map_monkeydungeon metin2_map_a3 0
-73 120 metin2_map_monkeydungeon metin2_map_b3 0
 73 120 metin2_map_monkeydungeon_02 metin2_map_n_desert_01 0
 72 115 metin2_map_monkeydungeon_03 metin2_map_n_desert_01 0
 1458 751 metin2_map_n_flame_01 metin2_map_c3 0
