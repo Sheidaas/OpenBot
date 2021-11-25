@@ -10,6 +10,11 @@ import eXLib
 from OpenBot.Modules import UIComponents, OpenLog, OpenLib
 import net_parser
 import encodings,imp, os # Import for Encoding Load
+from OpenBot.Modules.OpenThreads import OpenThread
+
+
+Thread = OpenThread()
+
 
 STATES = {
     'WAITING': 'WAITING',
@@ -26,15 +31,18 @@ def OnMessage(id, message):
         instance.SetClientTypeAsMetin()
         instance.settedClientType = True
 
-    cleaned_message = json.loads(message)
+    try:
+        cleaned_message = json.loads(message)
+    except:
+        return
     #OpenLog.DebugPrint(str(cleaned_message))
     if cleaned_message['type'] == 'actions':
-        chat.AppendChat(3, str(cleaned_message))
         if cleaned_message['data']['message'][0]['function'] == 'TeleportToPosition':
             x = cleaned_message['data']['message'][0]['function_args'][0][0]
             y = cleaned_message['data']['message'][0]['function_args'][0][1]
             map_name = cleaned_message['data']['message'][0]['function_args'][1]
             Movement.TeleportToPosition(x, y)
+            return
 
 
         from OpenBot.Modules.Actions import ActionLoader
@@ -42,7 +50,6 @@ def OnMessage(id, message):
             'actions': cleaned_message['data']['message']
         }
         cleaned_action_dict = ActionLoader.instance.ValidateRawActions(raw_action_dict)
-        print('cleaned', cleaned_action_dict)
         if cleaned_action_dict:
             from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
             for action in cleaned_action_dict:
@@ -120,7 +127,9 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.settedBasicInformation = False
         self.settedClientType = False
         self.socket_to_server = None
+        self.created_thread = False
         self.encoding = OpenLib.GetCurrentMetinLanguage()
+
 
         ##
         # loading correct encoding into python
@@ -307,6 +316,11 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.packetToSendQueue.append(self.UpdateInstanceInteractionsStatus)
         self.packetToSendQueue.append(self.UpdateProtector)
 
+    def UpdateMethod(self):
+        self.UpdateInstancesListOnServer()
+        self.UpdateCharacterStatus()
+        self.UpdateHackStatus()
+
     def OnUpdate(self):
         if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():
             val, self.lastTime = OpenLib.timeSleep(self.lastTime, 3)
@@ -316,12 +330,9 @@ class NetworkingWebsockets(ui.ScriptWindow):
                 self.currentState = STATES['SENDING_PACKETS']
 
         elif self.currentState == STATES['SENDING_PACKETS'] and OpenLib.IsInGamePhase():
-            val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
-            if val:
-                if self.settedClientType and self.isConnected:
-                    self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
-                    self.packetToSendQueue.append(self.UpdateCharacterStatus)
-                    self.packetToSendQueue.append(self.UpdateHackStatus)
+            if not self.created_thread:
+                self.created_thread = True
+                Thread.createLoopedThread(self.UpdateMethod, [], False, False, False, False, 'networking')
 
             val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
             if val:
@@ -331,7 +342,14 @@ class NetworkingWebsockets(ui.ScriptWindow):
             self.currentState = STATES['WAITING']
             self.settedBasicInformation = False
 
+'''
 
-
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
+            if val:
+                if self.settedClientType and self.isConnected:
+                    self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
+                    self.packetToSendQueue.append(self.UpdateCharacterStatus)
+                    self.packetToSendQueue.append(self.UpdateHackStatus)
+'''
 instance = NetworkingWebsockets()
 instance.Show()
