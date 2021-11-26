@@ -38,7 +38,7 @@ def parse_character_status_info():
     return OpenLib.getAllStatusOfMainActor()
 
 def parse_skill_bot_status():
-    from OpenBot.Modules.Skillbot.skillbot_ui import skillbot_interface
+    from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
     return {
         'SkillBot': skillbot_interface.GetStatus(),
     }

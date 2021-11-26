@@ -3,12 +3,13 @@ import ui, player, net, m2netm2g, uiCharacter, chr
 from OpenBot.Modules import OpenLib, Hooks
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.Actions import ActionFunctions
+import skill as m_skill
 
 def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkills()
-        OpenLib.SetTimerFunction(4, file_handler_interface.load_last_other_settings)
+        OpenLib.SetTimerFunction(4, file_handler_interface.load_last_skills)
         if instance.shouldWait:
             instance.startUpWait = True
 
@@ -155,7 +156,7 @@ class Skillbot(ui.ScriptWindow):
 
                     val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
                     if val and skill['can_cast']:
-
+                        skill['cooldown_time_instant_mode'] = m_skill.GetSkillCoolTime(skill['slot']) + 2
                         if self.unmount_horse and player.IsMountingHorse():
                             net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
 

@@ -109,17 +109,18 @@ class OpenThread:
                 time.sleep(pauseTime)
                 continue
             else:
-                obj:methodObj = buffer.pop(0)
+                pass
+                #obj = buffer.pop(0)
 
-                for arg in obj.args:
-                    arg_list.append(arg)
+                #for arg in obj.args:
+                #    arg_list.append(arg)
 
 
-            if not None == obj.method:
-                result = method(*arg_list)    
-            else: 
-                chat.AppendChat(7,"Warning: loop-method got object without method!")
-                OpenLog.DebugPrint("Warning: loop-method got object without method! Printing Arg_List: " + str(arg_list))
+            #if not None == obj.method:
+            #    result = method(*arg_list)
+            #else:
+            #    chat.AppendChat(7,"Warning: loop-method got object without method!")
+            #    OpenLog.DebugPrint("Warning: loop-method got object without method! Printing Arg_List: " + str(arg_list))
             
             if not None == result:
                 for s in result:
@@ -145,6 +146,6 @@ class OpenThread:
 
 #Wrapper Class for methods, to be able to create array "Buffer" containing those objects. 
 class methodObj: 
-    def __init__(self,method, method_args) -> None:
+    def __init__(self,method, method_args):
         self.method = method
         self.args = method_args

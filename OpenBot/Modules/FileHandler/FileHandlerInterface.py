@@ -177,11 +177,8 @@ class FileHandlerInterface:
         from OpenBot.Modules.Farmbot.farmbot_interface import farmbot_interface
         if os.path.isfile(os.path.join(PATHS['SAVES'], FILENAMES['FARMBOT_PATH'])):
             with open(PATHS['SAVES'] + FILENAMES['FARMBOT_PATH'], 'r') as file:
-                status = farmbot_interface.GetStatus()
-                status['Path'] = json.loads(file.read())
-                OpenLog.DebugPrint(str(status['Path']))
-                farmbot_interface.SetStatus(status)
-                OpenLog.DebugPrint(str(farmbot_interface.GetStatus()))
+                path = json.loads(file.read())
+                farmbot_interface.SetStatus({'Path': path})
 
     def load_other_settings(self, filename):
         from OpenBot.Modules.Settings.settings_interface import settings_interface
@@ -219,7 +216,9 @@ class FileHandlerInterface:
                 for status in other_settings.keys():
 
                     if HACK_STATUS_KEYS['FARMBOT'] == status:
-                        farmbot_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT']), save_status=False)
+                        new_status = self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT'])
+                        chat.AppendChat(3, str(new_status))
+                        farmbot_interface.SetStatus(new_status, save_status=False)
                     elif HACK_STATUS_KEYS['SETTINGS'] == status:
                         settings_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SETTINGS']), save_status=False)
                     elif HACK_STATUS_KEYS['FISHBOT'] == status:
@@ -253,6 +252,16 @@ class FileHandlerInterface:
             if new_status[key] != old_status[key]:
                 diff_dict[key] = new_status[key]
         return diff_dict
+
+    def load_last_skills(self):
+        from OpenBot.Modules.Skillbot.skillbot_interface import skillbot_interface
+        if os.path.isfile(os.path.join(PATHS['SAVES'], FILENAMES['OTHER_SETTINGS'])):
+            with open(PATHS['SAVES'] + FILENAMES['OTHER_SETTINGS'], 'r') as file:
+                other_settings = json.loads(file.read())
+                for status in other_settings.keys():
+
+                    if HACK_STATUS_KEYS['SKILLBOT'] == status:
+                        skillbot_interface.SetStatus({'CurrentSkillSet': other_settings[status]['CurrentSkillSet']}, save_status=False)
 
     @staticmethod
     def dump_pickup_list():

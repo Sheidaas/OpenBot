@@ -304,17 +304,6 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.UpdateFileHandler()
         self.UpdateInstanceInteractionsStatus()
         self.UpdateProtector()
-        return
-        self.packetToSendQueue.append(self.UpdateSkillbotStatus)
-        self.packetToSendQueue.append(self.UpdateActionbotStatus)
-        self.packetToSendQueue.append(self.UpdateWaithackStatus)
-        self.packetToSendQueue.append(self.UpdateSettingsStatus)
-        self.packetToSendQueue.append(self.UpdateFarmbotStatus)
-        self.packetToSendQueue.append(self.UpdateChannelSwitcherStatus)
-        self.packetToSendQueue.append(self.UpdateFishbotStatus)
-        self.packetToSendQueue.append(self.UpdateFileHandler)
-        self.packetToSendQueue.append(self.UpdateInstanceInteractionsStatus)
-        self.packetToSendQueue.append(self.UpdateProtector)
 
     def UpdateMethod(self):
         self.UpdateInstancesListOnServer()
@@ -330,9 +319,15 @@ class NetworkingWebsockets(ui.ScriptWindow):
                 self.currentState = STATES['SENDING_PACKETS']
 
         elif self.currentState == STATES['SENDING_PACKETS'] and OpenLib.IsInGamePhase():
-            if not self.created_thread:
-                self.created_thread = True
-                Thread.createLoopedThread(self.UpdateMethod, [], False, False, False, False, 'networking')
+            val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
+            if val:
+                if self.settedClientType and self.isConnected:
+                    self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
+                    self.packetToSendQueue.append(self.UpdateCharacterStatus)
+                    self.packetToSendQueue.append(self.UpdateHackStatus)
+            #if not self.created_thread:
+            #    self.created_thread = True
+            #    Thread.createLoopedThread(self.UpdateMethod, [], False, False, False, False, 'networking')
 
             val, self.lastTimeSendPacket = OpenLib.timeSleep(self.lastTimeSendPacket, 0.05)
             if val:
@@ -344,12 +339,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
 
 '''
 
-            val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.timeToUpdateBasicInformation)
-            if val:
-                if self.settedClientType and self.isConnected:
-                    self.packetToSendQueue.append(self.UpdateInstancesListOnServer)
-                    self.packetToSendQueue.append(self.UpdateCharacterStatus)
-                    self.packetToSendQueue.append(self.UpdateHackStatus)
+
 '''
 instance = NetworkingWebsockets()
 instance.Show()

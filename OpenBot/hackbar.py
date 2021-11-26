@@ -1,5 +1,6 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules.WaitHack.waithack_module import instance
+from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
 from OpenBot.Modules.Farmbot.farmbot_module import farm
 from OpenBot.Modules.Fishbot.fishbot_module import fishbot_module
 from OpenBot.Modules.Settings.settings_module import instance as sett_instance
