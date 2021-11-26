@@ -71,7 +71,10 @@ class OpenThread:
         while threadName in self.thread_names:
             chat.AppendChat(7,"while loop running.")
             
-            result = method(*arg_list)
+            try:
+                result = method(*arg_list)
+            except Exception as e:
+                OpenLog.DebugPrint("Exception in Loop method: " + str(e))
             if not None == result:
                 for s in result:
                     if(print_result):
@@ -110,17 +113,17 @@ class OpenThread:
                 continue
             else:
                 pass
-                #obj = buffer.pop(0)
+                obj = buffer.pop(0)
 
-                #for arg in obj.args:
-                #    arg_list.append(arg)
+                for arg in obj.args:
+                    arg_list.append(arg)
 
 
-            #if not None == obj.method:
-            #    result = method(*arg_list)
-            #else:
-            #    chat.AppendChat(7,"Warning: loop-method got object without method!")
-            #    OpenLog.DebugPrint("Warning: loop-method got object without method! Printing Arg_List: " + str(arg_list))
+            if not None == obj.method:
+                result = method(*arg_list)
+            else:
+                chat.AppendChat(7,"Warning: loop-method got object without method!")
+                OpenLog.DebugPrint("Warning: loop-method got object without method! Printing Arg_List: " + str(arg_list))
             
             if not None == result:
                 for s in result:
