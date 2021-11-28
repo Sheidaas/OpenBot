@@ -112,10 +112,20 @@ def GameWindowIntercept(*args,**kwargs):
 	gameWindowHook.CallOriginalFunction(*args, **kwargs)
 
 
+def CheckAffectIntercept(*args,**kwargs):
+    import Hooks, chr
+    #printFuncNC(*args,**kwargs)
+    if args[0] == chr.NEW_AFFECT_AUTO_USE:
+            chat.AppendChat(7,"Returned True for Auto Use")
+            return True
+    else:
+        Hooks.checkAffectHook.CallOriginalFunction(*args, **kwargs)
+
 debugFunc = 0
 questHook = SkipHook(game.GameWindow.OpenQuestWindow)
 phaseHook = Hook(net.SetPhaseWindow,phaseIntercept)
 gameWindowHook = Hook(player.SetGameWindow, GameWindowIntercept)
+checkAffectHook = Hooks.Hook(item.CheckAffect, CheckAffectIntercept)
 
 def GetQuestHookObject():
 	return questHook
@@ -166,3 +176,4 @@ def _debugUnhookFunctionArgs():
 
 phaseHook.HookFunction()
 gameWindowHook.HookFunction()
+checkAffectHook.HookFunction()
