@@ -125,7 +125,7 @@ debugFunc = 0
 questHook = SkipHook(game.GameWindow.OpenQuestWindow)
 phaseHook = Hook(net.SetPhaseWindow,phaseIntercept)
 gameWindowHook = Hook(player.SetGameWindow, GameWindowIntercept)
-checkAffectHook = Hooks.Hook(item.CheckAffect, CheckAffectIntercept)
+checkAffectHook = Hook(item.CheckAffect, CheckAffectIntercept)
 
 def GetQuestHookObject():
 	return questHook
