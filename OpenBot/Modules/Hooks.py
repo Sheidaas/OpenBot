@@ -1,4 +1,4 @@
-import game,sys,chat,net, player
+import game,sys,chat,net, player, item
 import functools
 import OpenLog
 
