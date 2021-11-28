@@ -154,7 +154,7 @@ class Skillbot(ui.ScriptWindow):
 
                 for skill in self.currentSkillSet:
 
-                    val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
+                    #val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
                     if val and skill['can_cast']:
                         skill['cooldown_time_instant_mode'] = m_skill.GetSkillCoolTime(skill['slot']) + 2
                         if self.unmount_horse and player.IsMountingHorse():

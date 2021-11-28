@@ -285,6 +285,13 @@ def IsThisOre(vid):
 		return True
 	return False
 
+# As argument pass a dict returned from GetItemsSlotsByID()
+def DoPlayerHasItems(items_id):
+	for slots in items_id.values():
+		if slots:
+			return True
+	return False
+
 #Checks if inventory is full by checking empty spaces
 def isInventoryFull():
 	global player

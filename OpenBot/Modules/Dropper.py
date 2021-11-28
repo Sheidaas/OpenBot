@@ -28,6 +28,17 @@ class Dropper(ui.ScriptWindow):
         if item_slot not in self.items_slots_to_use:
             self.items_slots_to_use.append(item_slot)
 
+    @staticmethod
+    def is_item_slot_in_chosen_items_list(items_id, items_list):
+        excluded_items = []
+        for slots in items_id.values():
+            for slot in slots:
+                if slot not in items_list:
+                    excluded_items.append(slots)
+
+        return excluded_items or False
+
+
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, 2)
         if val:

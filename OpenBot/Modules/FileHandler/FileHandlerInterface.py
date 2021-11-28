@@ -217,7 +217,6 @@ class FileHandlerInterface:
 
                     if HACK_STATUS_KEYS['FARMBOT'] == status:
                         new_status = self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT'])
-                        chat.AppendChat(3, str(new_status))
                         farmbot_interface.SetStatus(new_status, save_status=False)
                     elif HACK_STATUS_KEYS['SETTINGS'] == status:
                         settings_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SETTINGS']), save_status=False)

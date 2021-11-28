@@ -4,7 +4,7 @@ from OpenBot.Modules import NPCInteraction
 from OpenBot.Modules.NPCInteraction import NPCAction
 from OpenBot.Modules.OpenLog import DebugPrint
 import eXLib
-import player, net, chr, background, item
+import player, net, chr, background, item, chat
 
 
 # Standard
@@ -211,7 +211,94 @@ def ChangeChannel(args):
             'function_args': [0],
             'requirements': {ActionRequirementsCheckers.IS_IN_CHANNEL: channel_id}
         }
-    
+
+def ImproveRod(args):
+    npc_id = 9009
+    map_name = background.GetCurrentMapName()
+    result = MapManager.GetNpcFromMap(map_name, npc_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1], 1000):
+        action_dict = {'function_args': [(result[0], result[1]), map_name],  # position
+                       'function': MoveToPosition,
+                       'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (result[0], result[1], 1000),
+                                        ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
+                       }
+        return action_dict
+
+    net.SendItemUsePacket(player.EQUIPMENT,item.EQUIPMENT_WEAPON)
+    vid = OpenLib.GetInstanceByID(npc_id)
+    slot = OpenLib.GetItemByType(item.ITEM_TYPE_ROD)
+    if not slot:
+        return False
+    net.SendGiveItemPacket(vid, player.SLOT_TYPE_INVENTORY, slot, player.GetItemCount(slot))
+
+    OpenLib.skipAnswers([0, 0], True)
+    return True
+
+
+def GoSellItemsToNPC(args):
+    npc_id = args[1]
+    slots_to_sell = args[0]
+    event_answer = args[2]
+    callback = args[3]
+    map_name = background.GetCurrentMapName()
+    result = MapManager.GetNpcFromMap(map_name, npc_id)
+    if result is None:
+        return Action.NEXT_ACTION
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1], 1000):
+        action_dict = {'function_args': [(result[0], result[1]), map_name],  # position
+                       'function': MoveToPosition,
+                       'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (result[0], result[1], 1000),
+                                        ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
+                       }
+        return action_dict
+
+    vid = OpenLib.GetInstanceByID(npc_id)
+    if vid >= 0:
+        net.SendOnClickPacket(vid)
+        OpenLib.skipAnswers([1], True)
+
+
+    npc = NPCAction(npc_id, event_answer=event_answer)
+    NPCInteraction.RequestBusinessNPCClose([], slots_to_sell, npc, callback)
+    return True
+
+
+
+def GrillFish(args):
+    npc_id = args[1]
+    slots_to_grill = args[0]
+    map_name = background.GetCurrentMapName()
+
+    camp_vid = -1
+    for vid in eXLib.InstancesList:
+        chr.SelectInstance(vid)
+        if chr.GetRace() == 12000:
+            camp_vid = vid
+            break
+
+    if camp_vid == -1:
+        chat.AppendChat(3, 'There is no grill')
+        return False
+
+    x, y, z = chr.GetPixelPosition(camp_vid)
+    result = [x, y]
+    if not OpenLib.isPlayerCloseToPosition(result[0], result[1], 1000):
+        action_dict = {'function_args': [(result[0], result[1]), map_name],  # position
+                       'function': MoveToPosition,
+                       'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (result[0], result[1], 1000),
+                                        ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
+                       }
+        return action_dict
+
+    for slots in OpenLib.GetItemsSlotsByID(slots_to_grill).values():
+        for slot in slots:
+            chat.AppendChat(3, str(camp_vid) + ' ' + str(slot))
+            net.SendGiveItemPacket(camp_vid, player.SLOT_TYPE_INVENTORY, slot, player.GetItemCount(slot))
+    return Action.NEXT_ACTION
+
+
 # Utils
 def ChangeMap(args):
     move_position_x, move_position_y = args[0]

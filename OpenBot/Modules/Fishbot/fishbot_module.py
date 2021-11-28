@@ -12,6 +12,7 @@ STATES = {
     'FRYING_FISH': 5,
     'IMPROVING_ROD': 6,
     'SELLING_CATCHES': 7,
+    'ADDING_THINGS_TO_DROPPER': 8,
 }
 
 CAMPFIRE_ID = 27600
@@ -68,9 +69,9 @@ class Fishbot(ui.ScriptWindow):
         }
         # KEY - BAIT ID, VALUE - SLOT IN FISHERMAN SHOP
         self.baits = {
-            27802: -1,
             27798: -1,
             27800: -1,
+            27802: -1,
             27801: 7,
         }
         # KEY - NAME, VALUE - CATCHES ID
@@ -103,7 +104,7 @@ class Fishbot(ui.ScriptWindow):
 
     def start(self):
         self.enabled = True
-        self.currState = STATES['FRYING_FISH']
+        self.currState = STATES['STARTED']
         eXLib.BlockFishingPackets()
         x, y, z = player.GetMainCharacterPosition()
         self.starting_position = (x, y)
@@ -167,7 +168,7 @@ class Fishbot(ui.ScriptWindow):
     def pull_rod(self):
         self.is_rod_down = True
         eXLib.SendStopFishing(eXLib.SUCCESS_FISHING, app.GetRandom(3, 10))
-        self.currState = STATES['OPENING_FISH']
+        self.currState = STATES['ADDING_THINGS_TO_DROPPER']
         self.repetitions += 1
 
     @staticmethod
@@ -189,7 +190,7 @@ class Fishbot(ui.ScriptWindow):
                 return
 
             elif self.currState == STATES['STARTED']:
-                chat.AppendChat(3, 'Started')
+                #chat.AppendChat(3, 'Started')
                 if OpenLib.isInventoryFull():
                     chat.AppendChat(3, 'Inventory is full')
                     self.stop()
@@ -207,17 +208,18 @@ class Fishbot(ui.ScriptWindow):
                 if self.can_improve_rod():
                     self.currState = STATES['IMPROVING_ROD']
                     net.SendItemUsePacket(player.EQUIPMENT, item.EQUIPMENT_WEAPON)
-                    chat.AppendChat(3, 'Going to improve rod')
+                    #chat.AppendChat(3, 'Going to improve rod')
                     return
 
                 if not self.check_bait():
                     self.currState = STATES['BUYING_BAIT']
-                    chat.AppendChat(3, 'Going to buy some bait')
+                    #chat.AppendChat(3, 'Going to buy some bait')
                     return
 
-                if not OpenLib.isPlayerCloseToPosition(*self.starting_position, max_dist=300):
+                x, y = self.starting_position
+                if not OpenLib.isPlayerCloseToPosition(x, y, max_dist=300):
                     # Go to starting position
-                    chat.AppendChat(3, 'Going to starting position')
+                    #chat.AppendChat(3, 'Going to starting position')
                     action = {
                         'name': '[Fishbot] - Going to start position',
                         'function_args': [self.starting_position],
@@ -232,7 +234,12 @@ class Fishbot(ui.ScriptWindow):
 
             elif self.currState == STATES['FISHING']:
                 if self.is_rod_down:
-                    OpenLib.UseAnyItemByID(self.baits.keys())
+                    for key in [27802, 27800, 27798, 27801]:
+                        #chat.AppendChat(3, str(key))
+                        slot = OpenLib.GetItemByID(key)
+                        if slot > -1:
+                            net.SendItemUsePacket(slot)
+                            break
                     eXLib.SendStartFishing(2)
                     self.is_rod_down = False
                     return
@@ -249,8 +256,7 @@ class Fishbot(ui.ScriptWindow):
                         self.time_between_fishing = 0
                         self.pull_rod()
 
-            elif self.currState == STATES['OPENING_FISH']:
-
+            elif self.currState == STATES['ADDING_THINGS_TO_DROPPER']:
                 # Opening fish
                 fish_to_open = OpenLib.GetItemsSlotsByID(self.fish_id_to_open)
                 for slots in fish_to_open.values():
@@ -268,8 +274,29 @@ class Fishbot(ui.ScriptWindow):
                 for slots in catches_to_drop.values():
                     for slot in slots:
                         Dropper.dropper.add_new_item_to_drop(slot)
+                self.currState = STATES['OPENING_FISH']
+                return
 
-                self.currState = STATES['STARTED']
+            elif self.currState == STATES['OPENING_FISH']:
+
+                fish_to_drop = OpenLib.GetItemsSlotsByID(self.dead_fish_it_to_drop)
+                catches_to_drop = OpenLib.GetItemsSlotsByID(self.catches_to_drop)
+
+                if not OpenLib.DoPlayerHasItems(fish_to_drop) and not OpenLib.DoPlayerHasItems(catches_to_drop):
+                    self.currState = STATES['STARTED']
+                    return
+
+                excluded_fish_to_drop = Dropper.dropper.is_item_slot_in_chosen_items_list(fish_to_drop, Dropper.dropper.items_slots_to_drop)
+                excluded_catches_to_drop = Dropper.dropper.is_item_slot_in_chosen_items_list(catches_to_drop, Dropper.dropper.items_slots_to_drop)
+
+                if excluded_fish_to_drop:
+                    for slot in excluded_fish_to_drop:
+                        Dropper.dropper.add_new_item_to_drop(slot)
+
+                if excluded_catches_to_drop:
+                    for slot in excluded_catches_to_drop:
+                        Dropper.dropper.add_new_item_to_drop(slot)
+
                 return
 
             elif self.currState == STATES['BUYING_BAIT']:
@@ -326,7 +353,7 @@ class Fishbot(ui.ScriptWindow):
             elif self.currState == STATES['IMPROVING_ROD']:
                 action = {
                     'name': '[Fishbot] - Upgrading rod',
-                    'function_args': [9009],
+                    'function_args': [0],
                     'function': ActionFunctions.ImproveRod,
                     'callback': self.action_done_callback,
                 }
@@ -347,7 +374,7 @@ class Fishbot(ui.ScriptWindow):
                         'function': ActionFunctions.GoSellItemsToNPC,
                     }
                     self.lastActionDone = False
-                    chat.AppendChat(3, 'Selling ' + str(slots_to_sell))
+                    #chat.AppendChat(3, 'Selling ' + str(slots_to_sell))
                     ActionBotInterface.action_bot_interface.AddAction(action)
 
                 self.currState = STATES['FRYING_FISH']
