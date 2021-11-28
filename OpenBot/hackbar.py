@@ -5,6 +5,7 @@ from OpenBot.Modules.Farmbot.farmbot_module import farm
 from OpenBot.Modules.Fishbot.fishbot_module import fishbot_module
 from OpenBot.Modules.Settings.settings_module import instance as sett_instance
 from OpenBot.Modules.Skillbot.skillbot_module import instance as skillbot_instance
+from OpenBot.Modules.ShopSearcher.shop_searcher_module import shop_searcher_module
 from OpenBot.Modules import PythonManager, Hooks, UIComponents
 from OpenBot.Modules.Networking import NetworkingWebsockets
 
