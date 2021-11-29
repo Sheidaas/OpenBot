@@ -46,7 +46,7 @@ class ShopSearcherModule(ui.ScriptWindow):
             if not item_id:
                 continue
             price = shop.GetItemPrice(item_slot)
-            item_bonuses = self.scan_item_bonuses(item_slot)
+            item_bonuses = self.scan_item_bonuses(shop.GetItemCheque(item_slot))
             count = shop.GetItemCount(item_slot)
             items.append({item_id: {'price': price,
                                     'item_bonuses': item_bonuses,
@@ -58,7 +58,7 @@ class ShopSearcherModule(ui.ScriptWindow):
 
     def scan_item_bonuses(self, item_slot):
         item_bonuses = []
-        for x in range(10):
+        for x in range(4):
             metin_socket = shop.GetItemMetinSocket(item_slot, x)
             if not metin_socket:
                 continue
@@ -75,44 +75,50 @@ class ShopSearcherModule(ui.ScriptWindow):
             return
 
         if self.current_state == STATES['WAITING']:
-            chat.AppendChat(3, 'WAITING')
-            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 1)
+            #chat.AppendChat(3, 'WAITING')
+            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 2)
             if not val:
                 return
             self.current_state = STATES['SCANNING_AREA']
 
         if self.current_state == STATES['SCANNING_AREA']:
-            chat.AppendChat(3, 'SCANNING AREA')
+            #chat.AppendChat(3, 'SCANNING AREA')
             for vid in eXLib.InstancesList:
                 chr.SelectInstance(vid)
                 name = chr.GetNameByVID(vid)
                 if OpenLib.MIN_RACE_SHOP <= chr.GetRace() <= OpenLib.MAX_RACE_SHOP \
-                        and name not in self.scanned_player_names:
+                        and name not in self.scanned_player_names \
+                        and name not in self.player_names_to_scan:
                     self.player_names_to_scan.append(name)
             self.current_state = STATES['SCANNING_SHOPS']
 
         if self.current_state == STATES['SCANNING_SHOPS']:
-            chat.AppendChat(3, 'SCANNING SHOPS')
+            #chat.AppendChat(3, 'SCANNING SHOPS')
             if not self.player_names_to_scan:
                 self.current_state = STATES['SCANNING_AREA']
                 return
 
             if not self.current_scanning_name:
+                net.SendShopEndPacket()
                 self.current_scanning_name = self.player_names_to_scan.pop()
 
             shop_vid = self.get_player_vid_by_name(self.current_scanning_name)
             if not shop_vid:
                 return
-            chat.AppendChat(3, str(self.current_scanning_name))
+            #chat.AppendChat(3, str(self.current_scanning_name))
             net.SendOnClickPacket(shop_vid)
             if shop.IsOpen():
+                from OpenBot.Modules.Networking.NetworkingWebsockets import instance
                 self.open_shop_attempts = 0
                 self.scanned_player_names.append(self.current_scanning_name)
-                self.current_scanning_name = ''
                 items = self.scan_shop()
-                net.SendShopEndPacket()
-                OpenLog.DebugPrint(str(items))
+                x, y, z = chr.GetPixelPosition(self.get_player_vid_by_name(self.current_scanning_name))
+                _shop = {self.current_scanning_name: {'shop_entries': items, 'position': (x, y)}}
+                instance.packetToSendQueue.append(instance.UpdateShopSearcherModule(_shop))
                 self.current_state = STATES['WAITING']
+                self.current_scanning_name = ''
+                net.SendShopEndPacket()
+                return
 
             self.open_shop_attempts += 1
             if self.open_shop_attempts > 2:

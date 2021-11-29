@@ -37,6 +37,7 @@ class ProtectorModule(ui.ScriptWindow):
         self.is_waithack_switched = False
         self.switch_off_pickup = False
         self.is_pickup_switched = False
+        self.is_unknown_player_close = False
 
         self.is_current_action_done = True
         self.time_to_wait_in_login_phase = 5
@@ -63,7 +64,26 @@ class ProtectorModule(ui.ScriptWindow):
             if not self.avoid_players:
                 return
 
-            if not [player_name for player_name in radar_module.players if player_name not in self.whitelist]:
+            players_off_the_whitelist = [player_name for player_name in radar_module.players
+                                         if player_name not in self.whitelist]
+
+            if not players_off_the_whitelist:
+                self.is_unknown_player_close = False
+
+
+            for player_vid in players_off_the_whitelist:
+
+                if chr.GetNameByVID(player_vid) in self.whitelist:
+                    continue
+
+                self.is_unknown_player_close = True
+                return
+
+
+
+
+
+"""
                 if self.is_waithack_switched:
                     waithack_interface.Start()
                     self.is_waithack_switched = False
@@ -71,12 +91,7 @@ class ProtectorModule(ui.ScriptWindow):
                 if self.is_pickup_switched:
                     settings_interface.SwitchPickup()
                     self.is_pickup_switched = False
-
-            for player_vid in radar_module.players:
-
-                if chr.GetNameByVID(player_vid) in self.whitelist:
-                    continue
-
+                    
                 if self.change_channel and self.is_current_action_done:
                     self.is_current_action_done = False
                     self.current_state = STATES['WAITING']
@@ -102,6 +117,9 @@ class ProtectorModule(ui.ScriptWindow):
                     if not self.is_pickup_switched:
                         settings_interface.SwitchPickup()
                         self.is_pickup_switched = True
+"""
+
+
 
 
 protector_module = ProtectorModule()

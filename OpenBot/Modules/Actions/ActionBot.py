@@ -38,7 +38,32 @@ class ActionBot(ui.ScriptWindow):
         self.showAlwaysWaithackButton = False
 
     def GetNewId(self):
-        return 0
+        used_id = []
+        if self.currActionObject is not None:
+            used_id.append(self.currActionObject.id)
+        [used_id.append(action.id) for action in self.currActionsQueue]
+        for new_id in range(len(self.currActionsQueue)+2):
+            if new_id not in used_id:
+                return new_id
+        return -1
+
+    def DiscardActionByParent(self, parent):
+        if parent is True:
+            return True
+
+        if self.currActionObject is not None:
+            if self.currActionObject.parent == parent:
+                new_parent = self.currActionObject.id
+                self.currActionObject = None
+                return self.DiscardActionByParent(new_parent)
+
+        for action in self.currActionsQueue:
+            if action.parent == parent:
+                new_parent = action.id
+                self.currActionsQueue.remove(action)
+                return self.DiscardActionByParent(new_parent)
+
+        return True
 
     def GoToNextAction(self):
         if self.currActionObject.callback is not None:
@@ -109,6 +134,7 @@ class ActionBot(ui.ScriptWindow):
         
         elif isinstance(action_result, Action.Action) or type(action_result) == dict:
             DebugPrint('New action returned')
+            action_result['parent'] = self.currActionObject.id
             self.NewActionReturned(action_result)
 
     def OnUpdate(self):

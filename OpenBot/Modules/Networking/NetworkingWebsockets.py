@@ -271,6 +271,16 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = net_parser.convertToUTF8(data, self.encoding)
             eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
 
+    def UpdateShopSearcherModule(self, shop):
+        socket = self.socket_to_server
+        def update_shops():
+            parsed_hack_status = net_parser.parse_shop_searcher(shop)
+            if parsed_hack_status:
+                data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'append_shop_search'}}
+                data = net_parser.convertToUTF8(data, self.encoding)
+                eXLib.SendWebsocket(socket, json.dumps(data))
+        return update_shops
+
     def UpdateInstanceInteractionsStatus(self):
         parsed_hack_status = net_parser.parse_instance_interaction_status()
         if parsed_hack_status:

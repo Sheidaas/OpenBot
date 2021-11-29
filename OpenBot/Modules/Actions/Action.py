@@ -18,10 +18,10 @@ on_success_keys = [NOTHING, NEXT_ACTION, ERROR, DISCARD_PREVIOUS, REQUIREMENTS_N
 class Action:
 
     def __init__(self, function, _id=0, callback=None, callback_on_failed=None, interrupt_function=None, name='None', function_args=[],
-     callback_args=[], interruptors_args=[], interrupt_function_args=[], requirements=[], on_success=[], on_failed=[], interruptors=[], call_only_once=False):
+     callback_args=[], interruptors_args=[], interrupt_function_args=[], requirements=[], on_success=[], on_failed=[], interruptors=[], call_only_once=False, parent=None):
         self.id = _id
         self.call_only_once = call_only_once
-        self.called = False
+        self.parent=parent
         if not type(name) == str or name == 'None':
             self.name = function.__name__
         else:

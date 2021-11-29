@@ -3,6 +3,12 @@ import chr, app, item, player
 from OpenBot.Modules import OpenLib, OpenLog
 import codecs
 
+def parse_shop_searcher(shop):
+    return {
+            'Shop': shop,
+    }
+
+
 def parse_file_handler():
     from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
     return {
