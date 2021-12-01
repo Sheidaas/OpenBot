@@ -1,4 +1,3 @@
-from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules.Farmbot.farmbot_module import farm as farm_instance
 
 
@@ -11,8 +10,11 @@ STATUS_KEYS = {
     'CHANGE_CHANNELS': 'ChangeChannels',
     'LOOK_FOR_METINS': 'LookForMetins',
     'LOOK_FOR_ORE': 'LookForOre',
+    'LOOK_FOR_BOSSES': 'LookForBosses',
     'EXCHANGE_ITEMS_TO_ENERGY': 'ExchangeItemsToEnergy',
-    'CLEAR_PATH': 'ClearPath'
+    'CLEAR_PATH': 'ClearPath',
+    'SKILL_BOOK_IDS': 'SkillBookIds',
+    'ITEMS_TO_SELL': 'ItemsToSell'
 }
 
 
@@ -41,6 +43,9 @@ class FarmbotInterface:
             elif STATUS_KEYS['LOOK_FOR_METINS'] == status_key:
                 self.SwitchLookForMetins()
 
+            elif STATUS_KEYS['LOOK_FOR_BOSSES'] == status_key:
+                farm_instance.look_for_bosses = not farm_instance.look_for_bosses
+
             elif STATUS_KEYS['LOOK_FOR_ORE'] == status_key:
                 self.SwitchLookForOre()
 
@@ -52,7 +57,14 @@ class FarmbotInterface:
 
             elif STATUS_KEYS['CLEAR_PATH'] == status_key:
                 self.ClearPath()
-        
+
+            elif STATUS_KEYS['SKILL_BOOK_IDS'] == status_key:
+                farm_instance.skill_books_ids = status[status_key]
+
+            elif STATUS_KEYS['ITEMS_TO_SELL'] == status_key:
+                farm_instance.items_to_sell = status[status_key]
+
+
         if save_status: self.SaveStatus()
 
     def GetStatus(self):
@@ -65,7 +77,10 @@ class FarmbotInterface:
             STATUS_KEYS['CHANGE_CHANNELS']: farm_instance.switch_channels,
             STATUS_KEYS['LOOK_FOR_METINS']: farm_instance.look_for_metins,
             STATUS_KEYS['LOOK_FOR_ORE']: farm_instance.look_for_ore,
-            STATUS_KEYS['EXCHANGE_ITEMS_TO_ENERGY']: farm_instance.exchange_items_to_energy
+            STATUS_KEYS['EXCHANGE_ITEMS_TO_ENERGY']: farm_instance.exchange_items_to_energy,
+            STATUS_KEYS['ITEMS_TO_SELL']: farm_instance.items_to_sell,
+            STATUS_KEYS['SKILL_BOOK_IDS']: farm_instance.skill_books_ids,
+            STATUS_KEYS['LOOK_FOR_BOSSES']: farm_instance.look_for_bosses,
         }
 
     def SaveStatus(self):

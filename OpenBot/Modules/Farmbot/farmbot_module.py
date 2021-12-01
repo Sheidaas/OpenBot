@@ -1,25 +1,28 @@
 from OpenBot.Modules.Actions import Action, ActionFunctions, ActionRequirementsCheckers
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
+from OpenBot.Modules.Protector.protector_module import protector_module
 from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
 from OpenBot.Modules import OpenLog, OpenLib, Movement, Hooks
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui, chat, chr, net
+import ui, chat, chr, net, player
 import eXLib
 
 # STATES
-WAITING_STATE = 0
-WALKING_STATE = 1
-MINING_STATE = 2
-FARMING_STATE = 3
-SWITCHING_CHANNEL = 4
-PLAYER_IS_NEAR = 5
-EXCHANGING_ITEMS_TO_ENERGY = 6
+WAITING_STATE = 'WAITING_STATE'
+WALKING_STATE = 'WALKING_STATE'
+MINING_STATE = 'MINING_STATE'
+FARMING_STATE = 'FARMING_STATE'
+SWITCHING_CHANNEL = 'SWITCHING_CHANNEL'
+GOING_TO_SHOP = 'GOING_TO_SHOP'
+BUY_POTIONS = 'BUY_POTIONS'
+BOSS_STATE = 'BOSS_STATE'
+EXCHANGING_ITEMS_TO_ENERGY = 'EXCHANGING_ITEMS_TO_ENERGY'
 
 def OnLoginPhase(phase, phaseWnd):
 	global farm
-	
 	if OpenLib.IsInGamePhase():
-		farm.CURRENT_STATE = WAITING_STATE
+		farm.discard_current_action()
+		farm.CURRENT_STATE = WALKING_STATE
 
 def OnDigMotionCallback(main_vid,target_ore,n):
 	global farm
@@ -55,10 +58,12 @@ class FarmingBot(ui.ScriptWindow):
 		self.lastTimeMine = 0   
 		self.ores_vid_list = []
 		self.ores_to_mine = []
+		self.boss_vid_list = []
 		self.selectedOre = 0
 		self.is_currently_digging = False
 		self.metins_vid_list = []
 		self.selectedMetin = 0
+		self.selectedBoss = 0
 		self.isCurrActionDone = True
 		self.lastTimeWaitingState = 0
 		self.timeForWaitingState = 5
@@ -66,9 +71,18 @@ class FarmingBot(ui.ScriptWindow):
 		self.switch_channels = False
 		self.look_for_metins = False
 		self.look_for_ore = False
+		self.look_for_bosses = False
 		self.exchange_items_to_energy = False
 		self.always_use_waithack = False
 		self.dont_use_waithack = False
+
+
+		self.skill_books_ids = []
+		self.items_to_sell = []
+		self.potions_to_buy = []
+
+		self.vid_skip_list = []
+		self.last_walking_is_player_near = False
 
 	def __del__(self):
 		ui.Window.__del__(self)
@@ -91,6 +105,9 @@ class FarmingBot(ui.ScriptWindow):
 		self.enabled = False
 		Movement.StopMovement()
 
+	def DiscardingAction(self):
+		self.isCurrActionDone = True
+
 	def IsWalkingDone(self):
 		self.isCurrActionDone = True
 		self.CURRENT_STATE = WALKING_STATE
@@ -99,6 +116,7 @@ class FarmingBot(ui.ScriptWindow):
 	def IsDestroyingMetinDone(self):
 		self.isCurrActionDone = True
 		self.selectedMetin = 0
+		self.selectedBoss = 0
 		self.CURRENT_STATE = WAITING_STATE
 		self.lastTimeWaitingState = OpenLib.GetTime()
 
@@ -131,28 +149,37 @@ class FarmingBot(ui.ScriptWindow):
 			self.current_point += 1
 		else:
 			self.path.reverse()
+			self.vid_skip_list = []
 			self.current_point = 0
 			if self.switch_channels:
 				self.CURRENT_STATE = SWITCHING_CHANNEL
 
 	def which_state_should_play(self):
-		from OpenBot.Modules.Protector.protector_module import protector_module
 		if self.CURRENT_STATE == WAITING_STATE:
 			return WAITING_STATE
 
 		elif self.CURRENT_STATE == SWITCHING_CHANNEL:
 			return SWITCHING_CHANNEL
 
-		elif protector_module.is_unknown_player_close:
-			return PLAYER_IS_NEAR
-		elif self.look_for_metins and self.metins_vid_list:
+		if not self.isCurrActionDone:
+			return False
+
+		elif OpenLib.isInventoryFull():
+			return GOING_TO_SHOP
+
+		elif self.look_for_metins and self.metins_vid_list and not self.last_walking_is_player_near:
 			self.selectedMetin = self.metins_vid_list.pop()
 			return FARMING_STATE
+
+		elif self.look_for_bosses and self.boss_vid_list and not self.last_walking_is_player_near:
+			self.selectedBoss = self.boss_vid_list.pop()
+			return BOSS_STATE
+
 		elif self.look_for_ore and self.ores_vid_list:
 			self.selectedOre = self.ores_vid_list.pop()
 			return MINING_STATE
-		return WALKING_STATE
 
+		return WALKING_STATE
 
 	def SetIsCurrActionDoneTrue(self):
 		self.isCurrActionDone = True
@@ -160,35 +187,66 @@ class FarmingBot(ui.ScriptWindow):
 
 	def checkForMetinsAndOres(self):
 		self.ores_vid_list = []
+		self.boss_vid_list = []
 		self.metins_vid_list = []
 		for vid in eXLib.InstancesList:
-			if OpenLib.IsThisOre(vid):
-				chr.SelectInstance(vid)
-				if chr.GetRace() in self.ores_to_mine:
+			chr.SelectInstance(vid)
+			if vid in self.vid_skip_list:
+				continue
+
+			if OpenLib.IsThisOre(vid) and chr.GetRace() in self.ores_to_mine:
+				if protector_module.is_unknown_player_close:
+					self.vid_skip_list.append(vid)
 					self.ores_vid_list.append(vid)
 			elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
-				self.metins_vid_list.append(vid)
+				if protector_module.is_unknown_player_close:
+					self.vid_skip_list.append(vid)
+					self.metins_vid_list.append(vid)
+			elif OpenLib.IsThisBoss(vid):
+				if protector_module.is_unknown_player_close:
+					self.vid_skip_list.append(vid)
+					self.boss_vid_list.append(vid)
 
 	def generate_walking_action(self, is_player_near):
+		interrupt_function = None
 		interruptors_args = []
 		interruptors = []
+		subject = ''
 		if self.look_for_metins:
-			name = '[Farmbot] - Walk to point ' + str(self.current_point) + ' skipping metins'
+			subject = ' metins'
+			interruptors_args.append(0)
+			interruptors.append(ActionRequirementsCheckers.isMetinNearly)
+
+		if self.look_for_ore:
+			subject = ' ores'
+			interruptors_args.append(self.ores_to_mine)
+			interruptors.append(ActionRequirementsCheckers.isRaceNearly)
+
+		if self.look_for_bosses:
+			subject = ' bosses'
+			interruptors_args.append(OpenLib.BOSS_IDS.keys())
+			interruptors.append(ActionRequirementsCheckers.isRaceNearly)
+
 		if not is_player_near:
+			if subject:
+				name = '[Farmbot] - looking for' + subject
+			else:
+				name = '[Farmbot] - walking'
+			if interruptors:
+				interrupt_function = lambda: Action.DISCARD
+		else:
 			if self.look_for_metins:
-				interruptors_args.append(0)
-				interruptors.append(ActionRequirementsCheckers.isMetinNearly)
+				name = '[Farmbot] - skipping ' + subject + ' (player is near)'
+				interrupt_function = None
+				interruptors_args = []
+				interruptors = []
+			elif self.look_for_ore:
+				if interruptors:
+					interrupt_function = lambda: Action.DISCARD
+				name = '[Farmbot] - looking for' + subject
+			else:
+				name = '[Farmbot] - walking'
 
-			if self.look_for_ore:
-				interruptors_args.append(self.ores_to_mine)
-				interruptors.append(ActionRequirementsCheckers.isRaceNearly)
-		else:
-			name = '[Farmbot] - Walk to point ' + str(self.current_point)
-
-		if interruptors:
-			interrupt_function = lambda: Action.NEXT_ACTION
-		else:
-			interrupt_function = None
 
 		action_dict = {
 			'name': name,
@@ -199,6 +257,7 @@ class FarmingBot(ui.ScriptWindow):
 																		 self.path[self.current_point][1], 300],
 							 ActionRequirementsCheckers.IS_IN_MAP: [self.path[self.current_point][2]]},
 			'callback': self.IsWalkingDone,
+			'callback_on_failed': self.DiscardingAction,
 			'interruptors_args': interruptors_args,
 			'interruptors': interruptors,
 			'interrupt_function': interrupt_function,
@@ -228,36 +287,77 @@ class FarmingBot(ui.ScriptWindow):
 
 	def generate_metin_action(self):
 		return {'function_args': [self.selectedMetin],
+				'function': ActionFunctions.DestroyByVID,
+				'callback': self.IsDestroyingMetinDone,
+				'parent': 'farmbot'
+		}
+
+	def generate_go_to_shop_action(self):
+		slots_to_sell = []
+		for slot in range(OpenLib.MAX_INVENTORY_SIZE):
+			item_id = player.GetItemIndex(slot)
+			if not item_id:
+				continue
+
+			if item_id in [50300, 70037, 70055, 70104, 71093]:
+				skill = player.GetItemMetinSocket(player.INVENTORY, slot, 0)
+				if skill in self.skill_books_ids:
+					slots_to_sell.append(slot)
+			elif item_id in self.items_to_sell:
+				slots_to_sell.append(slot)
+
+		return {
+			'name': '[Farmbot] - Selling items',
+			'function_args': [slots_to_sell, 9001, [0], self.IsExchangingItemsToEnergyFragmentsDone],
+			'function': ActionFunctions.GoSellItemsToNPC,
+			'parent': 'farmbot'
+
+		}
+
+	def generate_kill_boss_action(self):
+		return {'function_args': [self.selectedBoss],
 								'function': ActionFunctions.DestroyByVID,
 								'callback': self.IsDestroyingMetinDone,
-			'parent': 'farmbot'
+								'parent': 'farmbot'
 								}
 
 	def discard_current_action(self):
 		from OpenBot.Modules.Actions.ActionBot import instance
 		instance.DiscardActionByParent('farmbot')
-		self.IsDestroyingMetinDone()
-		self.IsCurrentlyDiggingDone()
-		Movement.StopMovement()
+		self.selectedOre = 0
+		self.selectedMetin = 0
+		self.isCurrActionDone = True
+		self.is_currently_digging = False
+		if self.CURRENT_STATE == FARMING_STATE:
+			self.CURRENT_STATE = SWITCHING_CHANNEL
+		else:
+			self.CURRENT_STATE = WALKING_STATE
+		player.SetAttackKeyState(False)
 
 	def OnUpdate(self):
 		val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
 		if not self.enabled or not OpenLib.IsInGamePhase() or not val:
 			return
 
-		self.CURRENT_STATE = self.which_state_should_play()
-		is_player_near = False
+		new_state = self.which_state_should_play()
+		if not new_state:
+			return
+		self.CURRENT_STATE = new_state
+		if protector_module.is_unknown_player_close:
+			if self.CURRENT_STATE == FARMING_STATE or self.CURRENT_STATE == BOSS_STATE:
+				chat.AppendChat(3, 'there is a player')
+				if not self.isCurrActionDone:
+					self.discard_current_action()
 
-		if self.CURRENT_STATE == PLAYER_IS_NEAR:
-			if self.isCurrActionDone:
-				self.CURRENT_STATE = WALKING_STATE
-				is_player_near = True
-
-			if self.CURRENT_STATE == WALKING_STATE:
-				is_player_near = True
-			elif self.CURRENT_STATE == FARMING_STATE:
-				self.discard_current_action()
-				self.CURRENT_STATE = SWITCHING_CHANNEL
+			elif self.CURRENT_STATE == WALKING_STATE and not self.last_walking_is_player_near:
+				if not self.isCurrActionDone:
+					self.discard_current_action()
+					self.isCurrActionDone = True
+		else:
+			if self.CURRENT_STATE == WALKING_STATE and self.last_walking_is_player_near:
+				if not self.isCurrActionDone:
+					self.discard_current_action()
+					self.isCurrActionDone = True
 
 		if not self.isCurrActionDone:
 			return
@@ -271,22 +371,23 @@ class FarmingBot(ui.ScriptWindow):
 				self.CURRENT_STATE = WALKING_STATE
 
 		elif self.CURRENT_STATE == WALKING_STATE:
-			action_bot_interface.AddAction(self.generate_walking_action(is_player_near))
+			self.last_walking_is_player_near = protector_module.is_unknown_player_close
+			action_bot_interface.AddActionAsLast(self.generate_walking_action(protector_module.is_unknown_player_close))
 			self.isCurrActionDone = False
 			return
 
 		elif self.CURRENT_STATE == SWITCHING_CHANNEL:
 			self.isCurrActionDone = False
-			action_bot_interface.AddAction(self.generate_channel_switcher_action())
+			action_bot_interface.AddActionAsLast(self.generate_channel_switcher_action())
 			return
 
 		elif self.CURRENT_STATE == MINING_STATE:
-			action_bot_interface.AddAction(self.generate_mining_action())
+			action_bot_interface.AddActionAsLast(self.generate_mining_action())
 			self.isCurrActionDone = False
 			return
 
 		elif self.CURRENT_STATE == FARMING_STATE:
-			action_bot_interface.AddAction(self.generate_metin_action())
+			action_bot_interface.AddActionAsLast(self.generate_metin_action())
 			self.isCurrActionDone = False
 			return
 
@@ -296,7 +397,17 @@ class FarmingBot(ui.ScriptWindow):
 							'function': ActionFunctions.ExchangeTrashItemsToEnergyFragments,
 							'on_success': [Action.NEXT_ACTION],
 							'callback': self.IsExchangingItemsToEnergyFragmentsDone}
-			action_bot_interface.AddAction(action_dict)
+			action_bot_interface.AddActionAsLast(action_dict)
+			self.isCurrActionDone = False
+			return
+
+		elif self.CURRENT_STATE == GOING_TO_SHOP:
+			action_bot_interface.AddActionAsLast(self.generate_go_to_shop_action())
+			self.isCurrActionDone = False
+			return
+
+		elif self.CURRENT_STATE == BOSS_STATE:
+			action_bot_interface.AddActionAsLast(self.generate_kill_boss_action())
 			self.isCurrActionDone = False
 			return
 

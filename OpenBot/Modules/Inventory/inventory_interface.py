@@ -80,7 +80,7 @@ class InventoryInterface:
 
     def GetInventory(self):
         items = []
-        for i in range(100):
+        for i in range(OpenLib.MAX_INVENTORY_SIZE):
             ItemIndex = player.GetItemIndex(i)
             if ItemIndex != 0:
                 ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))

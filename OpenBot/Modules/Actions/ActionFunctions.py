@@ -50,6 +50,8 @@ def DestroyByVID(args):
     if not OpenLib.isPlayerCloseToInstance(instance_vid):
         x, y, z = chr.GetPixelPosition(instance_vid)
         action_dict = {
+            'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [x, y, 300],
+                             ActionRequirementsCheckers.IS_IN_MAP: [background.GetCurrentMapName()]},
             'function': MoveToPosition,
             'function_args': [(x, y)],
             'name': 'Going to enemy',
@@ -238,11 +240,13 @@ def ImproveRod(args):
 
 
 def GoSellItemsToNPC(args):
+    from OpenBot.Modules.InstanceInteractions import shopper_module
     npc_id = args[1]
     slots_to_sell = args[0]
-    event_answer = args[2]
     callback = args[3]
     map_name = background.GetCurrentMapName()
+    if map_name != OpenLib.GetPlayerEmpireFirstMap() or map_name != OpenLib.GetPlayerEmpireSecondMap():
+        map_name = OpenLib.GetPlayerEmpireFirstMap()
     result = MapManager.GetNpcFromMap(map_name, npc_id)
     if result is None:
         return Action.NEXT_ACTION
@@ -254,13 +258,7 @@ def GoSellItemsToNPC(args):
                        }
         return action_dict
 
-    vid = OpenLib.GetInstanceByID(npc_id)
-    if vid >= 0:
-        net.SendOnClickPacket(vid)
-        OpenLib.skipAnswers([1], True)
-
-
-    npc = NPCAction(npc_id, event_answer=event_answer)
+    npc = NPCAction(npc_id, event_answer=shopper_module.NPC_EVENT_ANSWERS[npc_id])
     NPCInteraction.RequestBusinessNPCClose([], slots_to_sell, npc, callback)
     return True
 

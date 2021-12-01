@@ -35,7 +35,7 @@ class ActionBotInterface:
             'name': str(instance.currActionObject.name)
         })
 
-        [actions.append({'name': str(action.name)}) for action in instance.currActionsQueue]
+        [actions.append({'name': str(action.name)}) for action in instance.currActionsQueue[:-1]]
 
         return actions  
 
@@ -66,7 +66,15 @@ class ActionBotInterface:
         else:
             new_action = instance.ConvertDictActionToObjectAction(action)
             DebugPrint('Converted Dict action to object action')
-            instance.currActionsQueue.append(new_action)   
+            instance.currActionsQueue.append(new_action)
+
+    def AddActionAsLast(self, action):
+        if type(action) == Action.Action:
+            instance.currActionsQueue.insert(0, action)
+        else:
+            new_action = instance.ConvertDictActionToObjectAction(action)
+            DebugPrint('Converted Dict action to object action')
+            instance.currActionsQueue.insert(0, new_action)
 
     def AddWaiter(self, timeToWait, callback):
         instance.waiters.append({

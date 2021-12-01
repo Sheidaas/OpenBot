@@ -63,18 +63,11 @@ class ProtectorModule(ui.ScriptWindow):
 
             if not self.avoid_players:
                 return
-
+            self.is_unknown_player_close = False
             players_off_the_whitelist = [player_name for player_name in radar_module.players
                                          if player_name not in self.whitelist]
 
-            if not players_off_the_whitelist:
-                self.is_unknown_player_close = False
-
-
             for player_vid in players_off_the_whitelist:
-
-                if chr.GetNameByVID(player_vid) in self.whitelist:
-                    continue
 
                 self.is_unknown_player_close = True
                 return

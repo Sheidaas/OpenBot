@@ -1,9 +1,10 @@
 from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
 import Action
+from OpenBot.Modules import Movement
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import OpenLib
 from OpenBot.Modules import Hooks
-import ui, chat
+import ui, chat, player
 
 STATES = {
     'WAITING': 'waiting',
@@ -48,6 +49,8 @@ class ActionBot(ui.ScriptWindow):
         return -1
 
     def DiscardActionByParent(self, parent):
+        Movement.StopMovement()
+        player.SetAttackKeyState(False)
         if parent is True:
             return True
 
@@ -65,10 +68,16 @@ class ActionBot(ui.ScriptWindow):
 
         return True
 
-    def GoToNextAction(self):
-        if self.currActionObject.callback is not None:
-            DebugPrint('Calling callback')
-            self.currActionObject.CallCallback()
+    def GoToNextAction(self, discard=False):
+        if not discard:
+            if self.currActionObject.callback is not None:
+                DebugPrint('Calling callback')
+                self.currActionObject.CallCallback()
+        else:
+            if self.currActionObject.callback_on_failed is not None:
+                DebugPrint(self.currActionObject.name)
+                DebugPrint('Calling callback_on_falied')
+                self.currActionObject.callback_on_failed()
 
         if self.currActionsQueue:
             self.currActionObject = self.currActionsQueue.pop()
@@ -109,18 +118,15 @@ class ActionBot(ui.ScriptWindow):
 
     def FrameDoAction(self):
         action_result = self.currActionObject.CallFunction()
-        #DebugPrint(str(self.currActionsQueue))
-        #DebugPrint(str(action_result))
         if type(action_result) == str:
             
             if action_result == Action.NEXT_ACTION:
                 self.GoToNextAction()
                 DebugPrint('Action do NEXT_ACTION')
 
-            elif action_result == Action.DISCARD_PREVIOUS:
-                self.GoToNextAction()
-                self.GoToNextAction()
-                DebugPrint('Action do DISCARD_PREVIOUS')
+            elif action_result == Action.DISCARD:
+                self.GoToNextAction(discard=True)
+                DebugPrint('Action do DISCARD')
             
             elif action_result == Action.REQUIREMENTS_NOT_DONE:
                 DebugPrint('Action do REQUIREMENTS_NOT_DONE')
@@ -158,6 +164,7 @@ class ActionBot(ui.ScriptWindow):
 
                 if self.currActionObject == None:
                     if not self.CheckIsThereNewAction():
+                        waithack_interface.Stop()
                         return
 
                 if not self.showOffWaithackButton:

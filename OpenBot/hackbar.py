@@ -1,4 +1,5 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
+from OpenBot.Modules.Protector.protector_module import protector_module
 from OpenBot.Modules.WaitHack.waithack_module import instance
 from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
 from OpenBot.Modules.Farmbot.farmbot_module import farm
