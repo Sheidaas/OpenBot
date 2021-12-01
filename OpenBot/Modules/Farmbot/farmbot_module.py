@@ -197,14 +197,17 @@ class FarmingBot(ui.ScriptWindow):
 			if OpenLib.IsThisOre(vid) and chr.GetRace() in self.ores_to_mine:
 				if protector_module.is_unknown_player_close:
 					self.vid_skip_list.append(vid)
+				else:
 					self.ores_vid_list.append(vid)
 			elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
 				if protector_module.is_unknown_player_close:
 					self.vid_skip_list.append(vid)
+				else:
 					self.metins_vid_list.append(vid)
 			elif OpenLib.IsThisBoss(vid):
 				if protector_module.is_unknown_player_close:
 					self.vid_skip_list.append(vid)
+				else:
 					self.boss_vid_list.append(vid)
 
 	def generate_walking_action(self, is_player_near):
