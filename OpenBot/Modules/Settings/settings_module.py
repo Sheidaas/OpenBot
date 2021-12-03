@@ -1,5 +1,5 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui,net,player,eXLib, chat
+import ui,net,player,eXLib, chat, background, chr
 from OpenBot.Modules import Movement, OpenLib, Hooks
 
 
@@ -76,6 +76,9 @@ class SettingsDialog(ui.ScriptWindow):
 
         if player.GetStatus(player.HP) <= 0:
             chat.AppendChat(3, 'dead')
+            x, y, z = chr.GetPixelPosition(net.GetMainActorVID())
+            OpenLib.LAST_DEATH_POINT = [[int(x), int(y)], background.GetCurrentMapName()]
+
             if self.restartHere:
                 if self.can_add_revive_action:
                     self.can_add_revive_action = False

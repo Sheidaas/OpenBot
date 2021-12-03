@@ -54,15 +54,19 @@ class ActionBot(ui.ScriptWindow):
         if parent is True:
             return True
 
+
+
         if self.currActionObject is not None:
             if self.currActionObject.parent == parent:
                 new_parent = self.currActionObject.id
+                chat.AppendChat(3, self.currActionObject.name)
                 self.currActionObject = None
                 return self.DiscardActionByParent(new_parent)
 
         for action in self.currActionsQueue:
             if action.parent == parent:
                 new_parent = action.id
+                chat.AppendChat(3, action.name)
                 self.currActionsQueue.remove(action)
                 return self.DiscardActionByParent(new_parent)
 

@@ -82,24 +82,35 @@ class InventoryInterface:
         items = []
         for i in range(OpenLib.MAX_INVENTORY_SIZE):
             ItemIndex = player.GetItemIndex(i)
-            if ItemIndex != 0:
-                ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))
-                if ItemIndex in [50300, 70037, 70055, 70104, 71093]:
-                    slot = player.GetItemMetinSocket(player.INVENTORY, i, 0)
-                else:
-                    slot = False
-                if slot:
-                    book_name = slot
-                else:
-                    book_name = 'none'
-                items.append({
-                    'name': ItemName,
-                    'book_name': book_name,
-                    'id': player.GetItemIndex(i),
-                    'count': player.GetItemCount(i),
-                    'slot': i,
-                    'icon': item.GetIconImageFileName(ItemIndex).replace("icon\item\\", '').replace('.tga', '')
-                })
+            if not ItemIndex:
+                return
+            ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))
+            if ItemIndex in [50300, 70037, 70055, 70104, 71093]:
+                slot = player.GetItemMetinSocket(player.INVENTORY, i, 0)
+            else:
+                slot = False
+            if slot:
+                book_name = slot
+            else:
+                book_name = 'none'
+            items.append({
+            'name': ItemName,
+            'book_name': book_name,
+            'id': player.GetItemIndex(i),
+            'count': player.GetItemCount(i),
+            'type':
+            'slot': i,
+
+            })
+
+
+            items.append({
+            'icon': item.GetIconImageFileName(ItemIndex).replace("icon\item\\", '').replace('.tga', '')
+            })
+
+
+
+            items
         return items
     
     def GetWearedItems(self):

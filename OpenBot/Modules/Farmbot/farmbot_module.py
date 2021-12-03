@@ -4,7 +4,7 @@ from OpenBot.Modules.Protector.protector_module import protector_module
 from OpenBot.Modules.ChannelSwitcher.channel_switcher_interface import channel_switcher_interface
 from OpenBot.Modules import OpenLog, OpenLib, Movement, Hooks
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui, chat, chr, net, player
+import ui, chat, chr, net, player, background
 import eXLib
 
 # STATES
@@ -15,6 +15,7 @@ FARMING_STATE = 'FARMING_STATE'
 SWITCHING_CHANNEL = 'SWITCHING_CHANNEL'
 GOING_TO_SHOP = 'GOING_TO_SHOP'
 BUY_POTIONS = 'BUY_POTIONS'
+GOING_TO_DEATH_POINT = 'GOING_TO_DEATH_POINT'
 BOSS_STATE = 'BOSS_STATE'
 EXCHANGING_ITEMS_TO_ENERGY = 'EXCHANGING_ITEMS_TO_ENERGY'
 
@@ -82,6 +83,8 @@ class FarmingBot(ui.ScriptWindow):
 		self.potions_to_buy = []
 
 		self.vid_skip_list = []
+
+		self.last_death_point = []
 		self.last_walking_is_player_near = False
 
 	def __del__(self):
@@ -119,6 +122,11 @@ class FarmingBot(ui.ScriptWindow):
 		self.selectedBoss = 0
 		self.CURRENT_STATE = WAITING_STATE
 		self.lastTimeWaitingState = OpenLib.GetTime()
+
+	def GoingToDeathPointDone(self):
+		self.isCurrActionDone = True
+		self.CURRENT_STATE = WAITING_STATE
+		OpenLib.LAST_DEATH_POINT = []
 
 	def IsCurrentlyDiggingDone(self):
 		self.is_currently_digging = False
@@ -169,12 +177,18 @@ class FarmingBot(ui.ScriptWindow):
 			is_any_item_to_sell = OpenLib.DoPlayerHasItems(OpenLib.GetItemsSlotsByID(self.items_to_sell))
 			is_any_book_to_sell = OpenLib.DoPlayerHasBooksWithSkillsId(self.skill_books_ids)
 
+
+
 			if not is_any_book_to_sell and not is_any_item_to_sell:
 				#Add a callback about inventory is full and there is nothing to sell
 				self.onStop()
 				return WAITING_STATE
 
 			return GOING_TO_SHOP
+
+		elif OpenLib.LAST_DEATH_POINT:
+			chat.AppendChat(3, 'state death')
+			return GOING_TO_DEATH_POINT
 
 		elif self.look_for_metins and self.metins_vid_list and not self.last_walking_is_player_near:
 			self.selectedMetin = self.metins_vid_list.pop()
@@ -279,6 +293,17 @@ class FarmingBot(ui.ScriptWindow):
 
 		return action_dict
 
+	def generate_walk_to_death_point_action(self):
+		return  {
+			'name': 'Retuning to death point',
+			'function_args': [OpenLib.LAST_DEATH_POINT[0], OpenLib.LAST_DEATH_POINT[1]],
+			'function': ActionFunctions.MoveToPosition,
+			'requirements': {ActionRequirementsCheckers.IS_ON_POSITION:
+								 [OpenLib.LAST_DEATH_POINT[0][0], OpenLib.LAST_DEATH_POINT[0][1], 300],
+							 ActionRequirementsCheckers.IS_IN_MAP: [OpenLib.LAST_DEATH_POINT[1]]},
+			'callback': self.GoingToDeathPointDone,
+		}
+
 	def generate_channel_switcher_action(self):
 		action_dict = {
 			'function_args': [channel_switcher_interface.GetNextChannel()],
@@ -322,7 +347,7 @@ class FarmingBot(ui.ScriptWindow):
 
 		return {
 			'name': '[Farmbot] - Selling items',
-			'function_args': [slots_to_sell, 9001, [0], self.IsExchangingItemsToEnergyFragmentsDone],
+			'function_args': [slots_to_sell, 9003, [0], self.IsExchangingItemsToEnergyFragmentsDone],
 			'function': ActionFunctions.GoSellItemsToNPC,
 			'parent': 'farmbot'
 
@@ -345,7 +370,7 @@ class FarmingBot(ui.ScriptWindow):
 		if self.CURRENT_STATE == FARMING_STATE:
 			self.CURRENT_STATE = SWITCHING_CHANNEL
 		else:
-			self.CURRENT_STATE = WALKING_STATE
+			self.CURRENT_STATE = self.which_state_should_play()
 		player.SetAttackKeyState(False)
 
 	def OnUpdate(self):
@@ -354,7 +379,7 @@ class FarmingBot(ui.ScriptWindow):
 			return
 
 		self.CURRENT_STATE = self.which_state_should_play()
-
+		chat.AppendChat(3, str(OpenLib.LAST_DEATH_POINT))
 		if protector_module.is_unknown_player_close:
 			if self.CURRENT_STATE == FARMING_STATE or self.CURRENT_STATE == BOSS_STATE:
 				chat.AppendChat(3, 'there is a player')
@@ -420,6 +445,10 @@ class FarmingBot(ui.ScriptWindow):
 
 		elif self.CURRENT_STATE == BOSS_STATE:
 			action_bot_interface.AddActionAsLast(self.generate_kill_boss_action())
+			self.isCurrActionDone = False
+			return
+		elif self.CURRENT_STATE == GOING_TO_DEATH_POINT:
+			action_bot_interface.AddActionAsLast(self.generate_walk_to_death_point_action())
 			self.isCurrActionDone = False
 			return
 
