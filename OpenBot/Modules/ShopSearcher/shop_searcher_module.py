@@ -14,12 +14,18 @@ STATES = {
     'SCANNING_SHOPS': 'SCANNING_SHOPS',
 }
 
+RUNNING_STATES = {
+    'ENABLED': 'Enabled',
+    'STOPPED': 'Stopped',
+    'PAUSED': 'Paused'
+}
+
 
 class ShopSearcherModule(ui.ScriptWindow):
 
     def __init__(self):
         ui.Window.__init__(self)
-        self.enabled = True
+        self.enabled = RUNNING_STATES['STOPPED']
         self.current_state = STATES['WAITING']
 
         self.open_shop_attempts = 0
@@ -37,6 +43,27 @@ class ShopSearcherModule(ui.ScriptWindow):
             if chr.GetNameByVID(vid) == player_name:
                 return vid
         return 0
+
+    def change_running_state(self, running_state):
+        if running_state not in RUNNING_STATES.values():
+            return False
+
+        if RUNNING_STATES['ENABLED'] == running_state:
+            self.enabled = running_state
+            self.current_state = STATES['SCANNING_AREA']
+        elif RUNNING_STATES['STOPPED'] == running_state:
+            self.enabled = running_state
+            self.player_names_to_scan = []
+            self.scanned_player_names = []
+            self.current_scanning_name = ''
+            self.open_shop_attempts = 0
+            self.current_state = STATES['WAITING']
+        elif RUNNING_STATES['PAUSED'] == running_state:
+            self.enabled = running_state
+            self.current_scanning_name = ''
+            self.player_names_to_scan = []
+            self.open_shop_attempts = 0
+            self.current_state = STATES['WAITING']
 
     def scan_shop(self):
         slot_count = 40
@@ -67,7 +94,7 @@ class ShopSearcherModule(ui.ScriptWindow):
         return item_bonuses
 
     def OnUpdate(self):
-        if not self.enabled:
+        if not self.enabled == RUNNING_STATES['STOPPED']:
             return
 
         val, self.last_time = OpenLib.timeSleep(self.last_time, 0.1)
@@ -76,10 +103,14 @@ class ShopSearcherModule(ui.ScriptWindow):
 
         if self.current_state == STATES['WAITING']:
             #chat.AppendChat(3, 'WAITING')
-            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 2)
+            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 1)
             if not val:
                 return
-            self.current_state = STATES['SCANNING_AREA']
+
+            if self.player_names_to_scan:
+                self.current_state = STATES['SCANNING_SHOPS']
+            else:
+                self.current_state = STATES['SCANNING_AREA']
 
         if self.current_state == STATES['SCANNING_AREA']:
             #chat.AppendChat(3, 'SCANNING AREA')
@@ -99,14 +130,13 @@ class ShopSearcherModule(ui.ScriptWindow):
                 return
 
             if not self.current_scanning_name:
-                net.SendShopEndPacket()
                 self.current_scanning_name = self.player_names_to_scan.pop()
 
             shop_vid = self.get_player_vid_by_name(self.current_scanning_name)
             if not shop_vid:
                 return
             #chat.AppendChat(3, str(self.current_scanning_name))
-            net.SendOnClickPacket(shop_vid)
+
             if shop.IsOpen():
                 from OpenBot.Modules.Networking.NetworkingWebsockets import instance
                 self.open_shop_attempts = 0
@@ -120,11 +150,15 @@ class ShopSearcherModule(ui.ScriptWindow):
                 net.SendShopEndPacket()
                 return
 
+            net.SendOnClickPacket(shop_vid)
+
             self.open_shop_attempts += 1
             if self.open_shop_attempts > 2:
                 self.open_shop_attempts = 0
                 self.scanned_player_names.append(self.current_scanning_name)
                 self.current_scanning_name = ''
+                return
+            self.current_state = STATES['WAITING']
 
 
 shop_searcher_module = ShopSearcherModule()

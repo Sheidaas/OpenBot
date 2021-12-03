@@ -86,6 +86,10 @@ def OnMessage(id, message):
             from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
             file_handler_interface.SetStatus(cleaned_message['data']['message'])
 
+        elif cleaned_message['data']['module'] == 'ShopSearcher':
+            from OpenBot.Modules.ShopSearcher.shop_searcher_interface import shop_searcher_interface
+            shop_searcher_interface.SetStatus(cleaned_message['data']['message'])
+
         elif cleaned_message['data']['module'] == 'Inventory':
             from OpenBot.Modules.Inventory.inventory_interface import inventory_interface
             inventory_interface.SetStatus(cleaned_message['data']['message'])

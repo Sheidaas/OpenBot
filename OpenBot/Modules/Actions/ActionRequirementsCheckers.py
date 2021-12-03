@@ -87,10 +87,12 @@ def isOnPosition(position):
         return True
     return False
 
-def isMetinNearly(args=0):
+def isMetinNearly(skipped_list):
     for vid in eXLib.InstancesList:
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
             if not OpenLib.isPathToVID(vid):
+                continue
+            if vid in skipped_list:
                 continue
             return True
     return False
@@ -103,9 +105,14 @@ def isOreNearly(args=0):
             return True
     return False
 
-def isRaceNearly(races_list):
+def isRaceNearly(args):
+    races_list = args[0]
+    skipped_vids = args[1]
     for vid in eXLib.InstancesList:
         chr.SelectInstance(vid)
+        if vid in skipped_vids:
+            continue
+
         if chr.GetRace() in races_list:
             return True
     return False

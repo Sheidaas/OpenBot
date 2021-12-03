@@ -2,6 +2,7 @@ from OpenBot.Modules.ShopSearcher.shop_searcher_module import shop_searcher_modu
 
 STATUS = {
     'ENABLED': 'Enabled',
+    'BUY_ITEM': 'BuyItem',
 }
 
 
@@ -11,7 +12,10 @@ class ShopSearcherInterface:
         for key in status.keys():
 
             if STATUS['ENABLED'] == key:
-                self.switch_enabled()
+                self.switch_enabled(status[key])
+
+            if STATUS['BUY_ITEM'] == key:
+                pass
 
     def GetStatus(self):
         return {
@@ -19,7 +23,11 @@ class ShopSearcherInterface:
         }
 
     @staticmethod
-    def switch_enabled():
-        shop_searcher_module.enabled = not shop_searcher_module.enabled
+    def switch_enabled(running_state):
+        shop_searcher_module.change_running_state(running_state)
+
+    def buy_item(self, buy_dict):
+        chat.AppendChat(3, str(buy_dict))
+        pass
 
 shop_searcher_interface = ShopSearcherInterface()

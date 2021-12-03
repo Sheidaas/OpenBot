@@ -317,6 +317,16 @@ def isInventoryFull():
 	else:
 		return False
 
+def DoPlayerHasBooksWithSkillsId(skills_ids):
+	for slot in range(MAX_INVENTORY_SIZE):
+		if player.GetItemIndex(slot) in [50300, 70037, 70055, 70104, 71093]:
+			skill = player.GetItemMetinSocket(player.INVENTORY, slot, 0)
+			if skill in skills_ids:
+				return True
+
+	return False
+
+
 def GetNumberOfFreeSlots():
 	global player
 	INV_FULL_MIN_EMPTY = 10
@@ -331,8 +341,7 @@ def GetNumberOfFreeSlots():
 	
 	if numItems < INV_FULL_MIN_EMPTY:
 		return 0
-	else:
-		return numItems - INV_FULL_MIN_EMPTY
+	return numItems - INV_FULL_MIN_EMPTY
 
 def GetItemByType(_id):
 	"""
@@ -346,11 +355,11 @@ def GetItemByType(_id):
 	"""
 	for i in range(0,MAX_INVENTORY_SIZE):
 		curr_id = player.GetItemIndex(i)
-		if curr_id == 0:
-			continue
 		item.SelectItem(curr_id)
-		if item.GetItemType() == _id:
-			return i
+		if curr_id == 0 or item.GetItemType() != _id:
+			continue
+		return i
+
 	return -1
 
 def GetAllBonusesOfItemBySlot(item_slot):

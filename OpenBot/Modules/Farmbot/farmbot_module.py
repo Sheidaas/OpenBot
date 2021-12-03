@@ -147,6 +147,7 @@ class FarmingBot(ui.ScriptWindow):
 		Movement.StopMovement()
 		if self.current_point + 1 < len(self.path):
 			self.current_point += 1
+			self.vid_skip_list = []
 		else:
 			self.path.reverse()
 			self.vid_skip_list = []
@@ -165,6 +166,14 @@ class FarmingBot(ui.ScriptWindow):
 			return False
 
 		elif OpenLib.isInventoryFull():
+			is_any_item_to_sell = OpenLib.DoPlayerHasItems(OpenLib.GetItemsSlotsByID(self.items_to_sell))
+			is_any_book_to_sell = OpenLib.DoPlayerHasBooksWithSkillsId(self.skill_books_ids)
+
+			if not is_any_book_to_sell and not is_any_item_to_sell:
+				#Add a callback about inventory is full and there is nothing to sell
+				self.onStop()
+				return WAITING_STATE
+
 			return GOING_TO_SHOP
 
 		elif self.look_for_metins and self.metins_vid_list and not self.last_walking_is_player_near:
@@ -195,9 +204,6 @@ class FarmingBot(ui.ScriptWindow):
 				continue
 
 			if OpenLib.IsThisOre(vid) and chr.GetRace() in self.ores_to_mine:
-				if protector_module.is_unknown_player_close:
-					self.vid_skip_list.append(vid)
-				else:
 					self.ores_vid_list.append(vid)
 			elif OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
 				if protector_module.is_unknown_player_close:
@@ -217,17 +223,17 @@ class FarmingBot(ui.ScriptWindow):
 		subject = ''
 		if self.look_for_metins:
 			subject = ' metins'
-			interruptors_args.append(0)
+			interruptors_args.append(self.vid_skip_list)
 			interruptors.append(ActionRequirementsCheckers.isMetinNearly)
 
 		if self.look_for_ore:
 			subject = ' ores'
-			interruptors_args.append(self.ores_to_mine)
+			interruptors_args.append([self.ores_to_mine, []])
 			interruptors.append(ActionRequirementsCheckers.isRaceNearly)
 
 		if self.look_for_bosses:
 			subject = ' bosses'
-			interruptors_args.append(OpenLib.BOSS_IDS.keys())
+			interruptors_args.append([OpenLib.BOSS_IDS.keys(), self.vid_skip_list])
 			interruptors.append(ActionRequirementsCheckers.isRaceNearly)
 
 		if not is_player_near:
@@ -239,6 +245,11 @@ class FarmingBot(ui.ScriptWindow):
 				interrupt_function = lambda: Action.DISCARD
 		else:
 			if self.look_for_metins:
+				name = '[Farmbot] - skipping ' + subject + ' (player is near)'
+				interrupt_function = None
+				interruptors_args = []
+				interruptors = []
+			elif self.look_for_bosses:
 				name = '[Farmbot] - skipping ' + subject + ' (player is near)'
 				interrupt_function = None
 				interruptors_args = []
@@ -342,10 +353,8 @@ class FarmingBot(ui.ScriptWindow):
 		if not self.enabled or not OpenLib.IsInGamePhase() or not val:
 			return
 
-		new_state = self.which_state_should_play()
-		if not new_state:
-			return
-		self.CURRENT_STATE = new_state
+		self.CURRENT_STATE = self.which_state_should_play()
+
 		if protector_module.is_unknown_player_close:
 			if self.CURRENT_STATE == FARMING_STATE or self.CURRENT_STATE == BOSS_STATE:
 				chat.AppendChat(3, 'there is a player')

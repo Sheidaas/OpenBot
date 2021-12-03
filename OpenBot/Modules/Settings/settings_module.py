@@ -1,5 +1,5 @@
 from OpenBot.Modules.OpenLog import DebugPrint
-import ui,net,player,eXLib
+import ui,net,player,eXLib, chat
 from OpenBot.Modules import Movement, OpenLib, Hooks
 
 
@@ -74,32 +74,38 @@ class SettingsDialog(ui.ScriptWindow):
         if not val:
             return
 
-        if self.restartHere and player.GetStatus(player.HP) <= 0:
-
-            self.lastTimeDead = OpenLib.GetTime()
-            if self.can_add_revive_action:
-                self.can_add_revive_action = False
-                from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
-                ActionBot.instance.NewActionReturned({
-                    'name': 'Recovering',
-                    'function_args': [0, ['waithack']],
-                    'function': ActionFunctions.WaitFor,
-                    'requirements': {ActionRequirementsCheckers.IS_HP_RECOVERED: []},
-                    'callback': self.revive_callback, 
-                })
-            
-            if not self.restartInCity:
-                
+        if player.GetStatus(player.HP) <= 0:
+            chat.AppendChat(3, 'dead')
+            if self.restartHere:
+                if self.can_add_revive_action:
+                    self.can_add_revive_action = False
+                    from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
+                    chat.AppendChat(3, 'added recovering here ')
+                    ActionBot.instance.NewActionReturned({
+                        'name': 'Recovering',
+                        'function_args': [0, ['waithack']],
+                        'function': ActionFunctions.WaitFor,
+                        'requirements': {ActionRequirementsCheckers.IS_HP_RECOVERED: []},
+                        'callback': self.revive_callback,
+                    })
                 OpenLib.Revive()
-
-            else:
-                OpenLib.Revive(in_city=True)
-
-        elif self.restartInCity and player.GetStatus(player.HP) <= 0:
-            try:
-                Hooks.GetGameWindow().interface.dlgRestart.RestartTown()
-            except:
-                pass
+            elif self.restartInCity:
+                try:
+                    if self.can_add_revive_action:
+                        self.can_add_revive_action = False
+                        from OpenBot.Modules.Actions import ActionBot, ActionFunctions, ActionRequirementsCheckers
+                        chat.AppendChat(3, 'added recovering city')
+                        ActionBot.instance.NewActionReturned({
+                            'name': 'Recovering',
+                            'function_args': [0, ['waithack']],
+                            'function': ActionFunctions.WaitFor,
+                            'requirements': {ActionRequirementsCheckers.IS_HP_RECOVERED: []},
+                            'callback': self.revive_callback,
+                        })
+                    Hooks.GetGameWindow().interface.dlgRestart.RestartTown()
+                except Exception as e:
+                    DebugPrint('Error while recovering in city')
+                    DebugPrint(str(e))
 
         if self.autoLogin and OpenLib.GetCurrentPhase() == OpenLib.PHASE_LOGIN:
             from OpenBot.Modules.Protector.protector_module import protector_module
