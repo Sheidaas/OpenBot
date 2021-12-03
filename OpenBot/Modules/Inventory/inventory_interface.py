@@ -98,9 +98,8 @@ class InventoryInterface:
             'book_name': book_name,
             'id': player.GetItemIndex(i),
             'count': player.GetItemCount(i),
-            'type':
+            'type': player.GetItemType(i),
             'slot': i,
-
             })
 
 
