@@ -87,13 +87,9 @@ skillSet_map = {
 #"CLASS"
 #"NAME"
 #"ICON"
-SKILL_INFORMATION = FileManager.parseSkiGEllDesc()
-
+SKILL_INFORMATION = FileManager.parseSkillDesc()
 
 LAST_DEATH_POINT = [] #X, Y, MAPNAME
-
-
-
 
 def Revive(in_city=False):
 	"""
