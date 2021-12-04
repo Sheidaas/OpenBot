@@ -94,7 +94,7 @@ class ShopSearcherModule(ui.ScriptWindow):
         return item_bonuses
 
     def OnUpdate(self):
-        if self.enabled == RUNNING_STATES['STOPPED']:
+        if self.enabled == RUNNING_STATES['STOPPED'] or self.enabled == RUNNING_STATES['PAUSED']:
             return
 
         val, self.last_time = OpenLib.timeSleep(self.last_time, 0.1)
