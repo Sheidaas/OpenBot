@@ -8,7 +8,6 @@ from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules import Hooks
 import ui
 import chr
-import app
 import chat
 
 STATES = {
@@ -61,9 +60,10 @@ class ProtectorModule(ui.ScriptWindow):
             if not val:
                 return
 
+            self.is_unknown_player_close = False
             if not self.avoid_players:
                 return
-            self.is_unknown_player_close = False
+
             players_off_the_whitelist = [player_name for player_name in radar_module.players
                                          if player_name not in self.whitelist]
 
@@ -99,7 +99,6 @@ class ProtectorModule(ui.ScriptWindow):
                     action_bot_interface.AddAction(action_dict)
 
                 if self.exit_metin:
-                    app.Abort()
 
                 if self.switch_off_waithack:
                     if not self.is_waithack_switched:

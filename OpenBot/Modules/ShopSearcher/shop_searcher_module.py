@@ -34,6 +34,7 @@ class ShopSearcherModule(ui.ScriptWindow):
         self.scanned_player_names = []
 
         self.last_time = 0
+        self.waiting_time = 0.75
         self.last_waiting_time = 0
 
     @staticmethod
@@ -103,7 +104,7 @@ class ShopSearcherModule(ui.ScriptWindow):
 
         if self.current_state == STATES['WAITING']:
             #chat.AppendChat(3, 'WAITING')
-            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 1)
+            val, self.last_waiting_time = OpenLib.timeSleep(self.last_waiting_time, 0.5)
             if not val:
                 return
 

@@ -166,8 +166,9 @@ class FileHandlerInterface:
         self._scan_for_farmbot_paths()
         if filename + '.txt' in self.farmbot_paths:
             with open(PATHS['FARMBOT_PATHS'] + filename + '.txt', 'r') as file:
-                status = farmbot_interface.GetStatus()
-                status['Path'] = json.loads(file.read())
+                status = {
+                    'Path': json.loads(file.read())
+                }
                 farmbot_interface.SetStatus(status)
 
             self.dump_farmbot_path()

@@ -83,7 +83,7 @@ class InventoryInterface:
         for i in range(OpenLib.MAX_INVENTORY_SIZE):
             ItemIndex = player.GetItemIndex(i)
             if not ItemIndex:
-                return
+                continue
             ItemName = item.GetItemName(item.SelectItem(int(ItemIndex)))
             if ItemIndex in [50300, 70037, 70055, 70104, 71093]:
                 slot = player.GetItemMetinSocket(player.INVENTORY, i, 0)
@@ -94,22 +94,14 @@ class InventoryInterface:
             else:
                 book_name = 'none'
             items.append({
-            'name': ItemName,
-            'book_name': book_name,
-            'id': player.GetItemIndex(i),
-            'count': player.GetItemCount(i),
-            'type': player.GetItemType(i),
-            'slot': i,
+                'name': ItemName,
+                'book_name': book_name,
+                'id': player.GetItemIndex(i),
+                'count': player.GetItemCount(i),
+                'type': item.GetItemType(ItemIndex),
+                'slot': i,
             })
 
-
-            items.append({
-            'icon': item.GetIconImageFileName(ItemIndex).replace("icon\item\\", '').replace('.tga', '')
-            })
-
-
-
-            items
         return items
     
     def GetWearedItems(self):
@@ -117,9 +109,7 @@ class InventoryInterface:
         for key in EQUIPMENT_NAMES.keys():
             itemIndex = player.GetItemIndex(player.EQUIPMENT, EQUIPMENT_SLOTS[EQUIPMENT_NAMES[key]])
             item.SelectItem(int(itemIndex))
-            eq[EQUIPMENT_NAMES[key]] = {'id': itemIndex,
-                                        'icon': item.GetIconImageFileName(int(itemIndex)).replace("icon\item\\", '').replace('.tga', '')
-                                        }
+            eq[EQUIPMENT_NAMES[key]] = {'id': itemIndex}
         return eq
 
     def UpgradeListOfItems(self, items_list, number_to_upgrade, mode=0):

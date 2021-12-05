@@ -1,4 +1,5 @@
 from OpenBot.Modules.Settings.settings_module import instance
+import app
 
 STATUS_KEYS = {
     'PICKUP_RANGE': 'PickupRange',
@@ -20,7 +21,8 @@ STATUS_KEYS = {
     'AUTO_LOGIN': 'AutoLogin',
     'PICKUP_ITEM_FIRST': 'PickupItemFirst',
     'PICKUP_IGNORE_PATH': 'PickupIgnorePath',
-    'RENDER_TEXTURES': 'RenderTextures'
+    'RENDER_TEXTURES': 'RenderTextures',
+    'EXIT_METIN': 'ExitMetin',
 }
 
 class SettingsInterface:
@@ -87,6 +89,9 @@ class SettingsInterface:
 
             elif STATUS_KEYS['RENDER_TEXTURES'] == status_key:
                 instance.switch_render_textures()
+
+            elif STATUS_KEYS['EXIT_METIN'] == status_key:
+                app.Abort()
 
         if save_status: self.SaveStatus()
 

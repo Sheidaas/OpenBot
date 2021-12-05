@@ -1,5 +1,6 @@
 from OpenBot.Modules.Farmbot.farmbot_module import farm as farm_instance
-
+from OpenBot.Modules.Farmbot import farmbot_module
+import chat
 
 STATUS_KEYS = {
     'CURRENT_POINT': 'CurrentPoint',
@@ -30,7 +31,7 @@ class FarmbotInterface:
                 self.CreatePath(status[status_key])
 
             elif STATUS_KEYS['ENABLED'] == status_key:
-                self.SwitchEnabled()
+                self.SwitchEnabled(status[status_key])
 
             elif STATUS_KEYS['ORES_TO_MINE'] == status_key:
                 farm_instance.ores_to_mine = []
@@ -90,11 +91,18 @@ class FarmbotInterface:
     def IsOn(self):
         return farm_instance.enabled
 
-    def SwitchEnabled(self):
-        if farm_instance.enabled:
-            self.Stop()
-        else:
+    def SwitchEnabled(self, new_state):
+        if new_state not in farmbot_module.ENABLE_STATES.keys():
+            return
+
+        if new_state == farmbot_module.ENABLE_STATES['ENABLED']:
+            farm_instance.enabled = new_state
             self.Start()
+        elif new_state == farmbot_module.ENABLE_STATES['PAUSED']:
+            farm_instance.enabled = new_state
+        elif new_state == farmbot_module.ENABLE_STATES['STOPPED']:
+            farm_instance.enabled = new_state
+            self.Stop()
 
     def Start(self):
         return farm_instance.onStart()

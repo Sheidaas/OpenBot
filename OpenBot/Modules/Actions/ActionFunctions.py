@@ -148,19 +148,33 @@ def UseItemOnNPC(args):
 
 
 def GoBuyItemsFromNPC(args):
+    from OpenBot.Modules.InstanceInteractions.shopper_module import NPC_EVENT_ANSWERS
     items_slots_list_to_buy = args[0]
     npc_id = args[1]
     event_answer = args[2]
     callback = args[3]
-    npc_position_x, npc_position_y = MapManager.GetNpcFromMap(background.GetCurrentMapName(), npc_id)
+    current_map = background.GetCurrentMapName()
+    if current_map == OpenLib.GetPlayerEmpireFirstMap() or current_map == OpenLib.GetPlayerEmpireSecondMap():
+        pass
+    else:
+        try:
+            closest_map = MapManager.GetClosestMapPathWithNPC(npc_id)[:-1][0][0].GetDestMap()
+        except:
+            closest_map = ''
+        if not closest_map:
+            current_map = OpenLib.GetPlayerEmpireFirstMap()
+
+
+    npc_position_x, npc_position_y = MapManager.GetNpcFromMap(current_map, npc_id)
     if not OpenLib.isPlayerCloseToPosition(npc_position_x, npc_position_y):
-        action_dict = {'function_args': [(npc_position_x, npc_position_y)], # position
+        action_dict = {'function_args': [(npc_position_x, npc_position_y), current_map], # position
                         'function': MoveToPosition,
                         'requirements': { ActionRequirementsCheckers.IS_ON_POSITION: (npc_position_x, npc_position_y)}
                         }
         return action_dict
 
-    npc = NPCAction(npc_id, event_answer=[1])
+    DebugPrint(str(items_slots_list_to_buy))
+    npc = NPCAction(npc_id, event_answer=NPC_EVENT_ANSWERS[npc_id])
     NPCInteraction.RequestBusinessNPCClose(items_slots_list_to_buy, [], npc, callback)
     return True
 
@@ -251,13 +265,14 @@ def GoSellItemsToNPC(args):
     if result is None:
         return Action.NEXT_ACTION
     if not OpenLib.isPlayerCloseToPosition(result[0], result[1], 1000):
-        action_dict = {'function_args': [(result[0], result[1]), map_name],  # position
+        action_dict = {
+                        'name': 'Selling items',
+                        'function_args': [(result[0], result[1]), map_name],  # position
                        'function': MoveToPosition,
                        'requirements': {ActionRequirementsCheckers.IS_NEAR_POSITION: (result[0], result[1], 1000),
                                         ActionRequirementsCheckers.IS_IN_MAP: [map_name]}
                        }
         return action_dict
-
     npc = NPCAction(npc_id, event_answer=shopper_module.NPC_EVENT_ANSWERS[npc_id])
     NPCInteraction.RequestBusinessNPCClose([], slots_to_sell, npc, callback)
     return True

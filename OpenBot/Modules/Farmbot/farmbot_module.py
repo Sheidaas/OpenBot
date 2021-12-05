@@ -19,6 +19,16 @@ GOING_TO_DEATH_POINT = 'GOING_TO_DEATH_POINT'
 BOSS_STATE = 'BOSS_STATE'
 EXCHANGING_ITEMS_TO_ENERGY = 'EXCHANGING_ITEMS_TO_ENERGY'
 
+ENABLE_STATES = {
+	'ENABLED': 'ENABLED',
+	'PAUSED': 'PAUSED',
+	'STOPPED': 'STOPPED',
+}
+
+
+RED_POTIONS_IDS = [27001, 27002, 27003, 27007, 27051, 27201, 27202, 27203]
+BLUE_POTIONS_IDS = [27004, 27005, 27006, 27008, 27052, 27204, 27205, 27206, 63018]
+
 def OnLoginPhase(phase, phaseWnd):
 	global farm
 	if OpenLib.IsInGamePhase():
@@ -52,7 +62,7 @@ class FarmingBot(ui.ScriptWindow):
 		self.current_point = 0  # Current position index
 		self.path = []  # list of tuples with coordinates [(0, 0, 'mapname'), (2, 2, 'map_name)] etc
 		self.lastTime = 0
-		self.enabled = False
+		self.enabled = ENABLE_STATES['STOPPED']
 		eXLib.RegisterDigMotionCallback(OnDigMotionCallback)
 		self.slash_timer = OpenLib.GetTime()
 		self.hasRecivedSlash = False
@@ -76,6 +86,7 @@ class FarmingBot(ui.ScriptWindow):
 		self.exchange_items_to_energy = False
 		self.always_use_waithack = False
 		self.dont_use_waithack = False
+		self.potions_to_buy = []
 
 
 		self.skill_books_ids = []
@@ -92,10 +103,10 @@ class FarmingBot(ui.ScriptWindow):
 
 	def onStart(self):
 		if len(self.path) > 1:
-			self.enabled = True			
+			self.enabled = ENABLE_STATES['ENABLED']
 			return True
 		else:
-			chat.AppendChat(3, 'You need to add more than 1 waypoint!')
+			chat.AppendChat(3, '[Farmbot] - You need to add more than 1 waypoint!')
 			self.onStop()
 			return False
 
@@ -105,7 +116,7 @@ class FarmingBot(ui.ScriptWindow):
 		self.selectedOre = 0
 		self.current_point = 0
 		self.is_currently_digging = False
-		self.enabled = False
+		self.enabled = ENABLE_STATES['STOPPED']
 		Movement.StopMovement()
 
 	def DiscardingAction(self):
@@ -177,17 +188,21 @@ class FarmingBot(ui.ScriptWindow):
 			is_any_item_to_sell = OpenLib.DoPlayerHasItems(OpenLib.GetItemsSlotsByID(self.items_to_sell))
 			is_any_book_to_sell = OpenLib.DoPlayerHasBooksWithSkillsId(self.skill_books_ids)
 
-
-
 			if not is_any_book_to_sell and not is_any_item_to_sell:
 				#Add a callback about inventory is full and there is nothing to sell
 				self.onStop()
 				return WAITING_STATE
-
+			chat.AppendChat(3, 'going sell items')
 			return GOING_TO_SHOP
 
+		elif not OpenLib.DoPlayerHasItems(OpenLib.GetItemsSlotsByID(RED_POTIONS_IDS)) or \
+			not OpenLib.DoPlayerHasItems(OpenLib.GetItemsSlotsByID(BLUE_POTIONS_IDS)):
+			chat.AppendChat(3, 'going buy potions')
+
+			return BUY_POTIONS
+
+
 		elif OpenLib.LAST_DEATH_POINT:
-			chat.AppendChat(3, 'state death')
 			return GOING_TO_DEATH_POINT
 
 		elif self.look_for_metins and self.metins_vid_list and not self.last_walking_is_player_near:
@@ -293,6 +308,7 @@ class FarmingBot(ui.ScriptWindow):
 
 		return action_dict
 
+
 	def generate_walk_to_death_point_action(self):
 		return  {
 			'name': 'Retuning to death point',
@@ -332,6 +348,7 @@ class FarmingBot(ui.ScriptWindow):
 		}
 
 	def generate_go_to_shop_action(self):
+
 		slots_to_sell = []
 		for slot in range(OpenLib.MAX_INVENTORY_SIZE):
 			item_id = player.GetItemIndex(slot)
@@ -352,6 +369,17 @@ class FarmingBot(ui.ScriptWindow):
 			'parent': 'farmbot'
 
 		}
+
+	def generate_buy_potions_actions(self):
+		items_slot_to_buy = [7, 7, 13]
+		DebugPrint(str(items_slot_to_buy))
+		action = {
+			'name': '[Farmbot] - going to buy potions',
+			'function_args': [items_slot_to_buy, 9003, [0], self.IsExchangingItemsToEnergyFragmentsDone],
+			'function': ActionFunctions.GoBuyItemsFromNPC,
+		}
+		return action
+
 
 	def generate_kill_boss_action(self):
 		return {'function_args': [self.selectedBoss],
@@ -375,11 +403,11 @@ class FarmingBot(ui.ScriptWindow):
 
 	def OnUpdate(self):
 		val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
-		if not self.enabled or not OpenLib.IsInGamePhase() or not val:
+		if not OpenLib.IsInGamePhase() or not val or self.enabled != ENABLE_STATES['ENABLED']:
 			return
 
 		self.CURRENT_STATE = self.which_state_should_play()
-		chat.AppendChat(3, str(OpenLib.LAST_DEATH_POINT))
+
 		if protector_module.is_unknown_player_close:
 			if self.CURRENT_STATE == FARMING_STATE or self.CURRENT_STATE == BOSS_STATE:
 				chat.AppendChat(3, 'there is a player')
@@ -435,6 +463,11 @@ class FarmingBot(ui.ScriptWindow):
 							'on_success': [Action.NEXT_ACTION],
 							'callback': self.IsExchangingItemsToEnergyFragmentsDone}
 			action_bot_interface.AddActionAsLast(action_dict)
+			self.isCurrActionDone = False
+			return
+
+		elif self.CURRENT_STATE == BUY_POTIONS:
+			action_bot_interface.AddActionAsLast(self.generate_buy_potions_actions())
 			self.isCurrActionDone = False
 			return
 

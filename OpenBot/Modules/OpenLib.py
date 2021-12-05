@@ -21,14 +21,19 @@ BOSS_IDS = dict()
 ORES_IDS = dict()
 #SEARCH_ITEMS_MAX_PRICE = dict()
 
-WARRIOR_MALE_ID = 1
-WARRIOR_FEMALE_ID = 4
-SURA_MALE_ID = 2
-SURA_FEMALE_ID = 6
-NINJA_MALE_ID = 1
-NINJA_FEMALE_ID = 5
-SHAMAN_MALE_ID = 3
-SHAMAN_FEMALE_ID = 7
+CLASSES = {
+	0: 'WARRIOR_MALE_ID',
+	4: 'WARRIOR_FEMALE_ID',
+	2: 'SURA_MALE_ID',
+	6: 'SURA_FEMALE_ID',
+	5: 'NINJA_MALE_ID',
+	1: 'NINJA_FEMALE_ID',
+	7: 'SHAMAN_MALE_ID',
+	3: 'SHAMAN_FEMALE_ID',
+	8: 'WOLFMAN_ID'
+}
+
+
 
 MAX_INVENTORY_SIZE = 90
 
@@ -591,7 +596,8 @@ def getAllStatusOfMainActor():
 		'Inteligence': player.GetStatus(player.IQ),
 		'Vitality': player.GetStatus(player.HT),
 		'Dexterity': player.GetStatus(player.DX),
-		'Skills': getAllSkillsInfo()
+		'Skills': getAllSkillsInfo(),
+		'Race': CLASSES[net.GetMainActorRace()]
 		#'STAT': player.GetStatus()player.STAT
 	}
 

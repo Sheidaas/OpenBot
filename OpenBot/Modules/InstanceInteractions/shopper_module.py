@@ -12,7 +12,7 @@ NPC_EVENT_ANSWERS = {
     9009: [1],
     9001: [0, 0],
     9002: [0, 0],
-    9003: [0, 0],
+    9003: [0],
 }
 
 class ShopperModule(ui.ScriptWindow):
