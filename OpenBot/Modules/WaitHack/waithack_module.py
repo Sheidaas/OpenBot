@@ -1,4 +1,4 @@
-import eXLib, ui, net, chr, player, skill
+import eXLib, ui, net, chr, player, skill, chat
 from OpenBot.Modules import OpenLib, Movement
 
 CLOUD_SKILL_STATE_WAITING = 0
@@ -18,8 +18,8 @@ class Waithack(ui.ScriptWindow):
         self.maxMonster = 0
         self.cloudSkillState = CLOUD_SKILL_STATE_READY
 
-        self.attackPlayer = False
-        self.avoidPlayers = False
+        self.instance_type_to_attack = []
+        self.attack_bosses = False
         self.use_cloud_exploit = False
         self.is_wall_between = False
         self.attack_blocked_monsters = False
@@ -94,57 +94,64 @@ class Waithack(ui.ScriptWindow):
 
     def OnUpdate(self):
         val, self.lastTime = OpenLib.timeSleep(self.lastTime, self.speed)
-        if val and self.enabled and not eXLib.IsDead(net.GetMainActorVID()):
-            if OpenLib.GetCurrentPhase() != OpenLib.PHASE_GAME:
-                return
-            isArch = OpenLib.IsWeaponArch()
-            main_vid = net.GetMainActorVID()
-            x, y, z = chr.GetPixelPosition(main_vid)
-            self.lastPos = (x, y)
-            lst = list()
+        if not val or not self.enabled or eXLib.IsDead(net.GetMainActorVID()):
+            return
 
-            for vid in eXLib.InstancesList:
-                if vid == main_vid:
-                    continue
+        main_vid = net.GetMainActorVID()
+        isArch = OpenLib.IsWeaponArch()
+        x, y, z = chr.GetPixelPosition(main_vid)
+        self.lastPos = (x, y)
+        mobs_to_attack = []
 
-                if not chr.HasInstance(vid):
-                    continue
+        for vid in eXLib.InstancesList:
+            if vid == main_vid:
+                continue
+            if player.GetCharacterDistance(vid) > self.range:
+                continue
+            chr.SelectInstance(vid)
+            if eXLib.IsDead(vid):
+                continue
 
-                if self.avoidPlayers and OpenLib.IsThisPlayer(vid):
-                    return
+            type = chr.GetInstanceType(vid)
 
-                if OpenLib.IsThisNPC(vid) or OpenLib.IsThisGuildObject(vid):
-                    continue
+            if type not in self.instance_type_to_attack:
 
-                if self.attackPlayer and OpenLib.IsThisPlayer(vid):
-                    continue
-
-                if player.GetCharacterDistance(vid) <= self.range and not eXLib.IsDead(vid):
-                    lst.append(vid)
-
-            hit_counter = 0
-            i = 0
-            # chat.AppendChat(3,str(len(lst)))
-            while len(lst) > 0 and hit_counter < self.maxMonster:
-                vid = lst[0]
-                mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
-                if not self.attack_blocked_monsters:
-                    if eXLib.IsPositionBlocked(mob_x, mob_y):
-                        lst.remove(vid)
-                        continue
-                if self.is_wall_between:
-                    if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
-                        lst.remove(vid)
-                        continue
-                if self.use_cloud_exploit and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
-                    hit_counter += self.AttackCloud(lst, mob_x, mob_y)
-                elif isArch:
-                    hit_counter += self.AttackArch(lst, mob_x, mob_y)
+                if self.attack_bosses and type == OpenLib.MONSTER_TYPE and chr.GetRace(vid) in OpenLib.BOSS_IDS.keys():
+                    pass
                 else:
-                    hit_counter += self.TeleportAttack(lst, mob_x, mob_y)
-                i += 1
-            if (OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50):
-                Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
+                    continue
+
+            mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
+            if not self.attack_blocked_monsters:
+                if eXLib.IsPositionBlocked(mob_x, mob_y):
+                    continue
+
+            if self.is_wall_between:
+                if eXLib.IsPathBlocked(x, y, mob_x, mob_y):
+                    continue
+
+            mobs_to_attack.append(vid)
+
+            if len(mobs_to_attack) > self.maxMonster:
+                break
+
+        hit_counter = 0
+        chat.AppendChat(3, str(mobs_to_attack))
+        for vid in mobs_to_attack:
+            mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
+
+            if self.use_cloud_exploit and OpenLib.GetClass() == OpenLib.SKILL_SET_DAGGER_NINJA:
+                hit_counter += self.AttackCloud(mobs_to_attack, mob_x, mob_y)
+            elif isArch:
+                hit_counter += self.AttackArch(mobs_to_attack, mob_x, mob_y)
+            else:
+                hit_counter += self.TeleportAttack(mobs_to_attack, mob_x, mob_y)
+
+            if hit_counter > self.maxMonster:
+                break
+
+        if (OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50):
+            Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
 
 
 instance = Waithack()

@@ -168,7 +168,6 @@ class FarmingBot(ui.ScriptWindow):
 			self.current_point += 1
 			self.vid_skip_list = []
 		else:
-			self.path.reverse()
 			self.vid_skip_list = []
 			self.current_point = 0
 			if self.switch_channels:

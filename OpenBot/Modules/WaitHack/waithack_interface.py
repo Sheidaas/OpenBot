@@ -6,11 +6,11 @@ STATUS_KEYS = {
     'RANGE': 'Range',
     'SPEED': 'Speed',
     'MAX_MONSTERS': 'MaxMonsters',
-    'AVOID_PLAYERS': 'AvoidPlayers',
     'ATTACK_BLOCKED_MONSTERS': 'AttackBlockedMonsters',
     'USE_CLOUD_EXPLOIT': 'UseCloudExploit',
     'IS_WALL_BETWEEN': 'IsWallBetween',
-    'ATTACK_PLAYER': 'AttackPlayer'
+    'INSTANCE_TYPE_TO_ATTACK': 'InstanceTypeToAttack',
+    'ATTACK_BOSSES': 'AttackBosses',
 }
 
 
@@ -30,9 +30,6 @@ class WaithackInterface:
             elif STATUS_KEYS['MAX_MONSTERS'] == status_key:
                 self.SetMaxMonsters(status[status_key])
 
-            elif STATUS_KEYS['AVOID_PLAYERS'] == status_key:
-                self.SwitchAvoidPlayers()
-
             elif STATUS_KEYS['ATTACK_BLOCKED_MONSTERS'] == status_key:
                 self.SwitchAttackBlockedMonsters()
 
@@ -42,8 +39,12 @@ class WaithackInterface:
             elif STATUS_KEYS['IS_WALL_BETWEEN'] == status_key:
                 self.SwitchIsWallBetween()
 
-            elif STATUS_KEYS['ATTACK_PLAYER'] == status_key:
-                self.SwitchAttackPlayer()
+            elif STATUS_KEYS['ATTACK_BOSSES'] == status_key:
+                instance.attack_bosses = not instance.attack_bosses
+
+            elif STATUS_KEYS['INSTANCE_TYPE_TO_ATTACK'] == status_key:
+                instance.instance_type_to_attack = status[status_key
+                ]
         if save_status: self.SaveStatus()
 
     def SaveStatus(self):
@@ -56,11 +57,11 @@ class WaithackInterface:
             STATUS_KEYS['RANGE']: instance.range,
             STATUS_KEYS['SPEED']: instance.speed,
             STATUS_KEYS['MAX_MONSTERS']: instance.maxMonster,
-            STATUS_KEYS['AVOID_PLAYERS']: instance.avoidPlayers,
             STATUS_KEYS['USE_CLOUD_EXPLOIT']: instance.use_cloud_exploit,
-            STATUS_KEYS['ATTACK_PLAYER']: instance.attackPlayer,
             STATUS_KEYS['IS_WALL_BETWEEN']: instance.is_wall_between,
-            STATUS_KEYS['ATTACK_BLOCKED_MONSTERS']: instance.attack_blocked_monsters
+            STATUS_KEYS['ATTACK_BLOCKED_MONSTERS']: instance.attack_blocked_monsters,
+            STATUS_KEYS['INSTANCE_TYPE_TO_ATTACK']: instance.instance_type_to_attack,
+            STATUS_KEYS['ATTACK_BOSSES']: instance.attack_bosses
         }
 
     def SwitchEnabled(self):

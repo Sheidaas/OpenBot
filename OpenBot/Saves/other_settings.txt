@@ -1,14 +1,18 @@
 {
     "WaitHack": {
-        "IsWallBetween": false,
-        "Range": 1500,
+        "IsWallBetween": true,
+        "Range": 1750,
         "AttackBlockedMonsters": true,
-        "AvoidPlayers": false,
-        "MaxMonsters": 200.0,
+        "MaxMonsters": 15,
         "Speed": 0.12800000607967377,
-        "AttackPlayer": false,
+        "InstanceTypeToAttack": [
+            2,
+            0,
+            6
+        ],
         "Enabled": false,
-        "UseCloudExploit": true
+        "UseCloudExploit": true,
+        "AttackBosses": true
     },
     "SkillBot": {
         "InstantMode": false,
@@ -31,7 +35,7 @@
                 "slot": 1,
                 "can_cast": false,
                 "lastWait": 0,
-                "upgrade_order": 1,
+                "upgrade_order": 5,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
                 "id": 31
@@ -67,7 +71,7 @@
                 "slot": 5,
                 "can_cast": false,
                 "lastWait": 0,
-                "upgrade_order": 5,
+                "upgrade_order": 1,
                 "cooldown_time_instant_mode": 0,
                 "is_turned_on": false,
                 "id": 35
@@ -110,13 +114,18 @@
             11843,
             11240,
             11241,
-            11242
+            11242,
+            40,
+            42,
+            41,
+            72,
+            30092
         ],
         "LookForMetins": true,
         "ExchangeItemsToEnergy": true,
         "Enabled": false,
-        "WaitingTime": 5,
-        "CurrentPoint": 0,
+        "WaitingTime": 3,
+        "CurrentPoint": 7,
         "SkillBookIds": [
             1,
             2,
@@ -172,95 +181,100 @@
             170
         ],
         "LookForOre": false,
-        "LookForBosses": true,
+        "LookForBosses": false,
         "Path": [
             [
-                64045,
-                35371,
-                "metin2_map_c3"
+                82202.484375,
+                17211.01953125,
+                "metin2_map_b1"
             ],
             [
-                68945,
-                43371,
-                "metin2_map_c3"
+                73802.484375,
+                18211.01953125,
+                "metin2_map_b1"
             ],
             [
-                71845,
-                61371,
-                "metin2_map_c3"
+                57002.484375,
+                21211.01953125,
+                "metin2_map_b1"
             ],
             [
-                48845,
-                71471,
-                "metin2_map_c3"
+                35202.484375,
+                25211.01953125,
+                "metin2_map_b1"
             ],
             [
-                84545,
-                61271,
-                "metin2_map_c3"
+                28602.484375,
+                45011.01953125,
+                "metin2_map_b1"
             ],
             [
-                87145,
-                85871,
-                "metin2_map_c3"
+                51602.484375,
+                38611.01953125,
+                "metin2_map_b1"
             ],
             [
-                80945,
-                80171,
-                "metin2_map_c3"
+                77402.484375,
+                43611.01953125,
+                "metin2_map_b1"
             ],
             [
-                67045,
-                87071,
-                "metin2_map_c3"
+                82802.484375,
+                60011.0234375,
+                "metin2_map_b1"
             ],
             [
-                36645,
-                83271,
-                "metin2_map_c3"
+                84802.484375,
+                76011.015625,
+                "metin2_map_b1"
             ],
             [
-                17145,
-                84171,
-                "metin2_map_c3"
+                89602.484375,
+                103411.015625,
+                "metin2_map_b1"
             ],
             [
-                17445,
-                72271,
-                "metin2_map_c3"
+                77002.484375,
+                92811.0234375,
+                "metin2_map_b1"
             ],
             [
-                20045,
-                46471,
-                "metin2_map_c3"
+                64202.484375,
+                92611.015625,
+                "metin2_map_b1"
             ],
             [
-                15945,
-                31671,
-                "metin2_map_c3"
+                57002.484375,
+                103611.015625,
+                "metin2_map_b1"
             ],
             [
-                24345,
-                19171,
-                "metin2_map_c3"
+                37602.484375,
+                105211.0078125,
+                "metin2_map_b1"
             ],
             [
-                30845,
-                19571,
-                "metin2_map_c3"
+                29202.484375,
+                98811.015625,
+                "metin2_map_b1"
             ],
             [
-                56345,
-                18171,
-                "metin2_map_c3"
+                30002.484375,
+                80611.0234375,
+                "metin2_map_b1"
             ],
             [
-                66345,
-                24971,
-                "metin2_map_c3"
+                30602.484375,
+                63211.01953125,
+                "metin2_map_b1"
+            ],
+            [
+                41802.484375,
+                77011.015625,
+                "metin2_map_b1"
             ]
         ],
-        "ChangeChannels": true
+        "ChangeChannels": false
     },
     "FishBot": {
         "FishIdToOpen": [],
@@ -291,7 +305,7 @@
         "UseWallhack": true,
         "RestartHere": false,
         "ExcludeInFilter": false,
-        "PickupItemFirst": false,
+        "PickupItemFirst": true,
         "PickupRange": 3000,
         "Speedhack": true,
         "Pickup": true,
@@ -300,7 +314,7 @@
         "MinHealth": 81,
         "RedPotions": true,
         "AutoLogin": true,
-        "MinMana": 80,
-        "SpeedMultiplier": 2.0
+        "MinMana": 71,
+        "SpeedMultiplier": 4.0
     }
 }
