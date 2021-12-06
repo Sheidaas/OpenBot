@@ -12,6 +12,7 @@ STATES = {
     'WAITING': 'WAITING',
     'SCANNING_AREA': 'SCANNING_AREA',
     'SCANNING_SHOPS': 'SCANNING_SHOPS',
+    'GOING_TO_BUY_ITEM': 'GOING_TO_BUY_ITEM'
 }
 
 RUNNING_STATES = {
@@ -79,7 +80,7 @@ class ShopSearcherModule(ui.ScriptWindow):
             items.append({item_id: {'price': price,
                                     'item_bonuses': item_bonuses,
                                     'count': count,
-                                    'item_slot': shop.GetItemCheque(item_slot),
+                                    'item_slot': item_slot,
                                     }})
 
         return items

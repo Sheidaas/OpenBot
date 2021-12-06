@@ -43,7 +43,6 @@ class Waithack(ui.ScriptWindow):
             if OpenLib.dist(x, y, mob_x, mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
                 # chat.AppendChat(3,"Sent Attack, X:" + str(mob_x) + " Y:" + str(mob_y) + "VID: " +str(vid))
                 eXLib.SendAttackPacket(vid, 0)
-                lst.remove(vid)
                 vid_hits += 1
 
         return vid_hits
@@ -60,7 +59,6 @@ class Waithack(ui.ScriptWindow):
             x, y, z = chr.GetPixelPosition(enemy)
             eXLib.SendAddFlyTarget(enemy, x, y)
             eXLib.SendShoot(eXLib.COMBO_SKILL_ARCH)
-            lst.remove(enemy)
             vid_hits += 1
         return vid_hits
 
@@ -87,7 +85,6 @@ class Waithack(ui.ScriptWindow):
                 eXLib.SendAttackPacket(vid, 0)
                 eXLib.SendAddFlyTarget(vid, x, y)
                 eXLib.SendShoot(35)
-                lst.remove(vid)
                 vid_hits += 1
 
         return vid_hits
