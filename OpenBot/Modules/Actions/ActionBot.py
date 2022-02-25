@@ -1,9 +1,8 @@
 from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
-import Action
-from OpenBot.Modules import Movement
+import Action, ActionFunctions
 from OpenBot.Modules.OpenLog import DebugPrint
 from OpenBot.Modules import OpenLib
-from OpenBot.Modules import Hooks
+from OpenBot.Modules import Hooks, Movement
 import ui, chat, player
 
 STATES = {
@@ -38,6 +37,10 @@ class ActionBot(ui.ScriptWindow):
         self.showOffWaithackButton = False
         self.showAlwaysWaithackButton = False
 
+        self.last_position = []
+        self.attempts = 0
+        self.was_position_saved = False
+
     def GetNewId(self):
         used_id = []
         if self.currActionObject is not None:
@@ -49,24 +52,19 @@ class ActionBot(ui.ScriptWindow):
         return -1
 
     def DiscardActionByParent(self, parent):
-        Movement.StopMovement()
-        player.SetAttackKeyState(False)
+        #player.SetAttackKeyState(False)
         if parent is True:
             return True
-
-
 
         if self.currActionObject is not None:
             if self.currActionObject.parent == parent:
                 new_parent = self.currActionObject.id
-                chat.AppendChat(3, self.currActionObject.name)
                 self.currActionObject = None
                 return self.DiscardActionByParent(new_parent)
 
         for action in self.currActionsQueue:
             if action.parent == parent:
                 new_parent = action.id
-                chat.AppendChat(3, action.name)
                 self.currActionsQueue.remove(action)
                 return self.DiscardActionByParent(new_parent)
 
@@ -110,7 +108,6 @@ class ActionBot(ui.ScriptWindow):
             self.currActionObject = action
         else:
             new_action = self.ConvertDictActionToObjectAction(action)
-            DebugPrint(str(action))
             self.currActionObject = new_action
 
     def CheckIsThereNewAction(self):
@@ -147,6 +144,41 @@ class ActionBot(ui.ScriptWindow):
             action_result['parent'] = self.currActionObject.id
             self.NewActionReturned(action_result)
 
+        if self.currActionObject is not None:
+            if not self.currActionObject.function == ActionFunctions.MoveToPosition:
+                return
+            x, y, z = player.GetMainCharacterPosition()
+            if self.was_position_saved:
+                if self.last_position == [x, y]:
+                    self.attempts += 1
+                if self.attempts > 100:
+                    self.DiscardActionByParent(self.currActionObject.parent)
+                    self.was_position_saved = False
+                    self.last_position = []
+                    self.attempts = 0
+            else:
+                self.was_position_saved = True
+                self.last_position = [x, y]
+
+
+    def should_run_waithack(self):
+        from OpenBot.Modules.Protector.protector_module import protector_module
+        names = ['Going to enemy', 'DestroyByID', 'DestroyByVID',
+                 'ClearFloor', 'LookForBlacksmithInDeamonTower',
+                 'FindMapInDT', 'OpenASealInMonument']
+
+        if protector_module.avoid_players and protector_module.is_unknown_player_close:
+            return False
+
+        if self.showOffWaithackButton:
+            return False
+
+        if self.currActionObject.function.__name__ in names or self.currActionObject.name in names:
+            return True
+
+        if self.showAlwaysWaithackButton:
+            return True
+
     def OnUpdate(self):
         if self.currentState == STATES['WAITING'] and OpenLib.IsInGamePhase():
             val, self.lastTime = OpenLib.timeSleep(self.lastTime, 2)
@@ -156,9 +188,7 @@ class ActionBot(ui.ScriptWindow):
         if self.currentState == STATES['RUNNING']:
             val, self.lastTime = OpenLib.timeSleep(self.lastTime, 0.1)
             if val and OpenLib.IsInGamePhase() and self.enabled:
-                self.rendered_actions = []
-                self.rendered_waiters = []
-                names = ['Going to enemy']
+
 
                 this_time = OpenLib.GetTime()
                 for waiter in self.waiters:
@@ -166,23 +196,15 @@ class ActionBot(ui.ScriptWindow):
                         waiter['callback']()
                         self.waiters.remove(waiter)
 
-                if self.currActionObject == None:
+                if self.currActionObject is None:
                     if not self.CheckIsThereNewAction():
                         waithack_interface.Stop()
                         return
 
-                if not self.showOffWaithackButton:
-                    if self.showAlwaysWaithackButton:
-                        waithack_interface.Start()
-                    else:
-                        if self.currActionObject.function.__name__ in ['DestroyByID', 'DestroyByVID', 'ClearFloor', 'LookForBlacksmithInDeamonTower',
-                                                                    'FindMapInDT', 'OpenASealInMonument'] or \
-                            self.currActionObject.name in names:
-                            waithack_interface.Start()
-                        else:
-                            waithack_interface.Stop()
-                else:
+                if self.should_run_waithack():
                     waithack_interface.Start()
+                else:
+                    waithack_interface.Stop()
 
                 self.FrameDoAction()
 

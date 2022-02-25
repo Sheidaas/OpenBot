@@ -12,10 +12,18 @@ STATUS_KEYS = {
     'LOOK_FOR_METINS': 'LookForMetins',
     'LOOK_FOR_ORE': 'LookForOre',
     'LOOK_FOR_BOSSES': 'LookForBosses',
+    'LOOK_FOR_ITEMS': 'LookForItems',
+    'LOOK_FOR_MOBS': 'LookForMobs',
     'EXCHANGE_ITEMS_TO_ENERGY': 'ExchangeItemsToEnergy',
     'CLEAR_PATH': 'ClearPath',
     'SKILL_BOOK_IDS': 'SkillBookIds',
-    'ITEMS_TO_SELL': 'ItemsToSell'
+    'ITEMS_TO_SELL': 'ItemsToSell',
+    'ITEMS_TO_PICKUP': 'ItemsToPickup',
+    'MOBS_TO_KILL': 'MobsToKill',
+    'CAN_GO_SELL_ITEMS': 'CanGoSellItems',
+    'CAN_GO_BUY_POTIONS': 'CanGoBuyPotions',
+    'POTIONS_TO_BUY': 'PotionsToBuy',
+    'MAX_RANGE_TO_MOB': 'MaxRangeToMob',
 }
 
 
@@ -50,6 +58,16 @@ class FarmbotInterface:
             elif STATUS_KEYS['LOOK_FOR_ORE'] == status_key:
                 self.SwitchLookForOre()
 
+            elif STATUS_KEYS['LOOK_FOR_MOBS'] == status_key:
+                farm_instance.look_for_mobs = not farm_instance.look_for_mobs
+
+            elif STATUS_KEYS['CAN_GO_SELL_ITEMS'] == status_key:
+                farm_instance.can_go_sell_items = not farm_instance.can_go_sell_items
+            elif STATUS_KEYS['CAN_GO_BUY_POTIONS'] == status_key:
+                farm_instance.can_go_buy_potions = not farm_instance.can_go_buy_potions
+            elif STATUS_KEYS['POTIONS_TO_BUY'] == status_key:
+                farm_instance.potions_to_buy = status[status_key]
+
             elif STATUS_KEYS['EXCHANGE_ITEMS_TO_ENERGY'] == status_key:
                 self.SwitchExchangeItemsToEnergy()
 
@@ -65,7 +83,14 @@ class FarmbotInterface:
             elif STATUS_KEYS['ITEMS_TO_SELL'] == status_key:
                 farm_instance.items_to_sell = status[status_key]
 
+            elif STATUS_KEYS['LOOK_FOR_ITEMS'] == status_key:
+                farm_instance.move_to_items = status[status_key]
 
+            elif STATUS_KEYS['MOBS_TO_KILL'] == status_key:
+                farm_instance.mobs_to_kill = status[status_key]
+
+            elif STATUS_KEYS['MAX_RANGE_TO_MOB'] == status_key:
+                farm_instance.max_range_to_mob = status[status_key]
         if save_status: self.SaveStatus()
 
     def GetStatus(self):
@@ -82,6 +107,14 @@ class FarmbotInterface:
             STATUS_KEYS['ITEMS_TO_SELL']: farm_instance.items_to_sell,
             STATUS_KEYS['SKILL_BOOK_IDS']: farm_instance.skill_books_ids,
             STATUS_KEYS['LOOK_FOR_BOSSES']: farm_instance.look_for_bosses,
+            STATUS_KEYS['LOOK_FOR_ITEMS']: farm_instance.move_to_items,
+            STATUS_KEYS['ITEMS_TO_PICKUP']: farm_instance.items_to_pickup,
+            STATUS_KEYS['MOBS_TO_KILL']: farm_instance.mobs_to_kill,
+            STATUS_KEYS['LOOK_FOR_MOBS']: farm_instance.look_for_mobs,
+            STATUS_KEYS['CAN_GO_SELL_ITEMS']: farm_instance.can_go_sell_items,
+            STATUS_KEYS['CAN_GO_BUY_POTIONS']: farm_instance.can_go_buy_potions,
+            STATUS_KEYS['POTIONS_TO_BUY']: farm_instance.potions_to_buy,
+            STATUS_KEYS['MAX_RANGE_TO_MOB']: farm_instance.max_range_to_mob,
         }
 
     def SaveStatus(self):
@@ -94,7 +127,7 @@ class FarmbotInterface:
     def SwitchEnabled(self, new_state):
         if new_state not in farmbot_module.ENABLE_STATES.keys():
             return
-
+        chat.AppendChat(3, new_state)
         if new_state == farmbot_module.ENABLE_STATES['ENABLED']:
             farm_instance.enabled = new_state
             self.Start()

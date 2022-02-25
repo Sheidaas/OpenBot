@@ -47,14 +47,19 @@ def DestroyByVID(args):
 
     if eXLib.IsDead(instance_vid):
         player.SetAttackKeyState(False)
-    if not OpenLib.isPlayerCloseToInstance(instance_vid):
+        return Action.NEXT_ACTION
+
+    if not OpenLib.isPlayerCloseToInstance(instance_vid, 300):
         x, y, z = chr.GetPixelPosition(instance_vid)
         action_dict = {
-            'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [x, y, 300],
+            'requirements': {ActionRequirementsCheckers.IS_ON_POSITION: [x, y, 200],
                              ActionRequirementsCheckers.IS_IN_MAP: [background.GetCurrentMapName()]},
             'function': MoveToPosition,
             'function_args': [(x, y)],
             'name': 'Going to enemy',
+            'interruptors_args': [instance_vid, instance_vid],
+            'interruptors': [ActionRequirementsCheckers.isVidNearly, ActionRequirementsCheckers.IsVidNotExist],
+            'interrupt_function': lambda : Action.NEXT_ACTION
         }
         return action_dict
 
@@ -79,11 +84,7 @@ def DestroyByID(args):
     if instance_vid not in eXLib.InstancesList:
         return False
 
-    if eXLib.IsDead(instance_vid):
-        player.SetAttackKeyState(False)
-        return True
-
-    if not OpenLib.isPlayerCloseToInstance(instance_vid):
+    if not OpenLib.isPlayerCloseToInstance(instance_vid, 200):
         x, y, z = chr.GetPixelPosition(instance_vid)
         action_dict = {
             'function': MoveToPosition,
@@ -108,11 +109,22 @@ def DestroyByID(args):
 
 
 def MoveToPosition(args):
+    player.SetAttackKeyState(False)
     position = args[0]
+
+
     if len(args) > 1:
-        error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
+        if args[1] == background.GetCurrentMapName() and not OpenLib.is_straight_line_blocked_to_position(position[0], position[1]):
+            Movement.mapMovement.MoveToMapPosition(position, maxDist=150)
+            return True
+        else:
+            error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=args[1])
     else:
-        error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
+        if OpenLib.is_straight_line_blocked_to_position(position[0], position[1]):
+            Movement.mapMovement.MoveToMapPosition(position, maxDist=150)
+            return True
+        else:
+            error = Movement.GoToPositionAvoidingObjects(position[0], position[1], mapName=background.GetCurrentMapName())
 
     if error == Movement.NO_PATH_FOUND:
         return Action.ERROR
@@ -125,6 +137,27 @@ def MoveToPosition(args):
 
 
     #DebugPrint('Going to ' + str(position))
+
+
+def MoveToPositionByVid(args):
+    vid = args[0]
+    player.SetAttackKeyState(False)
+    x, y, z = chr.GetPixelPosition(vid)
+    if not OpenLib.is_straight_line_blocked_to_vid(vid):
+        Movement.mapMovement.MoveToMapPosition((x, y), maxDist=175)
+        return True
+    else:
+        error = Movement.GoToPositionAvoidingObjects(x, y, maxDist=150, mapName=background.GetCurrentMapName())
+
+        if error == Movement.NO_PATH_FOUND:
+            return Action.ERROR
+
+        elif error == Movement.MOVING:
+            return True
+
+        elif error == Movement.DESTINATION_REACHED:
+            return Action.NEXT_ACTION
+
 
 
 def UseItemOnNPC(args):

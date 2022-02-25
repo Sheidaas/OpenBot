@@ -9,6 +9,12 @@ def parse_shop_searcher(shop):
     }
 
 
+def parse_attacker():
+    from OpenBot.Modules.Attacker.attacker_interface import attacker_interface
+    return {
+        'Attacker': attacker_interface.GetStatus()
+    }
+
 def parse_file_handler():
     from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
     return {

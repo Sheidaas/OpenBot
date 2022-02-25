@@ -44,7 +44,6 @@ def OnMessage(id, message):
             Movement.TeleportToPosition(x, y)
             return
 
-
         from OpenBot.Modules.Actions import ActionLoader
         raw_action_dict = {
             'actions': cleaned_message['data']['message']
@@ -105,6 +104,10 @@ def OnMessage(id, message):
         elif cleaned_message['data']['module'] == 'Protector':
             from OpenBot.Modules.Protector.protector_interface import protector_interface
             protector_interface.SetStatus(cleaned_message['data']['message'])
+
+        elif cleaned_message['data']['module'] == 'Attacker':
+            from OpenBot.Modules.Attacker.attacker_interface import attacker_interface
+            attacker_interface.SetStatus(cleaned_message['data']['message'])
 
     elif cleaned_message['type'] == 'update_request':
         if cleaned_message['data']['action'] == 'GET_INVENTORY_STATUS':
@@ -264,6 +267,13 @@ class NetworkingWebsockets(ui.ScriptWindow):
             data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
             data = net_parser.convertToUTF8(data, self.encoding)
             eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
+
+    def UpdateAttackerStatus(self):
+        parsed_hack_status = net_parser.parse_attacker()
+        if parsed_hack_status:
+            data = {'type': 'information', 'data': {'message': parsed_hack_status, 'action': 'set_hack_status'}}
+            data = net_parser.convertToUTF8(data, self.encoding)
+            eXLib.SendWebsocket(self.socket_to_server, json.dumps(data))
     
     def UpdateChannelSwitcherStatus(self):
         parsed_hack_status = net_parser.parse_channel_switcher_status()
@@ -322,6 +332,7 @@ class NetworkingWebsockets(ui.ScriptWindow):
         self.UpdateFileHandler()
         self.UpdateInstanceInteractionsStatus()
         self.UpdateProtector()
+        self.UpdateAttackerStatus()
 
     def UpdateMethod(self):
         self.UpdateInstancesListOnServer()

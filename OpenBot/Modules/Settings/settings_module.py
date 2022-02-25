@@ -4,7 +4,7 @@ from OpenBot.Modules import Movement, OpenLib, Hooks
 
 
 class SettingsDialog(ui.ScriptWindow):
-    TIME_DEAD = 10
+    TIME_DEAD = 2
     TIME_POTS = 0.2
     RED_POTIONS_IDS = [27001,27002,27003,27007,27051,27201,27202,27203]
     BLUE_POTIONS_IDS = [27004,27005,27006,27008,27052,27204,27205,27206,63018]
@@ -75,7 +75,6 @@ class SettingsDialog(ui.ScriptWindow):
             return
 
         if player.GetStatus(player.HP) <= 0:
-            chat.AppendChat(3, 'dead')
             x, y, z = chr.GetPixelPosition(net.GetMainActorVID())
             OpenLib.LAST_DEATH_POINT = [[int(x), int(y)], background.GetCurrentMapName()]
 

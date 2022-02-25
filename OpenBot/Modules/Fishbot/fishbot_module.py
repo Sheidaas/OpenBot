@@ -33,7 +33,7 @@ class Fishbot(ui.ScriptWindow):
         self.min_time_between_fish = 5
         self.max_time_between_fish = 10
         self.starting_position = (0, 0)  # X, Y
-        self.currState = STATES['STOPPED']
+        self.currState = STATES['STARTED']
         # KEY - FISH ID, VALUE - DEAD FISH ID
         self.fish = {
             27803: 27833,
@@ -66,6 +66,7 @@ class Fishbot(ui.ScriptWindow):
             27830: 27860,
             27831: 27861,
             27832: 27862,
+            27987: 27990,
         }
         # KEY - BAIT ID, VALUE - SLOT IN FISHERMAN SHOP
         self.baits = {
@@ -75,8 +76,7 @@ class Fishbot(ui.ScriptWindow):
             27801: 7,
         }
         # KEY - NAME, VALUE - CATCHES ID
-        self.catches = {
-            'FUGITIVES_CAPE': 70048,
+        self.catches = {'FUGITIVES_CAPE': 70048,
             'SAGE_KINGS_GLOVE': 70051,
             'SAGE_KINGS_SYMBOL': 70050,
             'LUCYS_RING': 70049,
@@ -101,6 +101,10 @@ class Fishbot(ui.ScriptWindow):
         self.lastTimeUpdated = 0
         self.lastTimeFishing = 0
         self.lastTimeWaiting = 0
+        self.lastTImeBetweenWaiting = 0
+        self.waitBetweenFishing = False
+        self.minTimeBetweenFish = 0
+        self.maxTimeBetweenFish = 1
 
     def start(self):
         self.enabled = True
@@ -182,9 +186,12 @@ class Fishbot(ui.ScriptWindow):
     def OnUpdate(self):
         can_update, self.lastTimeUpdated = OpenLib.timeSleep(self.lastTimeUpdated, 0.05)
         if self.enabled and can_update and self.lastActionDone and OpenLib.IsInGamePhase():
+
             if self.currState == STATES['STOPPED']:
                 chat.AppendChat(3, 'Stopped state')
-                val, self.lastTimeWaiting = OpenLib.timeSleep(self.lastTimeWaiting, 3)
+                val, self.lastTimeWaiting = OpenLib.timeSleep(self.lastTimeWaiting,
+                                                              app.GetRandom(self.minTimeBetweenfish,
+                                                                            self.maxTimeBetweenfish))
                 if val:
                     self.currState = STATES['STARTED']
                 return
@@ -267,6 +274,8 @@ class Fishbot(ui.ScriptWindow):
                 fish_to_drop = OpenLib.GetItemsSlotsByID(self.dead_fish_it_to_drop)
                 for slots in fish_to_drop.values():
                     for slot in slots:
+                        if player.GetItemCount(slot < 200):
+                            continue
                         Dropper.dropper.add_new_item_to_drop(slot)
 
                 # Dropping catches

@@ -21,6 +21,7 @@ class Action:
      callback_args=[], interruptors_args=[], interrupt_function_args=[], requirements=[], on_success=[], on_failed=[], interruptors=[], call_only_once=False, parent=None):
         self.id = _id
         self.call_only_once = call_only_once
+        self.called = False
         self.parent=parent
         if not type(name) == str or name == 'None':
             self.name = function.__name__
@@ -40,6 +41,8 @@ class Action:
         self.callback = callback # Callback is a function
         self.callback_on_failed = callback_on_failed
         self.interrupt_function = interrupt_function
+
+        self.action_result = None
 
     def CallCallback(self):
         if self.callback_args:
@@ -75,11 +78,20 @@ class Action:
 
 
         OpenLog.DebugPrint('Executing action function')
+
+        if self.call_only_once and self.called:
+            return self.ReturnResult(self.action_result)
+
         if self.function_args:
             action_result = self.function(self.function_args)
         else:
             action_result = self.function()
-       
+
+        self.called = True
+        self.action_result = action_result
+        return self.ReturnResult(self.action_result)
+
+    def ReturnResult(self, action_result):
         if type(action_result) == bool:
             if action_result:
                 on_success = self.CheckOnSuccesList()
@@ -99,7 +111,6 @@ class Action:
         else:
             return action_result
 
-    
     def CheckRequirements(self):
         for requirement in self.requirements:
             if requirement == ActionRequirementsCheckers.IS_IN_MAP:
@@ -133,10 +144,7 @@ class Action:
                 if succes_key():
                     return NEXT_ACTION
             elif type(succes_key) == str:
-                if succes_key == NEXT_ACTION:
-                    return NEXT_ACTION
-                elif succes_key == DISCARD_PREVIOUS:
-                    return DISCARD_PREVIOUS
+                return succes_key
             elif type(succes_key) == dict:
                 return succes_key
         return NEXT_ACTION

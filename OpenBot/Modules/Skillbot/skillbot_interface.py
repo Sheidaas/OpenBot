@@ -13,7 +13,8 @@ STATUS = {
     'FOLLOW_VID': 'FollowVID',
     'FOLLOWED_VID': 'FollowedVID',
     'UNMOUNT_HORSE': 'UnmountHorse',
-    'STAT_TO_UPGRADE_ORDER': 'StatToUpgradeOrder'
+    'STAT_TO_UPGRADE_ORDER': 'StatToUpgradeOrder',
+    'USE_ONLY_IF_ATTACKER_IS_RUNNING': 'UseOnlyIfAttackerIsRunning',
 }
 
 class SkillbotInterface:
@@ -23,7 +24,7 @@ class SkillbotInterface:
             if STATUS['ENABLED'] == status_key:
                 self.SwitchEnabled()
             elif STATUS['TIME_TO_WAIT_AFTER_LOGOUT'] == status_key:
-                self.SetTimeToWaitAfterLogout(status[STATUS['TIME_TO_WAIT_AFTER_LOGOUT']])
+                self.SetTimeToWaitAfterLogout(status_key)
 
             elif STATUS['SHOULD_WAIT_AFTER_LOGOUT'] == status_key:
                 self.SwitchShouldWaitAfterLogout()
@@ -41,13 +42,17 @@ class SkillbotInterface:
                 self.SwitchFollowVID()
 
             elif STATUS['FOLLOWED_VID'] == status_key:
-                instance.followed_vid = status[STATUS['FOLLOWED_VID']]
+                instance.followed_vid = status[status_key]
 
             elif STATUS['UNMOUNT_HORSE'] == status_key:
-                instance.unmount_horse = status[STATUS['UNMOUNT_HORSE']]
+                instance.unmount_horse = status[status_key]
 
             elif STATUS['STAT_TO_UPGRADE_ORDER'] == status_key:
-                instance.stat_to_upgrade_order = status[STATUS['STAT_TO_UPGRADE_ORDER']]
+                instance.stat_to_upgrade_order = status[status_key]
+
+            elif STATUS['USE_ONLY_IF_ATTACKER_IS_RUNNING'] == status_key:
+                instance.use_skills_only_if_attacker_is_running = status[status_key]
+
 
         if OpenLib.GetClass() != OpenLib.SKILL_SET_NONE:
             if not len(instance.currentSkillSet):
@@ -71,7 +76,8 @@ class SkillbotInterface:
                         self.SetCooldownForSkill(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['cooldown_time_instant_mode'])
                     if status['CurrentSkillSet'][skill]['upgrade_order'] != instance.currentSkillSet[skill]['upgrade_order']:
                         self.SetUpgradeOrder(status['CurrentSkillSet'][skill]['id'], status['CurrentSkillSet'][skill]['upgrade_order'])
-
+                    if status['CurrentSkillSet'][skill]['use_metin_cooldown'] != instance.currentSkillSet[skill]['use_metin_cooldown']:
+                        self.SetUpgradeOrder(status['use_metin_cooldown'][skill]['id'], status['CurrentSkillSet'][skill]['use_metin_cooldown'])
         if save_status: self.SaveStatus()
 
     def GetStatus(self):
@@ -86,7 +92,8 @@ class SkillbotInterface:
             STATUS['FOLLOW_VID']: instance.following_vid,
             STATUS['FOLLOWED_VID']: instance.followed_vid,
             STATUS['UNMOUNT_HORSE']: instance.unmount_horse,
-            STATUS['STAT_TO_UPGRADE_ORDER']: instance.stat_to_upgrade_order
+            STATUS['STAT_TO_UPGRADE_ORDER']: instance.stat_to_upgrade_order,
+            STATUS['USE_ONLY_IF_ATTACKER_IS_RUNNING']: instance.use_skills_only_if_attacker_is_running,
         }
 
     def SaveStatus(self):

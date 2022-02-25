@@ -1,6 +1,6 @@
 import eXLib,ui,net,chr,player,chat,shop,event,background
 import OpenLib, Movement, Hooks, MapManager, OpenLog
-
+import app
 
 
 STATE_NONE = 0
@@ -211,11 +211,11 @@ class NPCInteractionDialog(ui.ScriptWindow):
 		if self.State == STATE_SELLING:
 			val, self.lastTimeSell = OpenLib.timeSleep(self.lastTimeSell,TIME_SELL)
 			if val:
-				if len(self.sellItems_list) == 0:
+				if not self.sellItems_list:
 					self.State = STATE_BUYING
 					return
-				slot = self.sellItems_list.pop(0)
-				net.SendShopSellPacketNew(slot,player.GetItemCount(slot),1)
+				slot = self.sellItems_list.pop()
+				net.SendShopSellPacketNew(slot,player.GetItemCount(slot), 1)
 				chat.AppendChat(3,"[NPC-SHOPER] Sold item at slot " + str(slot))
 			return
 
@@ -298,6 +298,7 @@ def RequestBusinessNPCClose(buy_items_list,sell_items_list,npc,callback=None,ope
 		callback ([function], optional): A function callback to called after finish the business. Defaults to None.
 		open_shop (bool, optional): If true will first open the shop. Defaults to True.
 	"""
+	chat.AppendChat(3, str(sell_items_list))
 	instance.SetOrder(npc,buy_items_list,sell_items_list,callback)
 	instance.StartNPCBusiness(open_shop)
 

@@ -1,5 +1,5 @@
 from OpenBot.Modules.FileHandler.FileHandlerInterface import file_handler_interface
-import ui, player, net, m2netm2g, uiCharacter, chr
+import ui, player, net, m2netm2g, uiCharacter, chr, playerm2g2
 from OpenBot.Modules import OpenLib, Hooks
 from OpenBot.Modules.Actions.ActionBotInterface import action_bot_interface
 from OpenBot.Modules.Actions import ActionFunctions
@@ -9,7 +9,9 @@ def __PhaseChangeSkillCallback(phase,phaseWnd):
     global instance
     if phase == OpenLib.PHASE_GAME:
         instance.resetSkills()
-        OpenLib.SetTimerFunction(4, file_handler_interface.load_last_skills)
+        OpenLib.SetTimerFunction(2, file_handler_interface.load_last_skills)
+        for skill in instance.currentSkillSet:
+            skill['cooldown_time_instant_mode'] = 0
         if instance.shouldWait:
             instance.startUpWait = True
 
@@ -65,6 +67,7 @@ class Skillbot(ui.ScriptWindow):
         self.lastTimeStartUp = 0
         self.chrwindow = uiCharacter.CharacterWindow()
         self.add_stat = self.chrwindow._CharacterWindow__OnClickStatusPlusButton
+        self.use_skills_only_if_attacker_is_running = True
 
 
         self.resetSkills()
@@ -85,18 +88,13 @@ class Skillbot(ui.ScriptWindow):
             self.currentSkillSet.append({
                 'id': id,
                 'can_cast': False,
-                'cooldown_time_instant_mode': 0,
+                'can_use': False,
+                'cooldown_time_instant_mode': playerm2g2.GetSkillCoolTime(i + 1)[0],
                 'slot': i + 1,
-                'is_turned_on': False,
                 'upgrade_order': i+1,
                 'lastWait': 0,
+                'use_metin_cooldown': True
             })
-
-    def addCallbackToWaiter(self, skill):
-        def wait_to_use_skill():
-            skill['is_turned_on'] = False
-
-        return wait_to_use_skill
 
     def GetRawStatsDict(self):
         return {
@@ -122,7 +120,7 @@ class Skillbot(ui.ScriptWindow):
                         break
 
             statusPoint = player.GetStatus(player.SKILL_ACTIVE)
-            val, self.lastTimeUpgradedSkills = OpenLib.timeSleep(self.lastTimeUpgradedSkills, 2)
+            val, self.lastTimeUpgradedSkills = OpenLib.timeSleep(self.lastTimeUpgradedSkills, 1)
             if statusPoint and self.upgrade_skills and val:
                 for _skill in sorted(self.currentSkillSet, key=lambda item: item['upgrade_order']):
                     if not player.GetSkillGrade(_skill['slot']) and player.GetSkillLevel(_skill['slot']) < 17:
@@ -152,19 +150,48 @@ class Skillbot(ui.ScriptWindow):
                 if not character_class:
                     return
 
-                for skill in self.currentSkillSet:
+                from OpenBot.Modules.Attacker import attacker_module
+                if attacker_module.attacker_module.current_attacking_stage == attacker_module.ATTACKING_STAGE['ATTACKING'] \
+                        and not attacker_module.attacker_module.lock_vid:
+                    return
 
-                    #val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
-                    if val and skill['can_cast']:
-                        skill['cooldown_time_instant_mode'] = m_skill.GetSkillCoolTime(skill['slot']) + 2
+                if self.use_skills_only_if_attacker_is_running and \
+                        attacker_module.attacker_module.current_stage != attacker_module.STAGES['RUNNING']:
+                    return
+
+                if self.startUpWait:
+                    val, self.lastTimeStartUp = OpenLib.timeSleep(self.lastTimeStartUp, self.TimeToWaitAfterStart)
+                    if not val:
+                        return
+                    self.startUpWait = False
+
+                for skill in self.currentSkillSet:
+                    if not skill['can_cast']:
+                        continue
+                    if not skill['can_use']:
+                        val, skill['lastWait'] = OpenLib.timeSleep(skill['lastWait'], skill['cooldown_time_instant_mode'])
+                        if not val:
+                            continue
+                        if m_skill.CanUseSkill(skill['slot']):
+                            skill['can_use'] = True
+
+                    if not player.IsSkillCoolTime(skill['slot']):
                         if self.unmount_horse and player.IsMountingHorse():
                             net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE_DOWN)
 
                         if not player.IsMountingHorse():
                             player.ClickSkillSlot(skill['slot'])
+                            skill['can_use'] = False
 
                         if self.unmount_horse and not player.IsMountingHorse():
-                            net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
+                            OpenLib.SetTimerFunction(2, self.player_ride)
+
+                        #if not skill['cooldown_time_instant_mode']:
+                        if skill['use_metin_cooldown']:
+                            skill['cooldown_time_instant_mode'] = playerm2g2.GetSkillCoolTime(skill['slot'])[0] + 2
+
+    def player_ride(self):
+        net.SendCommandPacket(m2netm2g.PLAYER_CMD_RIDE)
 
     def __del__(self):
         ui.Window.__del__(self)

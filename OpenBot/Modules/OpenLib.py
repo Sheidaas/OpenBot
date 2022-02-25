@@ -488,7 +488,7 @@ def RotateMainCharacter(x,y):
 
 def RotateMainCharacterByVid(vid):
 	chr.SelectInstance(vid)
-	x, y, z = chr.GetPixelPosition()
+	x, y, z = chr.GetPixelPosition(vid)
 	RotateMainCharacter(x, y)
 
 def GetCurrentPhase():
@@ -624,12 +624,70 @@ def GetNearestMonsterVid():
 		
 	return closest_vid
 
+def GetNearestVidFromList(list):
+	(closest_vid,_dist) = (0,999999999)
+	my_pos = player.GetMainCharacterPosition()
+	for vid in list:
+		if chr.GetInstanceType(vid) != MONSTER_TYPE:
+			continue
+
+		if vid == net.GetMainActorVID():
+			continue
+
+		if eXLib.IsDead(vid):
+			continue
+
+		monst_pos = chr.GetPixelPosition(vid)
+		this_dist = dist(my_pos[0], my_pos[1], monst_pos[0], monst_pos[1])
+
+		if this_dist < _dist:
+			_dist = this_dist
+			closest_vid = vid
+
+	return closest_vid
+
+def distance_to_vid(vid):
+	x, y, z = chr.GetPixelPosition(vid)
+	my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
+	return dist(my_x, my_y, x, y)
+
+
 def isPathToVID(vid_target):
 	x, y, z = chr.GetPixelPosition(vid_target)
 	my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
 	if eXLib.FindPath(my_x, my_y, x, y):
 		return True
 	return False
+
+def isVidBlocked(vid):
+	x, y, z = chr.GetPixelPosition(vid)
+	if eXLib.IsPositionBlocked(x, y):
+		return True
+	return False
+
+def is_straight_line_blocked_to_vid(vid):
+	x, y, z = chr.GetPixelPosition(vid)
+	my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
+	if eXLib.IsPathBlocked(my_x, my_y, x, y):
+		return True
+	return False
+
+def is_straight_line_blocked_to_position(x, y):
+	my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
+	if eXLib.IsPathBlocked(my_x, my_y, x, y):
+		return True
+	return False
+
+def getMobGroup(vid):
+	group = []
+	possible_vids = range(vid-3, vid+3)
+	for _vid in eXLib.InstancesList:
+		if _vid in possible_vids:
+			group.append(_vid)
+
+	return group
+
+
 
 def isPlayerCloseToInstance(vid_target, max_dist=150):
 	"""
@@ -641,7 +699,12 @@ def isPlayerCloseToInstance(vid_target, max_dist=150):
 	Returns:
 		[type]: [description]
 	"""
-	if vid_target not in eXLib.InstancesList:
+	is_in_list = False
+	for vid in eXLib.InstancesList:
+		if vid == vid_target:
+			is_in_list = True
+			break
+	if not is_in_list:
 		return False
 
 	player_x, player_y, player_z = player.GetMainCharacterPosition()
@@ -675,7 +738,16 @@ def GetInstanceByID(_id):
 		if chr.GetRace() == _id:
 			return vid
 	return -1
-	
+
+def getClosestItemFromList(item_list):
+	(closest_item,_dist) = (None,999999999)
+	x1, y1, z = chr.GetPixelPosition(net.GetMainActorVID())
+	for item in item_list:
+		new_dist = dist(x1, y1, item['position'][0], item['position'][1])
+		if _dist > new_dist:
+			closest_item = item
+	return closest_item
+
 def getClosestInstance(_type,is_unblocked=True):
 	"""
 	Get the VID of the closest matching one of the types specified instance from the main player.
@@ -696,6 +768,7 @@ def getClosestInstance(_type,is_unblocked=True):
 			mob_x,mob_y,mob_z = chr.GetPixelPosition(vid)
 			if eXLib.IsPositionBlocked(mob_x,mob_y):
 				continue
+
 
 		this_distance = player.GetCharacterDistance(vid)
 		if eXLib.IsDead(vid):
@@ -730,7 +803,7 @@ def AttackTarget(vid):
 		return ATTACKING_TARGET
 	else:
 		player.SetAttackKeyState(False)
-		Movement.GoToPositionAvoidingObjects(mob_x,mob_y)
+		Movement.GoToPosition(mob_x,mob_y)
 		return MOVING_TO_TARGET
 		
 #Return point between 2 points at the specified distance from x1,y1

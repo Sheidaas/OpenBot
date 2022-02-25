@@ -54,7 +54,7 @@ def isInMaps(maps):
             return True
     return False
 
-def isNearInstance(vid, max_dist=200):
+def isNearInstance(vid, max_dist=250):
     return OpenLib.isPlayerCloseToInstance(vid, max_dist)
 
 def isNearPosition(position):
@@ -92,8 +92,23 @@ def isMetinNearly(skipped_list):
         if OpenLib.IsThisMetin(vid) and not eXLib.IsDead(vid):
             if not OpenLib.isPathToVID(vid):
                 continue
+            if OpenLib.isVidBlocked(vid):
+                continue
             if vid in skipped_list:
                 continue
+            return True
+    return False
+
+def IsVidNotExist(selected_vid):
+    for vid in eXLib.InstancesList:
+        if vid == selected_vid:
+            return False
+    return True
+
+def areItemsNearly(items):
+    x1, y1, z1 = chr.GetPixelPosition(net.GetMainActorVID())
+    for item in items:
+        if OpenLib.dist(x1, y1, item['position'][0], item['position'][1]) <= 2000:
             return True
     return False
 
@@ -106,15 +121,37 @@ def isOreNearly(args=0):
     return False
 
 def isRaceNearly(args):
+    my_x, my_y, my_z = chr.GetPixelPosition(net.GetMainActorVID())
     races_list = args[0]
     skipped_vids = args[1]
     for vid in eXLib.InstancesList:
         chr.SelectInstance(vid)
         if vid in skipped_vids:
             continue
+        if eXLib.IsDead(vid):
+            continue
 
-        if chr.GetRace() in races_list:
+        x2, y2, z2 = chr.GetPixelPosition(vid)
+        if chr.GetRace(vid) in races_list and OpenLib.dist(my_x, my_y, x2, y2) <= 10000:
             return True
+    return False
+
+def isRaceNearlyFromExactPoint(args):
+    x, y = args[0]
+    races_list = args[0]
+    skipped_vids = args[1]
+    for vid in eXLib.InstancesList:
+        chr.SelectInstance(vid)
+        if vid in skipped_vids:
+            continue
+        x2, y2, z2 = chr.GetPixelPosition(vid)
+        if chr.GetRace(vid) in races_list and OpenLib.dist(x, y, x2, y2) <= 10000:
+            return True
+    return False
+
+def isVidNearly(vid):
+    if player.GetCharacterDistance(vid) < OpenLib.ATTACK_RANGE:
+        return True
     return False
 
 def isCharReadyToMine(ore_vid):
@@ -152,11 +189,36 @@ def IsInChannel(channel):
     return False
 
 def IsHPRecovered(args):
-    current_hp = player.GetStatus(player.HP)
-    max_hp = player.GetStatus(player.MAX_HP)
-    if current_hp / max_hp * 100 >= 50:
+    if float(player.GetStatus(player.HP)) / float(player.GetStatus(player.MAX_HP)) * 100 >= 50:
         return True
     return False 
 
 def isInventoryFull(args=0):
-    return OpenLib.isInventoryFull
+    return OpenLib.isInventoryFull()
+
+def ActorDistanceToVidSmallerThan(args):
+    target = args[0]
+    distance = args[1]
+    my_x, my_y, z = chr.GetPixelPosition(net.GetMainActorVID())
+    target_x, target_y, z = chr.GetPixelPosition(target)
+    if distance >= OpenLib.dist(my_x, my_y, target_x, target_y):
+        return True
+    return False
+
+def IsMobCloserThan(distance):
+    my_x, my_y, z = chr.GetPixelPosition(net.GetMainActorVID())
+    for vid in eXLib.InstancesList:
+        if vid == net.GetMainActorVID():
+            continue
+
+        if chr.GetInstanceType(vid) != OpenLib.MONSTER_TYPE:
+            continue
+
+        target_x, target_y, z = chr.GetPixelPosition(vid)
+
+        if distance >= OpenLib.dist(my_x, my_y, target_x, target_y):
+            return True
+    return False
+
+
+

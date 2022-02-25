@@ -1,0 +1,1 @@
+InjectorCLI.exe -m STANDART --auto_inject_window "metin2client.exe" "C:\Users\Maciej Wrzeszcz\Documents\GitHub\OpenBot\eXLib.dll"

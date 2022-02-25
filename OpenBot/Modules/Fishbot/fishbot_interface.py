@@ -16,8 +16,10 @@ STATUS_KEYS = {
     'DEAD_FISH_ID_TO_DROP': 'DeadFishIdToDrop',
     'CATCHES_TO_DROP': 'CatchesToDrop',
     'CATCHES_TO_SELL': 'CatchesToSell',
+    'WAIT_BETWEEN_FISH': 'WaitBetweenFish',
+    'MIN_TIME_BETWEEN': 'MinTimeBetween',
+    'MAX_TIME_BETWEEN': 'MaxTimeBetween',
 }
-
 
 class FishbotInterface:
 
@@ -45,6 +47,12 @@ class FishbotInterface:
             elif STATUS_KEYS['MAX_TIME_BETWEEN_FISH'] == status_key:
                 self.set_max_time_between_fish(status[status_key])
 
+            elif STATUS_KEYS['MIN_TIME_BETWEEN'] == status_key:
+                fishbot_module.minTimeBetweenFish = (status[status_key])
+
+            elif STATUS_KEYS['MAX_TIME_BETWEEN'] == status_key:
+                fishbot_module.maxTimeBetweenFish = status[status_key]
+
             elif STATUS_KEYS['FISH_ID_TO_OPEN'] == status_key:
                 fishbot_module.fish_id_to_open = status[status_key]
 
@@ -59,6 +67,8 @@ class FishbotInterface:
 
             elif STATUS_KEYS['CATCHES_TO_DROP'] == status_key:
                 fishbot_module.catches_to_drop = status[status_key]
+
+
 
         if save_status: self.SaveStatus()
 
@@ -78,6 +88,9 @@ class FishbotInterface:
             STATUS_KEYS['DEAD_FISH_ID_TO_DROP']: fishbot_module.dead_fish_it_to_drop,
             STATUS_KEYS['CATCHES_TO_SELL']: fishbot_module.catches_to_sell,
             STATUS_KEYS['CATCHES_TO_DROP']: fishbot_module.catches_to_drop,
+            STATUS_KEYS['WAIT_BETWEEN_FISH']: fishbot_module.waitBetweenFishing,
+            STATUS_KEYS['MIN_TIME_BETWEEN']: fishbot_module.minTimeBetweenFish,
+            STATUS_KEYS['MAX_TIME_BETWEEN']: fishbot_module.maxTimeBetweenFish,
         }
 
     def SaveStatus(self):

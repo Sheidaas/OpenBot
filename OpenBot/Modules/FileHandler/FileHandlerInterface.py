@@ -218,6 +218,8 @@ class FileHandlerInterface:
 
                     if HACK_STATUS_KEYS['FARMBOT'] == status:
                         new_status = self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['FARMBOT'])
+                        if new_status.get('Path', None) is not None:
+                            del new_status['Path']
                         farmbot_interface.SetStatus(new_status, save_status=False)
                     elif HACK_STATUS_KEYS['SETTINGS'] == status:
                         settings_interface.SetStatus(self.return_dict_with_diff(other_settings[status], HACK_STATUS_KEYS['SETTINGS']), save_status=False)
@@ -295,6 +297,7 @@ class FileHandlerInterface:
 
         other_settings[HACK_STATUS_KEYS['WAITHACK']]['Enabled'] = False
         other_settings[HACK_STATUS_KEYS['FARMBOT']]['Enabled'] = False
+        other_settings[HACK_STATUS_KEYS['FARMBOT']]['ItemsToPickup'] = []
         other_settings[HACK_STATUS_KEYS['SETTINGS']]['RenderTextures'] = True
         other_settings[HACK_STATUS_KEYS['FISHBOT']]['Enabled'] = False
 

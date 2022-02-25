@@ -28,33 +28,25 @@ class Waithack(ui.ScriptWindow):
         ui.Window.__del__(self)
 
     def onEnableChange(self, val):
-        if val:
-            eXLib.BlockAttackPackets()
-        else:
-            eXLib.UnblockAttackPackets()
+        return
 
     def TeleportAttack(self, lst, x, y):
         Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
         self.lastPos = (x, y)
-        # eXLib.SendStatePacket(x,y,0,eXLib.CHAR_STATE_STOP,0)
         vid_hits = 0
         for vid in lst:
             mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
             if OpenLib.dist(x, y, mob_x, mob_y) < OpenLib.ATTACK_MAX_DIST_NO_TELEPORT:
-                # chat.AppendChat(3,"Sent Attack, X:" + str(mob_x) + " Y:" + str(mob_y) + "VID: " +str(vid))
                 eXLib.SendAttackPacket(vid, 0)
                 vid_hits += 1
 
         return vid_hits
-
-    # chat.AppendChat(3,"After: " + str(len(lst)))
 
     def __sendUseSkill(self):
         instance.cloudSkillState = CLOUD_SKILL_STATE_READY
 
     def AttackArch(self, lst, x, y):
         vid_hits = 0
-        # chat.AppendChat(3,"Attacking with arch")
         for enemy in lst:
             x, y, z = chr.GetPixelPosition(enemy)
             eXLib.SendAddFlyTarget(enemy, x, y)
@@ -63,10 +55,8 @@ class Waithack(ui.ScriptWindow):
         return vid_hits
 
     def AttackCloud(self, lst, x, y):
-        # chat.AppendChat(3,"Attacking with arch")
         Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
         self.lastPos = (x, y)
-        # eXLib.SendStatePacket(x,y,0,eXLib.CHAR_STATE_STOP,0)
         vid_hits = 0
         for vid in lst:
             mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
@@ -113,9 +103,8 @@ class Waithack(ui.ScriptWindow):
 
             if type not in self.instance_type_to_attack:
 
-                if self.attack_bosses and type == OpenLib.MONSTER_TYPE and chr.GetRace(vid) in OpenLib.BOSS_IDS.keys():
-                    pass
-                else:
+                if not self.attack_bosses or type != OpenLib.MONSTER_TYPE or \
+                        chr.GetRace(vid) not in OpenLib.BOSS_IDS.keys():
                     continue
 
             mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
@@ -133,7 +122,6 @@ class Waithack(ui.ScriptWindow):
                 break
 
         hit_counter = 0
-        chat.AppendChat(3, str(mobs_to_attack))
         for vid in mobs_to_attack:
             mob_x, mob_y, mob_z = chr.GetPixelPosition(vid)
 
@@ -147,7 +135,7 @@ class Waithack(ui.ScriptWindow):
             if hit_counter > self.maxMonster:
                 break
 
-        if (OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50):
+        if OpenLib.dist(x, y, self.lastPos[0], self.lastPos[1]) >= 50:
             Movement.TeleportStraightLine(self.lastPos[0], self.lastPos[1], x, y)
 
 

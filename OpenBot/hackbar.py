@@ -1,5 +1,6 @@
 import ui,app,chat,chr,net,player,wndMgr,uiCommon,eXLib
 from OpenBot.Modules.Protector.protector_module import protector_module
+from OpenBot.Modules.Attacker.attacker_module import attacker_module
 from OpenBot.Modules.WaitHack.waithack_module import instance
 from OpenBot.Modules.WaitHack.waithack_interface import waithack_interface
 from OpenBot.Modules.Farmbot.farmbot_module import farm
@@ -95,7 +96,6 @@ def __PhaseChangeLoadSettingsCallback(phase, phaseWnd):
     if phase == OpenLib.PHASE_GAME and not settings_loaded:
         def load():
             file_handler_interface.load_last_other_settings()
-            file_handler_interface.load_last_farmbot_paths()
             file_handler_interface.load_last_pickup_list()
         OpenLib.SetTimerFunction(2, load)
         settings_loaded = True
